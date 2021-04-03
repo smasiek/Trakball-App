@@ -1,11 +1,30 @@
 import React, {Component} from 'react';
 
-class Squad extends Component {
+
+ class Squad extends Component {
+  // constructor(){
+  //   super();
+  //   this.state={
+  //     id:"not yet gotten"
+  //   }
+  // }
+  // componentDidMount(){
+  //   fetch('http://localhost:8080/squads')
+  //   .then(response=>response.json())
+  //   .then(response=>{
+  //     this.setState({
+  //       id:response[0].id
+  //     }
+  //     )
+  //   }
+  //    );
+  // }
+
 
   render() {
     return (
       <div style={{backgroundColor: 'red'}}>
-        <p>-----------</p>
+         <p>-----------</p>
         <p>ID: {this.props.info.id}</p>
         <p>Twórca składu: {this.props.info.creatorName}</p>
         <p>Sport: {this.props.info.sport}</p>
@@ -19,4 +38,4 @@ class Squad extends Component {
   }
 }
 
-export default Squad;
+export default Squad
