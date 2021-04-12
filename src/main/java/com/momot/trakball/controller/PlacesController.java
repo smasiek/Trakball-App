@@ -1,8 +1,7 @@
-package com.momot.trakball.api;
+package com.momot.trakball.controller;
 
 import com.momot.trakball.dao.Place;
-import com.momot.trakball.dao.Squad;
-import com.momot.trakball.manager.PlaceManager;
+import com.momot.trakball.repository.PlaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,14 +11,14 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-public class PlacesApi {
+public class PlacesController {
 
     @Autowired
-    private PlaceManager placeManager;
+    private PlaceRepository placeRepository;
 
-    @GetMapping("/places")
+   /* @GetMapping("/places")
     public List<Place> places(){
-        return placeManager.getPlaceList();
-    }
+        return placeRepository.getPlaceList();
+    }*/
 
 }

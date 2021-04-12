@@ -1,7 +1,7 @@
-package com.momot.trakball.api;
+package com.momot.trakball.controller;
 
 import com.momot.trakball.dao.Squad;
-import com.momot.trakball.manager.SquadManager;
+import com.momot.trakball.repository.SquadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +11,13 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-public class SquadsApi {
+public class SquadsController {
 
     @Autowired
-    private SquadManager squadManager;
+    private SquadRepository squadRepository;
 
-    @GetMapping("/squads")
+   /* @GetMapping("/squads")
     public List<Squad> getSquads(){
-        return squadManager.getSquadList();
-    }
+        return squadRepository.getSquadList();
+    }*/
 }

@@ -1,17 +1,21 @@
-package com.momot.trakball.manager;
+package com.momot.trakball.repository;
 
 import com.momot.trakball.dao.Squad;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class SquadManager {
+@Repository
+public interface SquadRepository extends CrudRepository<Squad, Integer> {
 
-    private List<Squad> squadList;
 
-    public SquadManager(){
+
+    /*private List<Squad> squadList;
+
+    public SquadRepository(){
         this.squadList=new ArrayList<>();
         squadList.add(new Squad(1,1,"Janek Snow",
                 "Piłka nożna",15,"10 zł",
@@ -25,5 +29,5 @@ public class SquadManager {
 
     public List<Squad> getSquadList() {
         return squadList;
-    }
+    }*/
 }
