@@ -3,10 +3,6 @@ package com.momot.trakball.repository;
 import com.momot.trakball.dao.Place;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Repository
 public interface PlaceRepository extends CrudRepository<Place,Integer> {

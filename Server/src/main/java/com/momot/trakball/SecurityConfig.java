@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().hasRole("ADMIN")
                 .and()
                 .formLogin()
-                .loginPage("/login")
+                //.loginPage("/login")
                 .permitAll()
                 .and()
                 .logout().permitAll()

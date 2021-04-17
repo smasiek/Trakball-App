@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @CrossOrigin
 public class PlacesController {
@@ -20,5 +18,10 @@ public class PlacesController {
     public List<Place> places(){
         return placeRepository.getPlaceList();
     }*/
+
+    @GetMapping("/places")
+    public Iterable<Place> getSquads(){
+        return placeRepository.findAll();
+    }
 
 }
