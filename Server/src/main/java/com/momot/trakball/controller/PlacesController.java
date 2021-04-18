@@ -39,20 +39,11 @@ public class PlacesController {
         return PlaceManager.save(place);
     }
 
-<<<<<<< Updated upstream:src/main/java/com/momot/trakball/controller/PlacesController.java
-=======
     @DeleteMapping
     public void deletePlace(@RequestParam Long id){
         PlaceManager.deleteById(id);
     }
 
-<<<<<<< Updated upstream:Server/src/main/java/com/momot/trakball/controller/PlacesController.java
-    @GetMapping("/places")
-    public Iterable<Place> getSquads(){
-        return placeRepository.findAll();
-    }
 
-=======
->>>>>>> Stashed changes:Server/src/main/java/com/momot/trakball/controller/PlacesController.java
->>>>>>> Stashed changes:src/main/java/com/momot/trakball/controller/PlacesController.java
+
 }

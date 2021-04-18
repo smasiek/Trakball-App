@@ -16,18 +16,7 @@ public class SquadsController {
     @Autowired
     private SquadManager squadManager;
 
-<<<<<<< Updated upstream:src/main/java/com/momot/trakball/controller/SquadsController.java
-   /* @GetMapping("/squads")
-    public List<Squad> getSquads(){
-        return squadRepository.getSquadList();
-    }*/
-<<<<<<< Updated upstream:Server/src/main/java/com/momot/trakball/controller/SquadsController.java
-   @GetMapping("/squads")
-    public Iterable<Squad> getSquads(){
-       return squadRepository.findAll();
-   }
-=======
-=======
+
    @GetMapping("/all")
     public Iterable<Squad> getSquads(){
        return squadManager.findAll();
@@ -53,6 +42,4 @@ public class SquadsController {
        squadManager.deleteById(id);
     }
 
->>>>>>> Stashed changes:Server/src/main/java/com/momot/trakball/controller/SquadsController.java
->>>>>>> Stashed changes:src/main/java/com/momot/trakball/controller/SquadsController.java
 }
