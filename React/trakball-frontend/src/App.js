@@ -7,11 +7,12 @@ import {
 } from "react-router-dom";
 import Places from "./Places"
 import Squads from "./Squads"
+import Home from "./Home"
+import './App.css';
 
 
 
-
-export default function BasicExample() {
+ function App() {
   return (
     <Router>
       <div>
@@ -51,28 +52,6 @@ export default function BasicExample() {
     </Router>
   );
 }
-function Home() {
-  return (
-    <div>
-      <h2>Home</h2>
-    </div>
-  );
-}
 
-// function Squads() {
-//   return (
-//     <div>
-//      {this.state.data.map(squad=><Squad info={squad}/>)}
-//     </div>
-//   );
-// }
 
-// function Places() {
-//   return (
-//     <div>
-//      {this.state.data.map(place=><Place info={place}/>)}
-//     </div>
-//   );
-// }
-
-//export default App;
+export default App;
