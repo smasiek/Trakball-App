@@ -1,17 +1,15 @@
 package com.momot.trakball.dao;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "squads")
 public class Squad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private int creatorID;
     private String creatorName;
     private String sport;
@@ -22,7 +20,7 @@ public class Squad {
     private String address;
     private String date;
 
-    public Squad(int id, int creatorID, String creatorName, String sport, int maxMembers, String fee, String placeName, int placeID, String address, String date) {
+    public Squad(Long id, int creatorID, String creatorName, String sport, int maxMembers, String fee, String placeName, int placeID, String address, String date) {
         this.id = id;
         this.creatorID = creatorID;
         this.creatorName = creatorName;
@@ -38,11 +36,11 @@ public class Squad {
     public Squad() {
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
