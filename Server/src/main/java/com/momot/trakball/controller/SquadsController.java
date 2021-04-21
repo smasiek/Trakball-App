@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/squads")
+@RequestMapping("/api/squads")
 public class SquadsController {
 
     @Autowired

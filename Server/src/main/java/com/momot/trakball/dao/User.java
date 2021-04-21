@@ -1,32 +1,51 @@
 package com.momot.trakball.dao;
 
-import org.springframework.beans.factory.annotation.Required;
-
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
+        })
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank
+    @Size(max = 20)
     private String username;
+
+    @NotBlank
+    @Size(max = 50)
+    @Email
+    private String email;
+
+    @NotBlank
+    @Size(max = 120)
     private String password;
+
 
     @OneToOne
     @JoinColumn(name = "details_id")
     private UserDetails userDetails;
 
-    @ManyToOne
-    @JoinColumn(name="role_id")
-    private UserDetails role;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(	name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    public User(Long id, String username, String password, UserDetails userDetails, UserDetails role) {
-        this.id = id;
+    public User(String username, String email, String password) {
         this.username = username;
+        this.email = email;
         this.password = password;
-        this.userDetails = userDetails;
-        this.role = role;
     }
 
     public User() {
@@ -64,11 +83,19 @@ public class User {
         this.userDetails = userDetails;
     }
 
-    public UserDetails getRole() {
-        return role;
+    public String getEmail() {
+        return email;
     }
 
-    public void setRole(UserDetails role) {
-        this.role = role;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

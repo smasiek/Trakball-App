@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin
 public class YourSquadsController {
-    @GetMapping("/your_squads")
+    @GetMapping("/api/your_squads")
     public String[] your_squads(){
         String[] squads={"{" +
                 "id: 1" +

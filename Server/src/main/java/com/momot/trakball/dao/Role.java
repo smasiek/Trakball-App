@@ -11,15 +11,14 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERole name;
 
-    @OneToMany(mappedBy = "role")
-    private List<User> user;
 
-    public Role(Long id, String role, List<User> user) {
+    public Role(Long id, ERole name, List<User> user) {
         this.id = id;
-        this.role = role;
-        this.user = user;
+        this.name = name;
     }
 
     public Role(){}
@@ -32,15 +31,12 @@ public class Role {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
+    public ERole getName() {
+        return name;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setName(ERole name) {
+        this.name = name;
     }
 
-    public Role(List<User> user) {
-        this.user = user;
-    }
 }

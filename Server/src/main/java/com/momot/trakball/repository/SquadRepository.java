@@ -1,11 +1,12 @@
 package com.momot.trakball.repository;
 
 import com.momot.trakball.dao.Squad;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SquadRepository extends CrudRepository<Squad, Long> {
+public interface SquadRepository extends JpaRepository<Squad, Long> {
 
 
 
