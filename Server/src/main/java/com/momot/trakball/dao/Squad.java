@@ -2,6 +2,8 @@ package com.momot.trakball.dao;
 
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "squads")
@@ -9,7 +11,7 @@ public class Squad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long squad_id;
     private int creatorID;
     private String creatorName;
     private String sport;
@@ -20,8 +22,11 @@ public class Squad {
     private String address;
     private String date;
 
-    public Squad(Long id, int creatorID, String creatorName, String sport, int maxMembers, String fee, String placeName, int placeID, String address, String date) {
-        this.id = id;
+    /*@ManyToMany(mappedBy = "squads")
+    private Set<User> users = new HashSet<>();*/
+
+    public Squad(Long squad_id, int creatorID, String creatorName, String sport, int maxMembers, String fee, String placeName, int placeID, String address, String date) {
+        this.squad_id = squad_id;
         this.creatorID = creatorID;
         this.creatorName = creatorName;
         this.sport = sport;
@@ -36,12 +41,12 @@ public class Squad {
     public Squad() {
     }
 
-    public Long getId() {
-        return id;
+    public Long getSquad_id() {
+        return squad_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setSquad_id(Long id) {
+        this.squad_id = id;
     }
 
     public int getCreatorID() {
@@ -115,4 +120,12 @@ public class Squad {
     public void setDate(String date) {
         this.date = date;
     }
+
+/*    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }*/
 }

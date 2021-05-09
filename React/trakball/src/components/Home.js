@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import UserService from "../services/user.service";
+import map from '../assets/img/map.png';
 
 const Home = () => {
   const [content, setContent] = useState("");
@@ -23,8 +24,8 @@ const Home = () => {
 
   return (
     <div className="container">
-      <header className="jumbotron">
-        <h3>{content}</h3>
+      <header className="jumbotron" style={{display:'flex',justifyContent:'center'}}>
+        <img src={map} alt="map" />
       </header>
     </div>
   );

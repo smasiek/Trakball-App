@@ -24,9 +24,10 @@ public class JwtUtils {
     public String generateJwtToken(Authentication authentication) {
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
+        logger.error("USTAWIENIE ID W TOKENIE: {}",userPrincipal.getId());
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
+                .setId(String.valueOf(userPrincipal.getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -35,6 +36,11 @@ public class JwtUtils {
 
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getIdFromJwtToken(String token) {
+        logger.error("ID POBRANE Z TOKENA: {}",Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getId());
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getId();
     }
 
     public boolean validateJwtToken(String authToken) {

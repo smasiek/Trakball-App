@@ -16,7 +16,7 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long user_id;
 
     @NotBlank
     @Size(max = 20)
@@ -37,10 +37,17 @@ public class User {
     private UserDetails userDetails;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(	name = "user_squads",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "squad_id"))
+    private Set<Squad> squads = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(	name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -51,12 +58,12 @@ public class User {
     public User() {
     }
 
-    public Long getId() {
-        return id;
+    public Long getUser_id() {
+        return user_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUser_id(Long id) {
+        this.user_id = id;
     }
 
     public String getUsername() {
@@ -98,4 +105,13 @@ public class User {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+    public Set<Squad> getSquads() {
+        return squads;
+    }
+
+    public void setSquads(Set<Squad> squads) {
+        this.squads = squads;
+    }
+
 }

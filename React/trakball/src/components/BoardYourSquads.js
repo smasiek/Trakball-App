@@ -4,11 +4,11 @@ import Squad from "./Squad"
 import UserService from "../services/user.service";
 import "../assets/css/squad.css";
 
-const BoardSquads = () => {
+const BoardYourSquads = () => {
   const [content, setContent] = useState([]);
 
   useEffect(() => {
-    UserService.getSquadsBoard().then(
+    UserService.getYourSquadsBoard().then(
       (response) => {
         setContent(response.data);
       },
@@ -42,4 +42,4 @@ const BoardSquads = () => {
   );
 };
 
-export default BoardSquads;
+export default BoardYourSquads;

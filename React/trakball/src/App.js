@@ -3,6 +3,7 @@ import { Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
+import logo from './assets/img/Logo big.png';
 import AuthService from "./services/auth.service";
 
 import Login from "./components/Login";
@@ -11,10 +12,11 @@ import Home from "./components/Home";
 import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
 import BoardSquads from "./components/BoardSquads";
+import BoardYourSquads from "./components/BoardYourSquads";
 import BoardAdmin from "./components/BoardAdmin";
 
 const App = () => {
-  const [showSquadsBoard, setShowSquadsBoard] = useState(false);
+  const [showYourSquadsBoard, setShowYourSquadsBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
 
@@ -23,7 +25,8 @@ const App = () => {
 
     if (user) {
       setCurrentUser(user);
-      setShowSquadsBoard(user.roles.includes("ROLE_MODERATOR"));
+      setShowYourSquadsBoard(user.roles.includes("ROLE_USER"));
+      //setShowSquadsBoard(user.roles.includes("ROLE_MODERATOR"));
       setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
     }
   }, []);
@@ -36,7 +39,7 @@ const App = () => {
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
         <Link to={"/"} className="navbar-brand">
-          bezKoder
+          <img src={logo} alt="Logo" style={{height:'5vh'}}/>
         </Link>
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
@@ -45,13 +48,23 @@ const App = () => {
             </Link>
           </li>
 
-          {showSquadsBoard && (
+          {//showSquadsBoard && (
             <li className="nav-item">
-              <Link to={"/mod"} className="nav-link">
-                Moderator Board
+              <Link to={"/squads"} className="nav-link">
+                Squads
               </Link>
             </li>
-          )}
+         // )
+        }
+
+        {showYourSquadsBoard && (
+            <li className="nav-item">
+            <Link to={"/your_squads"} className="nav-link">
+              Your Squads
+            </Link>
+          </li>
+        )
+      }
 
           {showAdminBoard && (
             <li className="nav-item">
@@ -107,7 +120,8 @@ const App = () => {
           <Route exact path="/register" component={Register} />
           <Route exact path="/profile" component={Profile} />
           <Route path="/user" component={BoardUser} />
-          <Route path="/mod" component={BoardSquads} />
+          <Route path="/squads" component={BoardSquads} />
+          <Route path="/your_squads" component={BoardYourSquads} />
           <Route path="/admin" component={BoardAdmin} />
         </Switch>
       </div>
