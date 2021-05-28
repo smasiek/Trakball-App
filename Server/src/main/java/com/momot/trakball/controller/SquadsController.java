@@ -43,8 +43,6 @@ public class SquadsController {
     public Iterable<Squad> getSquads(@RequestParam String token){
 
        jwtUtils.validateJwtToken(token);
-
-       logger.error("ID FROM TOKEN: {}", jwtUtils.getIdFromJwtToken(token));
        Long id = Long.parseLong(jwtUtils.getIdFromJwtToken(token));
         return userManager.findById(id).get().getSquads();
     }
