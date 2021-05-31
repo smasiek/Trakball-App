@@ -10,17 +10,12 @@ import java.util.Set;
 @Entity
 @Table(name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long user_id;
-
-    @NotBlank
-    @Size(max = 20)
-    private String username;
 
     @NotBlank
     @Size(max = 50)
@@ -49,8 +44,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    public User(String username, String email, String password) {
-        this.username = username;
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
@@ -64,14 +58,6 @@ public class User {
 
     public void setUser_id(Long id) {
         this.user_id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {

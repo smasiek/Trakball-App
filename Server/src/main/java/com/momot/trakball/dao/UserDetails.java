@@ -11,14 +11,18 @@ public class UserDetails {
 
     private String email;
     private String phone;
+    private String name;
+    private String surname;
 
     @OneToOne(mappedBy = "userDetails")
     private User user;
 
-    public UserDetails(Long id, String email, String phone, User user) {
+    public UserDetails(Long id, String email, String phone, String name, String surname, User user) {
         this.id = id;
         this.email = email;
         this.phone = phone;
+        this.name = name;
+        this.surname = surname;
         this.user = user;
     }
 
@@ -57,4 +61,21 @@ public class UserDetails {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
 }
