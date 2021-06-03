@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Squad from "./Squad"
 
-import UserService from "../services/user.service";
+import SquadService from "../services/squad.service";
 import "../assets/css/squad.css";
 
 const BoardYourSquads = () => {
   const [content, setContent] = useState([]);
 
   useEffect(() => {
-    UserService.getYourSquadsBoard().then(
+    SquadService.getYourSquadsBoard().then(
       (response) => {
         setContent(response.data);
       },
@@ -26,14 +26,14 @@ const BoardYourSquads = () => {
   }, []);
 
   return (
-    <div class="squads-boxed">
+    <div className="squads-boxed">
       <div className="container-fluid">
-        <div class="intro">
-          <h2 class="text-center">Squads </h2>
-          <p class="text-center">search for squads in your city</p>
+        <div className="intro">
+          <h2 className="text-center">Squads </h2>
+          <p className="text-center">search for squads in your city</p>
         </div>
 
-        <div class="row squads">
+        <div className="row squads">
           {content.map(squad => <Squad info={squad} />)}
         </div>
       </div>

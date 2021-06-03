@@ -12,22 +12,15 @@ const getUserBoard = () => {
   return axios.get(API_URL + "user", { headers: authHeader() });
 };
 
-const getSquadsBoard = () => {
-  return axios.get(API_URL + "squads/all", { headers: authHeader() });
-};
-
-const getYourSquadsBoard = () => {
-  return axios.get(API_URL + "squads/user/all", { headers: authHeader(), params: {token:userToken()}});
-};
-
 const getAdminBoard = () => {
   return axios.get(API_URL + "admin", { headers: authHeader() });
 };
 
+
+//TODO Stworzyc squad.service i tam adc metody do squadów, dodac akcje dodawania skladu do your squad, potem dodac okno z dodawaniem squadu ogolnie
+
 export default {
   getPublicContent,
   getUserBoard,
-  getSquadsBoard,
-  getYourSquadsBoard,
   getAdminBoard,
 };

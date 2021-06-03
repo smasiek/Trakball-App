@@ -1,9 +1,6 @@
 package com.momot.trakball.controller;
 
-import com.momot.trakball.dao.ERole;
-import com.momot.trakball.dao.Role;
-import com.momot.trakball.dao.Squad;
-import com.momot.trakball.dao.User;
+import com.momot.trakball.dao.*;
 import com.momot.trakball.dto.request.LoginRequest;
 import com.momot.trakball.dto.request.SignupRequest;
 import com.momot.trakball.dto.response.JwtResponse;
@@ -11,6 +8,7 @@ import com.momot.trakball.dto.response.MessageResponse;
 import com.momot.trakball.manager.SquadManager;
 import com.momot.trakball.manager.UserManager;
 import com.momot.trakball.repository.RoleRepository;
+import com.momot.trakball.repository.UserDetailsRepository;
 import com.momot.trakball.repository.UserRepository;
 import com.momot.trakball.security.jwt.JwtUtils;
 import com.momot.trakball.security.services.UserDetailsImpl;
@@ -39,6 +37,9 @@ public class AuthController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserDetailsRepository userDetailsRepository;
 
     @Autowired
     RoleRepository roleRepository;
@@ -71,11 +72,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
-        }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
@@ -86,7 +82,10 @@ public class AuthController {
         // Create new user's account
         User user = new User(
                 signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
+                encoder.encode(signUpRequest.getPassword()),
+                signUpRequest.getName(),
+                signUpRequest.getSurname(),
+                signUpRequest.getPhone());
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();

@@ -23,6 +23,10 @@ public class PlaceManager {
         return placeRepository.findById(id);
     }
 
+    public Optional<Place> findByNameAndStreetAndCity(String name, String street,String city){
+        return placeRepository.findPlaceByNameAndStreetAndCity(name,street,city);
+    }
+
     public Iterable<Place> findAll(){
         return placeRepository.findAll();
     }

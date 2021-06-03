@@ -8,20 +8,12 @@ import java.util.Set;
 public class NewSquadRequest {
 
     @NotBlank
-    @Size(min = 3, max = 200)
-    private String address;
+    @Size(min=2,max = 200)
+    private String city;
 
     @NotBlank
     @Size(min=2,max = 200)
-    private String date;
-
-    @NotBlank
-    @Size(min=2,max = 200)
-    private String fee;
-
-    @NotBlank
-    @Size(min=2,max = 200)
-    private String maxMembers;
+    private String street;
 
     @NotBlank
     @Size(min=2,max = 200)
@@ -31,12 +23,31 @@ public class NewSquadRequest {
     @Size(min=2,max = 200)
     private String sport;
 
-    public String getAddress() {
-        return address;
+    private int maxMembers;
+
+    @NotBlank
+    @Size(min=0,max = 50)
+    private String fee;
+
+    @NotBlank
+    @Size(min=2,max = 50)
+    private String date;
+
+
+    public String getStreet() {
+        return street;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getDate() {
@@ -55,11 +66,11 @@ public class NewSquadRequest {
         this.fee = fee;
     }
 
-    public String getMaxMembers() {
+    public int getMaxMembers() {
         return maxMembers;
     }
 
-    public void setMaxMembers(String maxMembers) {
+    public void setMaxMembers(int maxMembers) {
         this.maxMembers = maxMembers;
     }
 

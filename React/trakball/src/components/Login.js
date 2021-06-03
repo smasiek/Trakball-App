@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
+import { isEmail } from "validator";
 
 import AuthService from "../services/auth.service";
 
@@ -15,24 +16,30 @@ const required = (value) => {
   }
 };
 
+const validEmail = (value) => {
+  if (!isEmail(value)) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        This is not a valid email.
+      </div>
+    );
+  }
+};
+
 const Login = (props) => {
   const form = useRef();
   const checkBtn = useRef();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const onChangeUsername = (e) => {
-    const username = e.target.value;
-    setUsername(username);
-  };
-
-  const onChangePassword = (e) => {
-    const password = e.target.value;
-    setPassword(password);
-  };
+  const changeFormData = (e) =>{
+    setFormData({
+      ...formData,
+      [e.target.name]:e.target.value
+    })
+  }
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -43,9 +50,9 @@ const Login = (props) => {
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      AuthService.login(username, password).then(
+      AuthService.login(formData.email, formData.password).then(
         () => {
-          props.history.push("/profile");
+          props.history.push("/squads");
           window.location.reload();
         },
         (error) => {
@@ -76,14 +83,14 @@ const Login = (props) => {
 
         <Form onSubmit={handleLogin} ref={form}>
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">Email</label>
             <Input
-              type="text"
+              type="email"
               className="form-control"
-              name="username"
-              value={username}
-              onChange={onChangeUsername}
-              validations={[required]}
+              name="email"
+              value={formData.email}
+              onChange={changeFormData}
+              validations={[required,validEmail]}
             />
           </div>
 
@@ -93,8 +100,8 @@ const Login = (props) => {
               type="password"
               className="form-control"
               name="password"
-              value={password}
-              onChange={onChangePassword}
+              value={formData.password}
+              onChange={changeFormData}
               validations={[required]}
             />
           </div>

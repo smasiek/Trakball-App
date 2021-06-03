@@ -46,20 +46,18 @@ public class SquadsController {
        return squadManager.findById(id);
    }
 
-/*   @PostMapping
+   @PostMapping
    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
    public Squad addSquad(@RequestBody NewSquadRequest squadRequest, @RequestParam String token){
        return squadManager.addSquad(squadRequest,token);
-   }*/
-
-/*
+   }
+   /*
     @PutMapping
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Squad editSquad(@RequestBody NewSquadRequest squadRequest){
         return squadManager.save(squadRequest);
     }
 */
-
     @DeleteMapping
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteSquad(@RequestParam Long id){

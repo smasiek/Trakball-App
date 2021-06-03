@@ -1,5 +1,7 @@
 package com.momot.trakball.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -26,9 +28,9 @@ public class User {
     @Size(max = 120)
     private String password;
 
-
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "details_id")
+    @JsonIgnoreProperties(value = "user",allowSetters = true)
     private UserDetails userDetails;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -44,9 +46,11 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    public User(String email, String password) {
+    public User(String email, String password, String name, String surname, String phone) {
         this.email = email;
         this.password = password;
+        this.userDetails=new UserDetails(name,surname,phone,this);
+
     }
 
     public User() {

@@ -14,6 +14,7 @@ import BoardUser from "./components/BoardUser";
 import BoardSquads from "./components/BoardSquads";
 import BoardYourSquads from "./components/BoardYourSquads";
 import BoardAdmin from "./components/BoardAdmin";
+import BoardAddNewSquad from "./components/BoardAddNewSquad";
 
 const App = () => {
   const [showYourSquadsBoard, setShowYourSquadsBoard] = useState(false);
@@ -37,9 +38,9 @@ const App = () => {
 
   return (
     <div>
-      <nav className="navbar navbar-expand navbar-dark bg-dark">
+      <nav className="navbar navbar-expand navbar-dark bg-success">
         <Link to={"/"} className="navbar-brand">
-          <img src={logo} alt="Logo" style={{height:'5vh'}}/>
+          <img src={logo} alt="Logo" style={{height:'6vh'}}/>
         </Link>
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
@@ -79,10 +80,41 @@ const App = () => {
               <Link to={"/user"} className="nav-link">
                 User
               </Link>
+            </li>,
+
+            <li className="nav-item">
+              <Link to={"/new_squad"} className="nav-link">
+                New squad
+              </Link>
             </li>
           )}
         </div>
 
+        {currentUser ? (
+          <div className="navbar-nav ml-auto">
+            <li className="nav-item">
+              <a href="/login" className="nav-link" onClick={logOut}>
+                LogOut
+              </a>
+            </li>
+          </div>
+        ) : (
+          <div className="navbar-nav ml-auto">
+            <li className="nav-item">
+              <Link to={"/login"} className="nav-link">
+                Login
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link to={"/register"} className="nav-link">
+                Sign Up
+              </Link>
+            </li>
+          </div>
+        )}
+        
+{/* 
         {currentUser ? (
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
@@ -110,7 +142,10 @@ const App = () => {
               </Link>
             </li>
           </div>
-        )}
+        )} */}
+
+
+
       </nav>
 
       <div className="container mt-3">
@@ -123,6 +158,7 @@ const App = () => {
           <Route path="/squads" component={BoardSquads} />
           <Route path="/your_squads" component={BoardYourSquads} />
           <Route path="/admin" component={BoardAdmin} />
+          <Route path="/new_squad" component={BoardAddNewSquad} />
         </Switch>
       </div>
     </div>
