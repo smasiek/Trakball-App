@@ -23,8 +23,8 @@ const publish = (placeName,city,street,sport, date, fee, maxMembers) => {
     maxMembers,
   },
   {headers:authHeader(),
-    params:{token:userToken()}}
-    );
+    params:{token:userToken()}
+  });
 };
 
 
