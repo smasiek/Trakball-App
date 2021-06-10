@@ -12,13 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
 public class SquadManager {
-
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     private final SquadRepository squadRepository;
 
@@ -44,21 +42,19 @@ public class SquadManager {
         return squadRepository.findAll();
     }
 
-    public Iterable<Squad> findByMember(String token){
-        Long id=getIdFromToken(token);
-
-        return userManager.findById(id).get().getSquads(); //todo to mozna poprawic zeby bylo bezpiecznie. Poki co moze rzucic nieobsluzony error
+    public Iterable<Squad> findByMember(){
+        return userManager.getUserFromContext().isPresent() ?
+                userManager.getUserFromContext().get().getSquads() : new ArrayList<>();
     }
 
-    public Squad addSquad(NewSquadRequest newSquadRequestquad, String token){
-        Long id=getIdFromToken(token);
-        Optional<User> creator=userManager.findById(id);
+    public Squad addSquad(NewSquadRequest newSquadRequestSquad){
+        Optional<User> creator=userManager.getUserFromContext();
+        Optional<Place> place=placeManager.findByNameAndStreetAndCity(newSquadRequestSquad.getPlace(),
+                newSquadRequestSquad.getStreet(), newSquadRequestSquad.getCity());
 
-        Optional<Place> place=placeManager.findByNameAndStreetAndCity(newSquadRequestquad.getPlace(),
-                newSquadRequestquad.getStreet(), newSquadRequestquad.getCity());
+        Squad squad=new Squad(null,newSquadRequestSquad.getSport(), newSquadRequestSquad.getMaxMembers(),
+                newSquadRequestSquad.getFee(), newSquadRequestSquad.getDate(), creator, place);
 
-        Squad squad=new Squad(null,newSquadRequestquad.getSport(), newSquadRequestquad.getMaxMembers(),
-                newSquadRequestquad.getFee(), newSquadRequestquad.getDate(), creator, place);
         return squadRepository.save(squad);
     }
 
@@ -72,8 +68,8 @@ public class SquadManager {
         squadRepository.deleteById(id);
     }
 
-    public Long getIdFromToken(String token){
+    /*public Long getIdFromToken(String token){
         jwtUtils.validateJwtToken(token);
         return Long.parseLong(jwtUtils.getIdFromJwtToken(token));
-    }
+    }*/
 }

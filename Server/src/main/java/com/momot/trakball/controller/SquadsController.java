@@ -3,8 +3,6 @@ package com.momot.trakball.controller;
 import com.momot.trakball.dao.Squad;
 import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.manager.SquadManager;
-import com.momot.trakball.manager.UserManager;
-import com.momot.trakball.repository.SquadRepository;
 import com.momot.trakball.security.jwt.AuthTokenFilter;
 import com.momot.trakball.security.jwt.JwtUtils;
 import com.momot.trakball.security.services.UserDetailsImpl;
@@ -39,24 +37,20 @@ public class SquadsController {
     @GetMapping("/user/all")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     //@PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    public Iterable<Squad> getSquads(@RequestParam String token){
-        return squadManager.findByMember(token);
+    public Iterable<Squad> getYourSquads(){
+        return squadManager.findByMember();
     }
 
    @GetMapping
    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
    public Optional<Squad> getSquad(@RequestParam Long id){
-       Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
-       UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-       System.out.println(userDetails.getUsername());
-
        return squadManager.findById(id);
    }
 
    @PostMapping
    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-   public Squad addSquad(@RequestBody NewSquadRequest squadRequest, @RequestParam String token){
-       return squadManager.addSquad(squadRequest,token);
+   public Squad addSquad(@RequestBody NewSquadRequest squadRequest){
+       return squadManager.addSquad(squadRequest);
    }
    /*
     @PutMapping

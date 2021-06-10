@@ -1,7 +1,6 @@
 package com.momot.trakball.controller;
 
 import com.momot.trakball.dao.Place;
-import com.momot.trakball.dto.request.NewSquadSuggestionsRequest;
 import com.momot.trakball.manager.PlaceManager;
 import com.momot.trakball.security.jwt.AuthTokenFilter;
 import org.slf4j.Logger;
