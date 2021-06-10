@@ -1,12 +1,12 @@
 package com.momot.trakball.controller;
 
-import com.momot.trakball.dao.*;
+import com.momot.trakball.dao.ERole;
+import com.momot.trakball.dao.Role;
+import com.momot.trakball.dao.User;
 import com.momot.trakball.dto.request.LoginRequest;
 import com.momot.trakball.dto.request.SignupRequest;
 import com.momot.trakball.dto.response.JwtResponse;
 import com.momot.trakball.dto.response.MessageResponse;
-import com.momot.trakball.manager.SquadManager;
-import com.momot.trakball.manager.UserManager;
 import com.momot.trakball.repository.RoleRepository;
 import com.momot.trakball.repository.UserDetailsRepository;
 import com.momot.trakball.repository.UserRepository;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
