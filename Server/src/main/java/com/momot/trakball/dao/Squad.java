@@ -1,8 +1,13 @@
 package com.momot.trakball.dao;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -12,30 +17,48 @@ public class Squad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long squad_id;
-    private int creatorID;
-    private String creatorName;
+
+    @NotBlank
+    @Size(min=2,max = 200)
     private String sport;
+
+    @Column(name="max_members")
     private int maxMembers;
+
+    @NotBlank
+    @Size(min=0,max = 50)
     private String fee;
-    private String placeName;
-    private int placeID;
-    private String address;
+
+    @NotBlank
+    @Size(min=2,max = 50)
     private String date;
+
+    @OneToOne
+    @JoinColumn(name = "creator_id")
+    private User creator;
+
+    //TODO wykminic jak zapobiec cyklowi
+
+    @ManyToOne
+    @JoinColumn(name= "place_id")
+    @JsonIgnoreProperties(value = "squads",allowSetters = true)
+    private Place place;
+
+    @ManyToMany(mappedBy="squads")
+    private Set<User> members=new HashSet<>();
 
     /*@ManyToMany(mappedBy = "squads")
     private Set<User> users = new HashSet<>();*/
 
-    public Squad(Long squad_id, int creatorID, String creatorName, String sport, int maxMembers, String fee, String placeName, int placeID, String address, String date) {
+    public Squad(Long squad_id, String sport, int maxMembers, String fee, String date,
+                 Optional<User> creator, Optional<Place> place) {
         this.squad_id = squad_id;
-        this.creatorID = creatorID;
-        this.creatorName = creatorName;
         this.sport = sport;
         this.maxMembers = maxMembers;
         this.fee = fee;
-        this.placeName = placeName;
-        this.placeID = placeID;
-        this.address = address;
         this.date = date;
+        creator.ifPresent(c -> this.creator = c);
+        place.ifPresent(p->this.place=p);
     }
 
     public Squad() {
@@ -49,21 +72,6 @@ public class Squad {
         this.squad_id = id;
     }
 
-    public int getCreatorID() {
-        return creatorID;
-    }
-
-    public void setCreatorID(int creatorID) {
-        this.creatorID = creatorID;
-    }
-
-    public String getCreatorName() {
-        return creatorName;
-    }
-
-    public void setCreatorName(String creatorName) {
-        this.creatorName = creatorName;
-    }
 
     public String getSport() {
         return sport;
@@ -89,30 +97,6 @@ public class Squad {
         this.fee = fee;
     }
 
-    public String getPlaceName() {
-        return placeName;
-    }
-
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
-    }
-
-    public int getPlaceID() {
-        return placeID;
-    }
-
-    public void setPlaceID(int placeID) {
-        this.placeID = placeID;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getDate() {
         return date;
     }
@@ -121,11 +105,29 @@ public class Squad {
         this.date = date;
     }
 
-/*    public Set<User> getUsers() {
-        return users;
+    public User getCreator() {
+        return creator;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }*/
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
+    public Set<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(Set<User> members) {
+        this.members = members;
+    }
+
+
 }

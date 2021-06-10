@@ -4,7 +4,7 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import Squad from "./Squad"
 
-import UserService from "../services/user.service";
+import SquadService from "../services/squad.service";
 import "../assets/css/squad.css";
 
 const BoardSquads = () => {
@@ -19,7 +19,7 @@ const BoardSquads = () => {
   const [foundResults,setFound]=useState(false);
 
   useEffect(() => {
-    UserService.getSquadsBoard().then(
+    SquadService.getSquadsBoard().then(
       (response) => {
         setContent(response.data);
         setSearchResult(response.data);
@@ -84,11 +84,11 @@ const BoardSquads = () => {
   }
 
   return (
-    <div class="squads-boxed">
+    <div className="squads-boxed">
       <div className="container-fluid">
-        <div class="intro">
-          <h2 class="text-center">Squads </h2>
-          <p class="text-center">search for squads in your city</p>
+        <div className="intro">
+          <h2 className="text-center">Squads </h2>
+          <p className="text-center">search for squads in your city</p>
         </div>
 
         <Form onSubmit={handleSearch} ref={form}>

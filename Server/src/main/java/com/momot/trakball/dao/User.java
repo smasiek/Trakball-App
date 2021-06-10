@@ -1,5 +1,7 @@
 package com.momot.trakball.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -10,17 +12,12 @@ import java.util.Set;
 @Entity
 @Table(name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long user_id;
-
-    @NotBlank
-    @Size(max = 20)
-    private String username;
 
     @NotBlank
     @Size(max = 50)
@@ -31,9 +28,9 @@ public class User {
     @Size(max = 120)
     private String password;
 
-
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "details_id")
+    @JsonIgnoreProperties(value = "user",allowSetters = true)
     private UserDetails userDetails;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -49,10 +46,11 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    public User(String username, String email, String password) {
-        this.username = username;
+    public User(String email, String password, String name, String surname, String phone) {
         this.email = email;
         this.password = password;
+        this.userDetails=new UserDetails(name,surname,phone,this);
+
     }
 
     public User() {
@@ -64,14 +62,6 @@ public class User {
 
     public void setUser_id(Long id) {
         this.user_id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {

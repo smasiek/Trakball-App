@@ -1,6 +1,9 @@
 package com.momot.trakball.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "places")
@@ -16,6 +19,10 @@ public class Place {
     private double latitude;
     private double longitude;
     private String photo;
+
+    @OneToMany(mappedBy = "place")
+    @JsonIgnoreProperties(value = "place",allowSetters = true)
+    private Set<Squad> squads;
 
     public Place(Long id, String name, String city, String postal_code, String street, double latitude, double longitude, String photo) {
         this.id = id;
@@ -93,5 +100,13 @@ public class Place {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public Set<Squad> getSquads() {
+        return squads;
+    }
+
+    public void setSquads(Set<Squad> squads) {
+        this.squads = squads;
     }
 }

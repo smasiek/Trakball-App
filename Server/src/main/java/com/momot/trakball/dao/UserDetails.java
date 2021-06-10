@@ -1,5 +1,7 @@
 package com.momot.trakball.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,16 +11,18 @@ public class UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String email;
     private String phone;
+    private String name;
+    private String surname;
 
     @OneToOne(mappedBy = "userDetails")
+    @JsonIgnoreProperties(value = "userDetails",allowSetters = true)
     private User user;
 
-    public UserDetails(Long id, String email, String phone, User user) {
-        this.id = id;
-        this.email = email;
+    public UserDetails(String name, String surname, String phone, User user) {
         this.phone = phone;
+        this.name = name;
+        this.surname = surname;
         this.user = user;
     }
 
@@ -32,14 +36,6 @@ public class UserDetails {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPhone() {
@@ -57,4 +53,21 @@ public class UserDetails {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
 }
