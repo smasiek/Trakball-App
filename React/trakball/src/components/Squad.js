@@ -26,7 +26,7 @@ class Squad extends Component {
       <div className="col-sm-4 col-md-4 col-lg-4 item" key={this.props.info.squad_id}>
 
         <div className="box">
-          <img className="rounded-circle user-photo" src={def} />
+          <img className="rounded-circle user-photo" src={def} alt="creatorPhoto"/>
           <ShowUserDetails userDetails={this.props.info.creator.userDetails} />
           <p className="sport">{this.props.info.sport}</p>
           <div className="description">
@@ -47,9 +47,8 @@ class Squad extends Component {
 function ShowUserDetails(props){
     if(props.userDetails){
       return <h3 className="name">{props.userDetails.name} {props.userDetails.surname}</h3>
-    } else {
-      return <h3 className="name"></h3>
     }
+    return ;
 }
 
 export default Squad

@@ -8,6 +8,16 @@ public class NewSquadSuggestionsRequest {
     private Optional<String> place = Optional.empty();
     //TODO Zapytać czy tak jest git uzywac optional?
 
+
+    public NewSquadSuggestionsRequest() {
+    }
+
+    public NewSquadSuggestionsRequest(Optional<String> city, Optional<String> street, Optional<String> place) {
+        this.city = city;
+        this.street = street;
+        this.place = place;
+    }
+
     public Optional<String> getCity() {
         return city;
     }

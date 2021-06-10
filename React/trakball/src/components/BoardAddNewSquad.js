@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import Select from "react-validation/build/select";
 import CheckButton from "react-validation/build/button";
 
 import SquadService from "../services/squad.service";
@@ -17,6 +16,7 @@ const required = (value) => {
   }
 };
 
+
 const BoardAddNewSquad = (props) => {
   const form = useRef();
   const checkBtn = useRef();
@@ -28,7 +28,7 @@ const BoardAddNewSquad = (props) => {
   const [street, setStreet] = useState("");
   const [streetsList, setStreetsList] = useState([]);
   
-  const [[place], setPlace] = useState("");
+  const [place, setPlace] = useState("");
   const [placesList, setPlacesList] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -41,17 +41,16 @@ const BoardAddNewSquad = (props) => {
     })
   }
 
-
-
   const changeCityInput = (e) => {
     const city = e.target.value
     setCity(city)
-    handleCitiesInputChange(e)
+    document.getElementById("cityErr").style.display = "none";
+    handleCitiesInputChange()
   }
 
-  const handleCitiesInputChange = (e) => {
-    if (e.target.value && e.target.value.length > 1) {
-      if (e.target.value.length % 2 === 0) {
+  const handleCitiesInputChange = () => {
+    if (city && city.length > 1) {
+      if (city.length % 2 === 0) {
         fetchCitiesList()
       }
     }
@@ -73,13 +72,11 @@ const BoardAddNewSquad = (props) => {
         setCitiesList(_content);
       }
     );
-    setCitiesList(citiesList)
-    console.log(citiesList)
   }
 
   const CitySuggestions = (e) => {
-    const options = e.results.map(r => (
-       <option value={r}/>
+    const options = e.results.map((r,index) => (
+       <option value={r} key={index}/>
     ))
     return <datalist id="cities">{options}</datalist>
   }
@@ -88,6 +85,8 @@ const BoardAddNewSquad = (props) => {
   const changeStreetInput = (e) => {
     const street = e.target.value
     setStreet(street)
+    
+    document.getElementById("streetErr").style.display = "none";
     handleStreetsInputChange(e)
   }
 
@@ -100,9 +99,9 @@ const BoardAddNewSquad = (props) => {
   }
 
   const fetchStreetsList = () => {
-    PlaceService.getStreetsList(city,form.street,form.place).then(
+    PlaceService.getStreetsList(city,street,place).then(
       (response) => {
-        setCitiesList(response.data);
+        setStreetsList(response.data);
       },
       (error) => {
         const _content =
@@ -115,17 +114,57 @@ const BoardAddNewSquad = (props) => {
         setStreetsList(_content);
       }
     );
-    setStreetsList(citiesList)
   }
 
-  const StreetsSuggestions = (e) => {
-    const options = e.results.map(r => (
-       <option value={r}/>
+  const StreetSuggestions = (e) => {
+    const options = e.results.map((r,index) => (
+       <option value={r} key={index}/>
     ))
     return <datalist id="streets">{options}</datalist>
   }
 
-  
+
+  const changePlaceInput = (e) => {
+    const place = e.target.value
+    setPlace(place)
+    
+    document.getElementById("placeErr").style.display = "none";
+    handlePlacesInputChange(e)
+  }
+
+  const handlePlacesInputChange = (e) => {
+    if (e.target.value && e.target.value.length > 1) {
+      if (e.target.value.length % 2 === 0) {
+        fetchPlacesList()
+      }
+    }
+  }
+
+  const fetchPlacesList = () => {
+    PlaceService.getPlacesList(city,street,place).then(
+      (response) => {
+        setPlacesList(response.data);
+      },
+      (error) => {
+        const _content =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+
+          setPlacesList(_content);
+      }
+    );
+  }
+
+  const PlaceSuggestions = (e) => {
+    const options = e.results.map((r,index) => (
+       <option value={r} key={index}/>
+    ))
+    return <datalist id="places">{options}</datalist>
+  }
+
 
   const handleNewSquad = (e) => {
     e.preventDefault();
@@ -133,10 +172,20 @@ const BoardAddNewSquad = (props) => {
     setMessage("");
     setLoading(true);
 
+    let cityCheck = citiesList.filter((val) => val===city);
+    let streetCheck= streetsList.filter((val) => val===street);
+    let placeCheck= placesList.filter((val) => val===place);
+    
+    let noErrorFound=true;
+
+    if(cityCheck.length===0 && city){noErrorFound=false;document.getElementById("cityErr").style.display = "block";}
+    if(streetCheck.length===0 && street){noErrorFound=false;document.getElementById("streetErr").style.display = "block";}
+    if(placeCheck.length===0 && place){noErrorFound=false;document.getElementById("placeErr").style.display = "block";}
+
     form.current.validateAll();
 
-    if (checkBtn.current.context._errors.length === 0) {
-      SquadService.publish(formData.placeName, city, formData.street,
+    if (checkBtn.current.context._errors.length === 0 && noErrorFound) {
+      SquadService.publish(place, city, street,
         formData.sport, formData.date,
         formData.fee, formData.maxMembers).then(
           () => {
@@ -158,6 +207,7 @@ const BoardAddNewSquad = (props) => {
     } else {
       setLoading(false);
     }
+
   };
 
   return (
@@ -171,9 +221,8 @@ const BoardAddNewSquad = (props) => {
 
 
 
-
         <Form onSubmit={handleNewSquad} ref={form}>
-
+        
           <div className="form-group">
             <label htmlFor="city">City</label>
             <Input
@@ -181,13 +230,26 @@ const BoardAddNewSquad = (props) => {
               className="form-control"
               name="city"
               value={city}
-              validations={[required]}
               list="cities"
               onChange={changeCityInput}
               autoComplete="new-password"
+              validations={[required]}
+            />
+
+            <Input
+              type="text"
+              className="form-control"
+              value={city}
+              list="cities"
+              
+              style={{display: 'none'}}
             />
 
             <CitySuggestions results={citiesList} />
+            <div id="cityErr" className="alert alert-danger" role="alert" style={{display:"none"}}>
+        No such city in database
+      </div>
+
             
           </div>
 
@@ -197,12 +259,20 @@ const BoardAddNewSquad = (props) => {
               type="text"
               className="form-control"
               name="street"
-              value={form.street}
-              onChange={changeFormData}
+              value={street}
+              list="streets"
+              onChange={changeStreetInput}
               validations={[required]}
               autoComplete="new-password"
             />
+
+<div id="streetErr" className="alert alert-danger" role="alert" style={{display:"none"}}>
+        No such street in database
+      </div>
+
           </div>
+
+          <StreetSuggestions results={streetsList} />
 
           <div className="form-group">
             <label htmlFor="placeName">Place name</label>
@@ -210,12 +280,20 @@ const BoardAddNewSquad = (props) => {
               type="text"
               className="form-control"
               name="placeName"
-              value={form.place}
-              onChange={changeFormData}
+              value={place}
+              list="places"
+              onChange={changePlaceInput}
               validations={[required]}
               autoComplete="new-password"
             />
+
+<div id="placeErr" className="alert alert-danger" role="alert" style={{display:"none"}}>
+        No such place in database
+      </div>
+
           </div>
+          
+          <PlaceSuggestions results={placesList} />
 
           <div className="form-group">
             <label htmlFor="sport">Sport</label>
@@ -228,7 +306,6 @@ const BoardAddNewSquad = (props) => {
               validations={[required]}
             />
           </div>
-
 
           <div className="form-group">
             <label htmlFor="date">Date</label>
@@ -290,3 +367,4 @@ const BoardAddNewSquad = (props) => {
 };
 
 export default BoardAddNewSquad;
+

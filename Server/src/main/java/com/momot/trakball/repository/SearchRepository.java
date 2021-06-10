@@ -42,6 +42,23 @@ public interface SearchRepository extends Repository<Place,Long> {
     Iterable<String> findStreetsWithPlace( @Param("streetInput") String street,@Param("placeInput") String place);
 
 
+    @Query("select distinct p.name from Place p where lower(p.name) LIKE lower(concat('%', concat(:placeInput, '%'))) ")
+    Iterable<String> findPlaces(@Param("placeInput") String place);
+
+    @Query("select distinct p.name from Place p where lower(p.name) LIKE lower(concat('%', concat(:placeInput, '%'))) " +
+            "and lower(p.street) LIKE lower(:streetInput) " +
+            "and lower(p.city) LIKE lower(:cityInput) ")
+    Iterable<String> findPlacesWithCityAndStreet( @Param("placeInput") String place,@Param("cityInput")String city,@Param("streetInput") String street);
+
+    @Query("select distinct p.name from Place p where lower(p.name) LIKE lower(concat('%', concat(:placeInput, '%'))) " +
+            "and lower(p.city) LIKE lower(:cityInput) ")
+    Iterable<String> findPlacesWithCity( @Param("placeInput") String place,@Param("cityInput") String city);
+
+    @Query("select distinct p.name from Place p where lower(p.name) LIKE lower(concat('%', concat(:placeInput, '%'))) " +
+            "and lower(p.street) LIKE lower(:streetInput) ")
+    Iterable<String> findPlacesWithStreet( @Param("placeInput") String place,@Param("streetInput") String street);
+
+
 
 
 }

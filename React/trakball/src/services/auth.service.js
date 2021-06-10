@@ -34,7 +34,7 @@ const logout = () => {
 const getCurrentUser = () => {
   return JSON.parse(localStorage.getItem("user"));
 };
-
+/* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default {
   register,
   login,

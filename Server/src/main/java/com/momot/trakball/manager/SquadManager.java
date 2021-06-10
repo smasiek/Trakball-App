@@ -54,14 +54,15 @@ public class SquadManager {
         Long id=getIdFromToken(token);
         Optional<User> creator=userManager.findById(id);
 
-        Optional<Place> place=placeManager.findByNameAndStreetAndCity(newSquadRequestquad.getPlaceName(),
+        Optional<Place> place=placeManager.findByNameAndStreetAndCity(newSquadRequestquad.getPlace(),
                 newSquadRequestquad.getStreet(), newSquadRequestquad.getCity());
 
         Squad squad=new Squad(null,newSquadRequestquad.getSport(), newSquadRequestquad.getMaxMembers(),
                 newSquadRequestquad.getFee(), newSquadRequestquad.getDate(), creator, place);
-        logger.debug("Street: " + newSquadRequestquad.getStreet() + "City: " + newSquadRequestquad.getCity() + "Place name: ",newSquadRequestquad.getPlaceName());
         return squadRepository.save(squad);
     }
+
+//    public Squad addYourSquad()
 
     public Squad save(Squad squad){
         return squadRepository.save(squad);

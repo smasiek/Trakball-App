@@ -1,9 +1,7 @@
 package com.momot.trakball.dto.request;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Set;
 
 public class NewSquadRequest {
 
@@ -17,7 +15,7 @@ public class NewSquadRequest {
 
     @NotBlank
     @Size(min=2,max = 200)
-    private String placeName;
+    private String place;
 
     @NotBlank
     @Size(min=2,max = 200)
@@ -74,12 +72,12 @@ public class NewSquadRequest {
         this.maxMembers = maxMembers;
     }
 
-    public String getPlaceName() {
-        return placeName;
+    public String getPlace() {
+        return place;
     }
 
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
+    public void setPlace(String place) {
+        this.place = place;
     }
 
     public String getSport() {

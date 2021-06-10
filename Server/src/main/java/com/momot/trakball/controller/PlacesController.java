@@ -3,6 +3,9 @@ package com.momot.trakball.controller;
 import com.momot.trakball.dao.Place;
 import com.momot.trakball.dto.request.NewSquadSuggestionsRequest;
 import com.momot.trakball.manager.PlaceManager;
+import com.momot.trakball.security.jwt.AuthTokenFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +20,8 @@ public class PlacesController {
     @Autowired
     private PlaceManager placeManager;
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+
     @GetMapping("/all")
     public Iterable<Place> getPlaces(){
         return placeManager.findAll();
@@ -28,28 +33,22 @@ public class PlacesController {
     }
 
     @GetMapping("/cities")
-    public Iterable<String> getCities(@RequestBody NewSquadSuggestionsRequest newSquadSuggestionsRequest){
-        return placeManager.findCitiesByInput(newSquadSuggestionsRequest);
+    public Iterable<String> getCities(@RequestParam String city ,@RequestParam String street,
+                                      @RequestParam String place ){
+        return placeManager.findCitiesByInput(city,street,place);
     }
 
     @GetMapping("/streets")
-    public Iterable<String> getStreets(@RequestBody NewSquadSuggestionsRequest newSquadSuggestionsRequest){
-        return placeManager.findStreetsByInput(newSquadSuggestionsRequest);
+    public Iterable<String> getStreets(@RequestParam String city ,@RequestParam String street,
+                                       @RequestParam String place ){
+        return placeManager.findStreetsByInput(city,street,place);
     }
 
     @GetMapping("/names")
-    public Iterable<String> getPlaceNames(@RequestBody NewSquadSuggestionsRequest newSquadSuggestionsRequest){
-        return placeManager.findNamesByInput(newSquadSuggestionsRequest);
+    public Iterable<String> getPlaceNames(@RequestParam String city ,@RequestParam String street,
+                                          @RequestParam String place ){
+        return placeManager.findNamesByInput(city,street,place);
     }
-/*
-
-
-    @GetMapping("/cities")
-    public Iterable<String> getCities(@RequestParam String city){
-        return placeManager.findCitiesByInput(city);
-    }
-*/
-
 
     @PostMapping
     public Place addPlace(@RequestBody Place place){

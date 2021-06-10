@@ -1,6 +1,5 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-import userToken from "./user-token";
 
 const API_URL = "http://localhost:8080/api/";
 
@@ -17,8 +16,7 @@ const getAdminBoard = () => {
 };
 
 
-//TODO Stworzyc squad.service i tam adc metody do squadów, dodac akcje dodawania skladu do your squad, potem dodac okno z dodawaniem squadu ogolnie
-
+/* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default {
   getPublicContent,
   getUserBoard,

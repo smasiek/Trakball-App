@@ -12,9 +12,9 @@ const getYourSquadsBoard = () => {
   return axios.get(API_URL + "user/all", { headers: authHeader(), params: {token:userToken()}});
 };
 
-const publish = (placeName,city,street,sport, date, fee, maxMembers) => {
+const publish = (place,city,street,sport, date, fee, maxMembers) => {
   return axios.post(API_URL, {
-    placeName,
+    place,
     city,
     street,
     sport, 
@@ -29,6 +29,7 @@ const publish = (placeName,city,street,sport, date, fee, maxMembers) => {
 
 
 
+/* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default {
   getSquadsBoard,
   getYourSquadsBoard,

@@ -33,48 +33,46 @@ public class PlaceManager {
         return placeRepository.findAll();
     }
 
-    public Iterable<String> findCitiesByInput(NewSquadSuggestionsRequest newSquadSuggestionsRequest){
-        if(newSquadSuggestionsRequest.getCity().isPresent() && newSquadSuggestionsRequest.getPlace().isPresent() && newSquadSuggestionsRequest.getStreet().isPresent()){
-            return searchRepository.findCitiesWithStreetAndPlace(newSquadSuggestionsRequest.getCity().get(),
-                    newSquadSuggestionsRequest.getStreet().get(),newSquadSuggestionsRequest.getPlace().get());
+    public Iterable<String> findCitiesByInput(String city,String street,String place){
+        if(!city.equals("") && !street.equals("") && !place.equals("")){
+            return searchRepository.findCitiesWithStreetAndPlace(city,
+                    street,place);
         }
-        if(newSquadSuggestionsRequest.getCity().isPresent() && newSquadSuggestionsRequest.getPlace().isPresent()){
-            return searchRepository.findCitiesWithPlace(newSquadSuggestionsRequest.getCity().get(),newSquadSuggestionsRequest.getPlace().get());
+        if(!city.equals("") && !place.equals("")){
+            return searchRepository.findCitiesWithPlace(city,place);
         }
-        if(newSquadSuggestionsRequest.getCity().isPresent() && newSquadSuggestionsRequest.getStreet().isPresent()){
-            return searchRepository.findCitiesWithStreet(newSquadSuggestionsRequest.getCity().get(),newSquadSuggestionsRequest.getStreet().get());
+        if(!city.equals("") && !street.equals("")){
+            return searchRepository.findCitiesWithStreet(city,street);
         }
-        return searchRepository.findCities(newSquadSuggestionsRequest.getCity().get());
+        return searchRepository.findCities(city);
 
     }
 
-    public Iterable<String> findStreetsByInput(NewSquadSuggestionsRequest newSquadSuggestionsRequest){
-        if(newSquadSuggestionsRequest.getCity().isPresent() && newSquadSuggestionsRequest.getPlace().isPresent() && newSquadSuggestionsRequest.getStreet().isPresent()){
-            return searchRepository.findStreetsWithCityAndPlace(newSquadSuggestionsRequest.getStreet().get(),
-                    newSquadSuggestionsRequest.getCity().get(),newSquadSuggestionsRequest.getPlace().get());
+    public Iterable<String> findStreetsByInput(String city,String street,String place){
+        if(!city.equals("") && !street.equals("") && !place.equals("")){
+            return searchRepository.findStreetsWithCityAndPlace(street,city,place);
         }
-        if(newSquadSuggestionsRequest.getCity().isPresent() && newSquadSuggestionsRequest.getPlace().isPresent()){
-            return searchRepository.findStreetsWithPlace(newSquadSuggestionsRequest.getStreet().get(),newSquadSuggestionsRequest.getPlace().get());
+        if(!street.equals("") && !place.equals("")){
+            return searchRepository.findStreetsWithPlace(street,place);
         }
-        if(newSquadSuggestionsRequest.getCity().isPresent() && newSquadSuggestionsRequest.getStreet().isPresent()){
-            return searchRepository.findStreetsWithCity(newSquadSuggestionsRequest.getStreet().get(),newSquadSuggestionsRequest.getCity().get());
+        if(!street.equals("")&& !city.equals("")){
+            return searchRepository.findStreetsWithCity(street,city);
         }
-        return searchRepository.findStreets(newSquadSuggestionsRequest.getStreet().get());
+        return searchRepository.findStreets(street);
 
     }
 
-    public Iterable<String> findNamesByInput(NewSquadSuggestionsRequest newSquadSuggestionsRequest){
-        if(newSquadSuggestionsRequest.getCity().isPresent() && newSquadSuggestionsRequest.getPlace().isPresent() && newSquadSuggestionsRequest.getStreet().isPresent()){
-            return searchRepository.findCitiesWithStreetAndPlace(newSquadSuggestionsRequest.getCity().get(),
-                    newSquadSuggestionsRequest.getStreet().get(),newSquadSuggestionsRequest.getPlace().get());
+    public Iterable<String> findNamesByInput(String city,String street,String place){
+        if(!city.equals("") && !street.equals("") && !place.equals("")){
+            return searchRepository.findPlacesWithCityAndStreet(place,city,street);
         }
-        if(newSquadSuggestionsRequest.getCity().isPresent() && newSquadSuggestionsRequest.getPlace().isPresent()){
-            return searchRepository.findCitiesWithPlace(newSquadSuggestionsRequest.getCity().get(),newSquadSuggestionsRequest.getPlace().get());
+        if(!place.equals("")&& !city.equals("")){
+            return searchRepository.findPlacesWithCity(place,city);
         }
-        if(newSquadSuggestionsRequest.getCity().isPresent() && newSquadSuggestionsRequest.getStreet().isPresent()){
-            return searchRepository.findCitiesWithStreet(newSquadSuggestionsRequest.getCity().get(),newSquadSuggestionsRequest.getStreet().get());
+        if(!place.equals("")&& !street.equals("")){
+            return searchRepository.findPlacesWithStreet(place,street);
         }
-        return searchRepository.findCities(newSquadSuggestionsRequest.getCity().get());
+        return searchRepository.findPlaces(place);
 
     }
 

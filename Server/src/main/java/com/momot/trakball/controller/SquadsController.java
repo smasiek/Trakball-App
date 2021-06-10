@@ -7,10 +7,13 @@ import com.momot.trakball.manager.UserManager;
 import com.momot.trakball.repository.SquadRepository;
 import com.momot.trakball.security.jwt.AuthTokenFilter;
 import com.momot.trakball.security.jwt.JwtUtils;
+import com.momot.trakball.security.services.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -43,6 +46,10 @@ public class SquadsController {
    @GetMapping
    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
    public Optional<Squad> getSquad(@RequestParam Long id){
+       Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+       UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+       System.out.println(userDetails.getUsername());
+
        return squadManager.findById(id);
    }
 
