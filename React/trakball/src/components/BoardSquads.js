@@ -1,16 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef} from "react";
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import CheckButton from "react-validation/build/button";
 import Squad from "./Squad"
 
 import UserService from "../services/user.service";
 import "../assets/css/squad.css";
 
 const BoardSquads = () => {
+  const form = useRef();
+  const checkBtn = useRef();
+
   const [content, setContent] = useState([]);
+  const [searchResult, setSearchResult] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [foundResults,setFound]=useState(false);
 
   useEffect(() => {
     UserService.getSquadsBoard().then(
       (response) => {
         setContent(response.data);
+        setSearchResult(response.data);
+        if(response.data.length!==0)setFound(true);
+
       },
       (error) => {
         const _content =
@@ -20,10 +34,54 @@ const BoardSquads = () => {
           error.message ||
           error.toString();
 
-        setContent(_content);
+        setFound(false);
+        setSearchResult(_content);
       }
     );
   }, []);
+
+
+  const changeSearchInput = (e) => {
+    const search = e.target.value
+    setSearch(search)
+  }
+
+  const filterSquads=(squad)=>{
+    let match = false;
+    match=(squad.creator.userDetails.name.toLowerCase().includes(search) ||
+    squad.creator.userDetails.surname.toLowerCase().includes(search) ||
+    (squad.creator.userDetails.name+' '+squad.creator.userDetails.surname).toLowerCase().includes(search) ||
+    squad.sport.toLowerCase().includes(search) ||
+    squad.place.name.toLowerCase().includes(search) ||
+    squad.place.city.toLowerCase().includes(search) ||
+    squad.place.street.toLowerCase().includes(search)
+    )
+    console.log(search);
+    return match
+  }
+
+  const handleFilterSquads = (squad)=>{
+    if(filterSquads(squad)){
+      setFound(true);
+      return true;
+    }
+    return false;
+  }
+
+  const handleSearch = (e) =>{
+    e.preventDefault();
+
+    setLoading(true);
+    setFound(false);
+
+    setSearchResult(
+      content.filter((squad)=>{
+        return handleFilterSquads(squad);
+      })
+    )
+
+    setLoading(false);
+  }
 
   return (
     <div class="squads-boxed">
@@ -33,8 +91,42 @@ const BoardSquads = () => {
           <p class="text-center">search for squads in your city</p>
         </div>
 
-        <div class="row squads">
-          {content.map(squad => <Squad info={squad} />)}
+        <Form onSubmit={handleSearch} ref={form}>
+        <div className="form-group">
+          <Input
+            placeholder="type to search..."
+            type="text"
+            className="form-control"
+            name="search"
+            value={search}
+            onChange={changeSearchInput}
+          />
+        </div>
+
+
+        <div className="form-group">
+            <button className="btn btn-primary btn-block" disabled={loading}>
+              {loading && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}
+              <span>search</span>
+            </button>
+          </div>
+
+          {!foundResults && (
+            <div className="form-group">
+              <div className="alert alert-danger" role="alert">
+                There was no squad matching 😓
+              </div>
+            </div>
+          )}
+          <CheckButton style={{ display: "none" }} ref={checkBtn} />
+
+          </Form>
+
+
+        <div className="row squads">
+          {searchResult.map((squad,index) => <Squad info={squad} key={index}  name={squad.squad_id}/>)}
         </div>
       </div>
     </div>
