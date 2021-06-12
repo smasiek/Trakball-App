@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
+import { positions, Provider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
 import Squad from "./Squad"
 
 import SquadService from "../services/squad.service";
@@ -13,17 +15,24 @@ const BoardYourSquads = () => {
 
 
   const [content, setContent] = useState([]);
+  const [searchResult, setSearchResult] = useState([]);
   const [search, setSearch] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [foundResults,setFound]=useState(false);
+  const [foundResults,setFound]=useState(true);
+
+  const options = {
+    timeout: 2000,
+    position: positions.BOTTOM_CENTER
+  };
+
 
   useEffect(() => {
     SquadService.getYourSquadsBoard().then(
       (response) => {
         setContent(response.data);
-
-        if(response.data.length!==0)setFound(true);
+        setSearchResult(response.data);
+        if(response.data.length===0)setFound(false);
 
       },
       (error) => {
@@ -34,7 +43,7 @@ const BoardYourSquads = () => {
           error.message ||
           error.toString();
 
-        setContent(_content);
+        setSearchResult(_content);
         setFound(false);
       }
     );
@@ -46,27 +55,44 @@ const BoardYourSquads = () => {
     setSearch(search)
   }
 
+
+  const filterSquads=(squad)=>{
+    let match = false;
+    match=(squad.creator.userDetails.name.toLowerCase().includes(search) ||
+    squad.creator.userDetails.surname.toLowerCase().includes(search) ||
+    (squad.creator.userDetails.name+' '+squad.creator.userDetails.surname).toLowerCase().includes(search) ||
+    squad.sport.toLowerCase().includes(search) ||
+    squad.place.name.toLowerCase().includes(search) ||
+    squad.place.city.toLowerCase().includes(search) ||
+    squad.place.street.toLowerCase().includes(search)
+    )
+    console.log(search);
+    return match
+  }
+
+  const handleFilterSquads = (squad)=>{
+    if(filterSquads(squad)){
+      setFound(true);
+      return true;
+    }
+    return false;
+  }
+
   const handleSearch = (e) =>{
+    e.preventDefault();
 
     setLoading(true);
     setFound(false);
 
-    content.map((squad,index)=>{
-      let show=false;
-      if(squad.creator.userDetails===search) {show=true;setFound(true);}
-      if(squad.sport===search) {show=true;setFound(true);}
-      if(squad.place.name===search) {show=true;setFound(true);}
-      if(squad.place.city===search) {show=true;setFound(true);}
-      if(squad.place.street===search) {show=true;setFound(true);}
+    setSearchResult(
+      content.filter((squad)=>{
+        return handleFilterSquads(squad);
+      })
+    )
 
-      if(show)
-        document.getElementById(index).style.display = "block";
-      else
-      document.getElementById(index).style.display = "none";
-    });
-    
     setLoading(false);
   }
+
 
   return (
     <div className="squads-boxed">
@@ -110,9 +136,8 @@ const BoardYourSquads = () => {
 
           </Form>
 
-
         <div className="row squads">
-          {content.map((squad,index) => <Squad info={squad} key={index} id={index}/>)}
+          {searchResult.map((squad,index) => <Provider template={AlertTemplate} {...options} key={index} ><Squad info={squad} board={"your_squads"}/></Provider>)}
         </div>
       </div>
     </div>

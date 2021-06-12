@@ -33,8 +33,9 @@ public class Squad {
     @Size(min=2,max = 50)
     private String date;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "creator_id")
+    @JsonIgnoreProperties(value = "squads",allowSetters = true)
     private User creator;
 
     //TODO wykminic jak zapobiec cyklowi
@@ -45,6 +46,7 @@ public class Squad {
     private Place place;
 
     @ManyToMany(mappedBy="squads")
+    @JsonIgnoreProperties(value = "squads",allowSetters = true)
     private Set<User> members=new HashSet<>();
 
     /*@ManyToMany(mappedBy = "squads")

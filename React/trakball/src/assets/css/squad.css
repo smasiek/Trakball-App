@@ -87,7 +87,7 @@
     color:#a2a8ae;
   }
   
-  .squads-boxed .social a {
+  .squads-boxed .social button {
     color:inherit;
     margin:0 10px;
     display:inline-block;
@@ -96,7 +96,7 @@
     padding:0.5em;
   }
   
-  .squads-boxed .social a:hover {
+  .squads-boxed .social button:hover {
     opacity:1;
   }
   

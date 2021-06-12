@@ -93,6 +93,11 @@ const App = () => {
         {currentUser ? (
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
+              <Link to={"/profile"} className="nav-link">
+                Your Profile
+              </Link>
+            </li>
+            <li className="nav-item float-lg-right">
               <a href="/login" className="nav-link" onClick={logOut}>
                 LogOut
               </a>

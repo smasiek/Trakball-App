@@ -9,10 +9,12 @@ import com.momot.trakball.security.services.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import static com.momot.trakball.manager.SquadsUpdate.*;
 
 import java.util.Optional;
 
@@ -52,6 +54,18 @@ public class SquadsController {
    public Squad addSquad(@RequestBody NewSquadRequest squadRequest){
        return squadManager.addSquad(squadRequest);
    }
+
+    @PostMapping("/join")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> joinSquad(@RequestParam Long id){
+        return squadManager.updateSquad(id,JOIN);
+    }
+
+    @PostMapping("/leave")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> leaveSquad(@RequestParam Long id){
+        return squadManager.updateSquad(id,LEAVE);
+    }
    /*
     @PutMapping
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")

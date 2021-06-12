@@ -9,8 +9,18 @@ const getSquadsBoard = () => {
 };
 
 const getYourSquadsBoard = () => {
-  return axios.get(API_URL + "user/all", { headers: authHeader(), params: {token:userToken()}});
+  return axios.get(API_URL + "user/all", { headers: authHeader() });
 };
+
+const joinSquad = (squadId) => {
+  console.log(squadId);
+  return axios.post(API_URL + "join",{}, { headers: authHeader(), params: {id: squadId}});
+}
+
+const leaveSquad = (squadId) => {
+  console.log(squadId);
+  return axios.post(API_URL + "leave",{}, { headers: authHeader(), params: {id: squadId}});
+}
 
 const publish = (place,city,street,sport, date, fee, maxMembers) => {
   return axios.post(API_URL, {
@@ -33,5 +43,7 @@ const publish = (place,city,street,sport, date, fee, maxMembers) => {
 export default {
   getSquadsBoard,
   getYourSquadsBoard,
+  joinSquad,
+  leaveSquad,
   publish
 };

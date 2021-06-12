@@ -37,6 +37,7 @@ public class User {
     @JoinTable(	name = "user_squads",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "squad_id"))
+    @JsonIgnoreProperties(value = "members",allowSetters = true)
     private Set<Squad> squads = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -44,6 +45,12 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "creator")
+    //@JsonIgnoreProperties(value = "creator",allowSetters = true)
+    private Set<Squad> createdSquads;
+
 
 
     public User(String email, String password, String name, String surname, String phone) {

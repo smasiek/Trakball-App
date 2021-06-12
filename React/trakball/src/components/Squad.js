@@ -1,54 +1,104 @@
-import React, { Component } from 'react';
 import def from '../assets/img/default.png';
+import { useAlert } from "react-alert";
+import SquadService from "../services/squad.service";
+import { useHistory } from 'react-router-dom';
 
 
-class Squad extends Component {
-  // constructor(){
-  //   super();
-  //   this.state={
-  //     id:"not yet gotten"
-  //   }
-  // }
-  // componentDidMount(){
-  //   fetch('http://localhost:8080/squads')
-  //   .then(response=>response.json())
-  //   .then(response=>{
-  //     this.setState({
-  //       id:response[0].id
-  //     }
-  //     )
-  //   }
-  //    );
-  // }
 
-  render() {
+const Squad = (props) => {
+
+  //const [message, setMessage] = useState("");
+  const alert = useAlert();
+
+  const history = useHistory();
+
+  const handleJoinSquad = () => {
+    SquadService.joinSquad(props.info.squad_id).then(
+      () => {
+        
+        /*const message =
+          (response &&
+            response.data &&
+            response.data.message) ||
+            response.message ||
+          response.toString();
+          alert.show(message);*/
+        history.push("/your_squads");
+        window.location.reload();
+      },
+      (error) => {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+          alert.show(message);
+        //setMessage(message);
+      }
+    );
+  }
+
+  const handleLeaveSquad = () => {
+    SquadService.leaveSquad(props.info.squad_id).then(
+      () => {
+        //history.push("/your_squads");
+        /*const message =
+          (response &&
+            response.data &&
+            response.data.message) ||
+            response.message ||
+          response.toString();
+          alert.show(message);*/
+        window.location.reload();
+        
+      },
+      (error) => {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+          alert.show(message);
+        //setMessage(message);
+      }
+    );
+  }
+
+  const UserDetails = (e) =>{
+    if(e.userDetails){
+      return <h3 className="name">{e.userDetails.name} {e.userDetails.surname}</h3>
+    }
+    return ;
+  }
+
+  const Footer = () => {
+      return (props.board==="squads")?
+      <div className="social"><button><i className="fa fa-facebook-official"></i>Text organizer</button><button onClick= {handleJoinSquad} ><i className="fa fa-twitter"></i>Join squad</button></div>
+        :
+        <div className="social"><button><i className="fa fa-facebook-official"></i>Text organizer</button><button onClick= {handleLeaveSquad} ><i className="fa fa-twitter"></i>Leave squad</button></div>
+  }
+
+
     return (
-      <div className="col-sm-4 col-md-4 col-lg-4 item" key={this.props.info.squad_id}>
-
+      <div className="col-sm-4 col-md-4 col-lg-4 item" key={props.info.squad_id}>
         <div className="box">
           <img className="rounded-circle user-photo" src={def} alt="creatorPhoto"/>
-          <ShowUserDetails userDetails={this.props.info.creator.userDetails} />
-          <p className="sport">{this.props.info.sport}</p>
+          <UserDetails userDetails={props.info.creator.userDetails} />
+          <p className="sport">{props.info.sport}</p>
           <div className="description">
-            {/* <p>ID: {this.props.info.id}</p> */}
-          <p>Liczebność skladu: {this.props.info.maxMembers}</p>
-          <p>Opłata: {this.props.info.fee}</p>
-          <p>Miejsce: {this.props.info.place.name}</p>
-          <p>Miasto: {this.props.info.place.city}</p>
-          <p>Ulica: {this.props.info.place.street}</p>
-          <p>Data: {this.props.info.date}</p>
+          <p>Liczebność skladu: {props.info.maxMembers}</p>
+          <p>Opłata: {props.info.fee}</p>
+          <p>Miejsce: {props.info.place.name}</p>
+          <p>Miasto: {props.info.place.city}</p>
+          <p>Ulica: {props.info.place.street}</p>
+          <p>Data: {props.info.date}</p>
           </div>
-          <div className="social"><a href="#"><i className="fa fa-facebook-official"></i>Text organizer</a><a href="#"><i className="fa fa-twitter"></i>Join squad</a></div>
+          <Footer />
         </div>
       </div>
     );
-  }
-}
-function ShowUserDetails(props){
-    if(props.userDetails){
-      return <h3 className="name">{props.userDetails.name} {props.userDetails.surname}</h3>
-    }
-    return ;
-}
+  };
 
 export default Squad

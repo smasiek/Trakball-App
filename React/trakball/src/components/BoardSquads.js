@@ -3,6 +3,8 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import Squad from "./Squad"
+import { positions, Provider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
 
 import SquadService from "../services/squad.service";
 import "../assets/css/squad.css";
@@ -16,14 +18,20 @@ const BoardSquads = () => {
   const [search, setSearch] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [foundResults,setFound]=useState(false);
+  const [foundResults,setFound]=useState(true);
+
+  const options = {
+    timeout: 2000,
+    position: positions.BOTTOM_CENTER
+  };
+
 
   useEffect(() => {
     SquadService.getSquadsBoard().then(
       (response) => {
         setContent(response.data);
         setSearchResult(response.data);
-        if(response.data.length!==0)setFound(true);
+        if(response.data.length===0)setFound(false);
 
       },
       (error) => {
@@ -126,7 +134,7 @@ const BoardSquads = () => {
 
 
         <div className="row squads">
-          {searchResult.map((squad,index) => <Squad info={squad} key={index}  name={squad.squad_id}/>)}
+          {searchResult.map((squad,index) => <Provider template={AlertTemplate} {...options} key={index} ><Squad info={squad} board={"squads"}/></Provider>)}
         </div>
       </div>
     </div>
