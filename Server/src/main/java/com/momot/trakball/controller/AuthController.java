@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,14 +61,38 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+        Set<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                roles));
+        Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
+
+        /*
+        //TODO ZAPYTAC O TO
+        user.ifPresentOrElse((u)->{
+                    return ResponseEntity.ok(new JwtResponse(jwt,
+                            userDetails.getId(),
+                            userDetails.getUsername(),
+                            u.getUserDetails().getName(),
+                            u.getUserDetails().getSurname(),
+                            u.getUserDetails().getPhone(),
+                            roles));
+        },
+                ()->{
+                    return ResponseEntity.badRequest().body("User doesn't exist!");
+                });
+        */
+
+        if(user.isPresent()){
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    user.get().getUserDetails().getName(),
+                    user.get().getUserDetails().getSurname(),
+                    user.get().getUserDetails().getPhone(),
+                    roles));
+        }
+        return ResponseEntity.badRequest().body("User doesn't exist!");
     }
 
     @PostMapping("/signup")

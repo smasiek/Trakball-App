@@ -1,18 +1,26 @@
 package com.momot.trakball.dto.response;
 
 import java.util.List;
+import java.util.Set;
 
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
     private Long id;
     private String email;
-    private List<String> roles;
+    private String name;
+    private String surname;
+    private String phone;
+    private Set<String> roles;
 
-    public JwtResponse(String accessToken, Long id, String email, List<String> roles) {
+    public JwtResponse(String accessToken, Long id, String email, String name, String surname,
+                       String phone,  Set<String> roles) {
         this.token = accessToken;
         this.id = id;
         this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.phone = phone;
         this.roles = roles;
     }
 
@@ -48,7 +56,31 @@ public class JwtResponse {
         this.email = email;
     }
 
-    public List<String> getRoles() {
+    public Set<String> getRoles() {
         return roles;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

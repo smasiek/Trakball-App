@@ -98,36 +98,33 @@ const BoardYourSquads = () => {
     <div className="squads-boxed">
       <div className="container-fluid">
         <div className="intro">
-          <h2 className="text-center">Squads </h2>
-          <p className="text-center">search for squads in your city</p>
+          <h2 className="text-center">Your Squads</h2>
         </div>
 
         <Form onSubmit={handleSearch} ref={form}>
         
-        <div className="form-group">
+        <div className="form-group search">
           <Input
-            placeholder="type to search..."
+            placeholder="search for squads in your city..."
             type="text"
             className="form-control"
             name="search"
             value={search}
             onChange={changeSearchInput}
           />
-        </div>
 
-
-        <div className="form-group">
             <button className="btn btn-primary btn-block" disabled={loading}>
               {loading && (
                 <span className="spinner-border spinner-border-sm"></span>
               )}
               <span>search</span>
             </button>
-          </div>
+        </div>
+
 
           {!foundResults && (
             <div className="form-group">
-              <div className="alert alert-danger" role="alert">
+              <div className="alert alert-danger error" role="alert">
                 There was no squad matching 😓
               </div>
             </div>

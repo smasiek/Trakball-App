@@ -15,6 +15,7 @@ import BoardSquads from "./components/BoardSquads";
 import BoardYourSquads from "./components/BoardYourSquads";
 import BoardAdmin from "./components/BoardAdmin";
 import BoardAddNewSquad from "./components/BoardAddNewSquad";
+import EditProfile from "./components/EditProfile";
 
 const App = () => {
   const [showYourSquadsBoard, setShowYourSquadsBoard] = useState(false);
@@ -159,7 +160,9 @@ const App = () => {
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/profile" component={Profile} />
+          <Route exact path="/edit_profile" component={EditProfile}/>
           <Route path="/user" component={BoardUser} />
+          <Route path="/squads/:id" component={BoardSquads} />
           <Route path="/squads" component={BoardSquads} />
           <Route path="/your_squads" component={BoardYourSquads} />
           <Route path="/admin" component={BoardAdmin} />

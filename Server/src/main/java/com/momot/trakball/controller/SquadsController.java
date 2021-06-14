@@ -5,14 +5,11 @@ import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.manager.SquadManager;
 import com.momot.trakball.security.jwt.AuthTokenFilter;
 import com.momot.trakball.security.jwt.JwtUtils;
-import com.momot.trakball.security.services.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import static com.momot.trakball.manager.SquadsUpdate.*;
 
@@ -41,6 +38,13 @@ public class SquadsController {
     //@PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Iterable<Squad> getYourSquads(){
         return squadManager.findByMember();
+    }
+
+    @GetMapping("/place/all")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
+    public Optional<Iterable<Squad>> getPlaceSquads(@RequestParam Long id){
+        return squadManager.findByPlace(id);
     }
 
    @GetMapping

@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import Squad from "./Squad"
 import { positions, Provider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
+import { useParams } from "react-router-dom";
 
 import SquadService from "../services/squad.service";
 import "../assets/css/squad.css";
 
 const BoardSquads = () => {
+
+  const { id } = useParams();
   const form = useRef();
   const checkBtn = useRef();
 
@@ -18,20 +21,29 @@ const BoardSquads = () => {
   const [search, setSearch] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [foundResults,setFound]=useState(true);
+  const [showError, setShowError] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   const options = {
     timeout: 2000,
     position: positions.BOTTOM_CENTER
   };
 
+  const NO_SQUADS_MESSAGE = "There was no squad matching 😓";
+  const NO_PLACE_MESSAGE = "No such place in database 😓";
 
   useEffect(() => {
+
     SquadService.getSquadsBoard().then(
       (response) => {
         setContent(response.data);
-        setSearchResult(response.data);
-        if(response.data.length===0)setFound(false);
+        if (id) {
+          handleMapRedirection(id);
+        } else {
+          setSearchResult(response.data);
+          if (response.data.length === 0) { setErrorMessage(NO_SQUADS_MESSAGE); setShowError(true) };
+        }
 
       },
       (error) => {
@@ -42,51 +54,91 @@ const BoardSquads = () => {
           error.message ||
           error.toString();
 
-        setFound(false);
+        setErrorMessage(NO_SQUADS_MESSAGE);
+        setShowError(true);
         setSearchResult(_content);
       }
     );
-  }, []);
+  },[]);
 
+  const handleMapRedirection = (id) => {
+
+    SquadService.getPlaceSquads(id).then(
+      (response) => {
+        if (response.data) {
+          if (response.data.length === 0) {
+            setErrorMessage(NO_SQUADS_MESSAGE);
+            setShowError(true);
+          } else {
+            setSearch(response.data[0].place.name);
+            setSearchResult(response.data);
+          }
+        } else {
+          setErrorMessage(NO_PLACE_MESSAGE);
+          setShowError(true);
+        }
+
+      },
+      (error) => {
+        const _content =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+
+        setErrorMessage(NO_SQUADS_MESSAGE);
+        setShowError(true);
+        setSearchResult(_content);
+      }
+    );
+
+    //console.log(match.params.id);
+  }
 
   const changeSearchInput = (e) => {
     const search = e.target.value
     setSearch(search)
   }
 
-  const filterSquads=(squad)=>{
+  const filterSquads = (squad) => {
     let match = false;
-    match=(squad.creator.userDetails.name.toLowerCase().includes(search) ||
-    squad.creator.userDetails.surname.toLowerCase().includes(search) ||
-    (squad.creator.userDetails.name+' '+squad.creator.userDetails.surname).toLowerCase().includes(search) ||
-    squad.sport.toLowerCase().includes(search) ||
-    squad.place.name.toLowerCase().includes(search) ||
-    squad.place.city.toLowerCase().includes(search) ||
-    squad.place.street.toLowerCase().includes(search)
+    let lowerSquad = search.toLowerCase()
+    console.log(lowerSquad);
+    match = (squad.creator.userDetails.name.toLowerCase().includes(lowerSquad) ||
+      squad.creator.userDetails.surname.toLowerCase().includes(lowerSquad) ||
+      (squad.creator.userDetails.name + ' ' + squad.creator.userDetails.surname).toLowerCase().includes(lowerSquad) ||
+      squad.sport.toLowerCase().includes(lowerSquad) ||
+      squad.place.name.toLowerCase().includes(lowerSquad) ||
+      squad.place.city.toLowerCase().includes(lowerSquad) ||
+      squad.place.street.toLowerCase().includes(lowerSquad)
     )
-    console.log(search);
     return match
   }
 
-  const handleFilterSquads = (squad)=>{
-    if(filterSquads(squad)){
-      setFound(true);
+  const handleFilterSquads = (squad) => {
+    if (filterSquads(squad)) {
+      setShowError(false);
       return true;
     }
     return false;
   }
 
-  const handleSearch = (e) =>{
+  const handleSearch = (e) => {
     e.preventDefault();
 
     setLoading(true);
-    setFound(false);
+
+    setShowError(true);
+    setErrorMessage(NO_SQUADS_MESSAGE);
 
     setSearchResult(
-      content.filter((squad)=>{
+      content.filter((squad) => {
         return handleFilterSquads(squad);
       })
     )
+
+    
 
     setLoading(false);
   }
@@ -96,23 +148,19 @@ const BoardSquads = () => {
       <div className="container-fluid">
         <div className="intro">
           <h2 className="text-center">Squads </h2>
-          <p className="text-center">search for squads in your city</p>
         </div>
 
         <Form onSubmit={handleSearch} ref={form}>
-        <div className="form-group">
-          <Input
-            placeholder="type to search..."
-            type="text"
-            className="form-control"
-            name="search"
-            value={search}
-            onChange={changeSearchInput}
-          />
-        </div>
+          <div className="form-group search">
+            <Input
+              placeholder="search for squads in your city..."
+              type="text"
+              className="form-control"
+              name="search"
+              value={search}
+              onChange={changeSearchInput}
+            />
 
-
-        <div className="form-group">
             <button className="btn btn-primary btn-block" disabled={loading}>
               {loading && (
                 <span className="spinner-border spinner-border-sm"></span>
@@ -121,20 +169,20 @@ const BoardSquads = () => {
             </button>
           </div>
 
-          {!foundResults && (
+          {showError && (
             <div className="form-group">
-              <div className="alert alert-danger" role="alert">
-                There was no squad matching 😓
+              <div className="alert alert-danger error" role="alert">
+                {errorMessage}
               </div>
             </div>
           )}
           <CheckButton style={{ display: "none" }} ref={checkBtn} />
 
-          </Form>
+        </Form>
 
 
         <div className="row squads">
-          {searchResult.map((squad,index) => <Provider template={AlertTemplate} {...options} key={index} ><Squad info={squad} board={"squads"}/></Provider>)}
+          {searchResult.map((squad, index) => <Provider template={AlertTemplate} {...options} key={index} ><Squad info={squad} board={"squads"} /></Provider>)}
         </div>
       </div>
     </div>

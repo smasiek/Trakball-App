@@ -44,11 +44,26 @@ const Register = (props) => {
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
 
+  const changeConfPassword =(e) =>{
+    changeFormData(e);
+    document.getElementById("confPassErr").style.display = "none";
+  }
   const changeFormData = (e) =>{
     setFormData({
       ...formData,
       [e.target.name]:e.target.value
     })
+  }
+
+  const isValid = ()=>{
+    let isValid=true;
+
+    if(formData.confPassword!==formData.password){
+      isValid=false;
+      document.getElementById("confPassErr").style.display = "block";
+    }
+
+    return isValid;
   }
  
   
@@ -60,7 +75,7 @@ const Register = (props) => {
 
     form.current.validateAll();
 
-    if (checkBtn.current.context._errors.length === 0) {
+    if (checkBtn.current.context._errors.length === 0 && isValid()) {
       AuthService.register(formData.email, formData.password,formData.name,
         formData.surname,formData.phone).then(
         (response) => {
@@ -117,6 +132,22 @@ const Register = (props) => {
                   onChange={changeFormData}
                   validations={[required, vpassword]}
                 />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="confPassword">Confirm Password</label>
+                <Input
+                  type="password"
+                  className="form-control"
+                  name="confPassword"
+                  value={formData.confPassword}
+                  onChange={changeConfPassword}
+                  validations={[required]}
+                />
+              </div>
+
+              <div id="confPassErr" className="alert alert-danger" role="alert" style={{display:"none"}}>
+                 Password doesn't match!
               </div>
 
               <div className="form-group">

@@ -16,5 +16,4 @@ public interface PlaceRepository extends JpaRepository<Place,Long> {
 
     Optional<Place> findPlaceByNameAndStreetAndCity(String name, String street,String city);
 
-
 }

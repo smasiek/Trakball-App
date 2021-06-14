@@ -1,7 +1,6 @@
 package com.momot.trakball.manager;
 
 import com.momot.trakball.dao.Place;
-import com.momot.trakball.dto.request.NewSquadSuggestionsRequest;
 import com.momot.trakball.repository.PlaceRepository;
 import com.momot.trakball.repository.SearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,7 @@
 package com.momot.trakball.repository;
 
 import com.momot.trakball.dao.ERole;
+import com.momot.trakball.dao.Place;
 import com.momot.trakball.dao.Role;
 import com.momot.trakball.dao.Squad;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,5 @@ import java.util.Optional;
 
 @Repository
 public interface SquadRepository extends JpaRepository<Squad, Long> {
-
+    Optional<Iterable<Squad>> findByPlace(Place place);
 }

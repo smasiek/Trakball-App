@@ -82,7 +82,7 @@ const Squad = (props) => {
 
 
     return (
-      <div className="col-sm-4 col-md-4 col-lg-4 item" key={props.info.squad_id}>
+      <div className="col-sm-12 col-md-6 col-lg-4 item" key={props.info.squad_id}>
         <div className="box">
           <img className="rounded-circle user-photo" src={def} alt="creatorPhoto"/>
           <UserDetails userDetails={props.info.creator.userDetails} />

@@ -2,15 +2,24 @@ package com.momot.trakball.manager;
 
 import com.momot.trakball.dao.Squad;
 import com.momot.trakball.dao.User;
+import com.momot.trakball.dto.request.EditProfileRequest;
+import com.momot.trakball.dto.response.JwtResponse;
+import com.momot.trakball.dto.response.MessageResponse;
 import com.momot.trakball.repository.SquadRepository;
 import com.momot.trakball.repository.UserRepository;
 import com.momot.trakball.security.services.UserDetailsImpl;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserManager {
@@ -36,6 +45,60 @@ public class UserManager {
 
     public void deleteById(Long id){
         userRepository.deleteById(id);
+    }
+
+    public ResponseEntity<?> editProfile(EditProfileRequest editProfileRequest, String jwt) {
+        Optional<User> userFromContext   = getUserFromContext();
+
+        if(userFromContext.isPresent()){
+
+            User user=userFromContext.get();
+
+            if(editProfileRequest.getEmail().isPresent()){
+                String email=editProfileRequest.getEmail().get();
+                    if (userRepository.existsByEmail(email)){
+                        return ResponseEntity
+                                .badRequest()
+                                .body(new MessageResponse("Error: Email is already in use!"));
+                    }
+                    user.setEmail(email);
+            }
+            editProfileRequest.getPassword().ifPresent(user::setPassword);
+            editProfileRequest.getName().ifPresent(user.getUserDetails()::setName);
+            editProfileRequest.getSurname().ifPresent(user.getUserDetails()::setSurname);
+            editProfileRequest.getPhone().ifPresent(user.getUserDetails()::setPhone);
+
+
+           /* user.setEmail((editProfileRequest.getEmail().isEmpty())?
+                    user.getEmail():editProfileRequest.getEmail());
+
+            user.setPassword((editProfileRequest.getPassword().isEmpty())?
+                    user.getPassword():editProfileRequest.getPassword());
+
+            user.getUserDetails().setName((editProfileRequest.getName().isEmpty())?
+                    user.getUserDetails().getName():editProfileRequest.getName());
+
+            user.getUserDetails().setSurname((editProfileRequest.getSurname().isEmpty())?
+                    user.getUserDetails().getSurname():editProfileRequest.getSurname());
+
+            user.getUserDetails().setPhone((editProfileRequest.getPhone().isEmpty())?
+                    user.getUserDetails().getPhone():editProfileRequest.getPhone());*/
+
+            userRepository.save(user);
+
+            Set<String> roles = user.getRoles().stream()
+                    .map(item -> item.getName().getText())
+                    .collect(Collectors.toSet());
+
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    user.getUser_id(),
+                    user.getEmail(),
+                    user.getUserDetails().getName(),
+                    user.getUserDetails().getSurname(),
+                    user.getUserDetails().getPhone(),
+                    roles));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Could not load user from context"));
     }
     
     public Optional<User> getUserFromContext(){

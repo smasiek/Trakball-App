@@ -49,6 +49,17 @@ public class SquadManager {
                 userManager.getUserFromContext().get().getSquads() : new ArrayList<>();
     }
 
+    public Optional<Iterable<Squad>> findByPlace(Long id){
+        Optional<Place> place = placeManager.findById(id);
+        if(place.isPresent()) {
+            return squadRepository.findByPlace(place.get());
+        }
+
+        Optional<Iterable<Squad>> optional = Optional.empty();
+        return Optional.empty();
+
+    }
+
     public Squad addSquad(NewSquadRequest newSquadRequestSquad){
         Optional<User> creator=userManager.getUserFromContext();
         Optional<Place> place=placeManager.findByNameAndStreetAndCity(newSquadRequestSquad.getPlace(),

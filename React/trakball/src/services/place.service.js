@@ -3,6 +3,14 @@ import authHeader from "./auth-header";
 
 const API_URL = "http://localhost:8080/api/places/";
 
+const getPlaces = () => {
+  return axios.get(API_URL + "all", { headers: authHeader() });
+};
+
+const getPlace = (id) => {
+  return axios.get(API_URL, { headers: authHeader(), params:{id:id} });
+};
+
 const getCitiesList = (city,street,place) => {
   return axios.get(API_URL + "cities", 
   { headers: authHeader(),
@@ -14,19 +22,6 @@ const getCitiesList = (city,street,place) => {
   });
 };
 
-
-/*
-const getCitiesList = (city,street,place) => {
-  return axios({
-    url: API_URL + "cities",
-    method: 'GET',
-    data: {
-      city: 'kr'
-    },
-    headers: authHeader()
-  });
-};
-*/
 
 const getStreetsList = (city,street,place) => {
   return axios.get(API_URL + "streets", 
@@ -52,6 +47,8 @@ const getPlacesList = (city,street,place) => {
 
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default {
+  getPlaces,
+  getPlace,
   getCitiesList,
   getStreetsList,
   getPlacesList

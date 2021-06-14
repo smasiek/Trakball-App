@@ -12,6 +12,10 @@ const getYourSquadsBoard = () => {
   return axios.get(API_URL + "user/all", { headers: authHeader() });
 };
 
+const getPlaceSquads = (placeId) => {
+  return axios.get(API_URL + "place/all", { headers: authHeader(), params: {id: placeId} });
+};
+
 const joinSquad = (squadId) => {
   console.log(squadId);
   return axios.post(API_URL + "join",{}, { headers: authHeader(), params: {id: squadId}});
@@ -43,6 +47,7 @@ const publish = (place,city,street,sport, date, fee, maxMembers) => {
 export default {
   getSquadsBoard,
   getYourSquadsBoard,
+  getPlaceSquads,
   joinSquad,
   leaveSquad,
   publish

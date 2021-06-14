@@ -50,9 +50,9 @@ const BoardAddNewSquad = (props) => {
 
   const handleCitiesInputChange = () => {
     if (city && city.length > 1) {
-      if (city.length % 2 === 0) {
+      //if (city.length % 2 === 0) {
         fetchCitiesList()
-      }
+      //}
     }
   }
 
@@ -92,9 +92,9 @@ const BoardAddNewSquad = (props) => {
 
   const handleStreetsInputChange = (e) => {
     if (e.target.value && e.target.value.length > 1) {
-      if (e.target.value.length % 2 === 0) {
+      //if (e.target.value.length % 2 === 0) {
         fetchStreetsList()
-      }
+      //}
     }
   }
 
@@ -134,9 +134,9 @@ const BoardAddNewSquad = (props) => {
 
   const handlePlacesInputChange = (e) => {
     if (e.target.value && e.target.value.length > 1) {
-      if (e.target.value.length % 2 === 0) {
+      //if (e.target.value.length % 2 === 0) {
         fetchPlacesList()
-      }
+      //}
     }
   }
 
@@ -166,25 +166,38 @@ const BoardAddNewSquad = (props) => {
   }
 
 
+  const isValid = ()=>{
+    let isValid=true;
+
+    let cityCheck = citiesList.filter((val) => val===city);
+    let streetCheck= streetsList.filter((val) => val===street);
+    let placeCheck= placesList.filter((val) => val===place);
+
+    console.log(cityCheck);
+    console.log(streetCheck);
+    console.log(placeCheck);
+
+    
+    console.log(citiesList);
+    console.log(streetsList);
+    console.log(placesList);
+    
+    if(cityCheck.length===0 && city){isValid=false;document.getElementById("cityErr").style.display = "block";}
+    if(streetCheck.length===0 && street){isValid=false;document.getElementById("streetErr").style.display = "block";}
+    if(placeCheck.length===0 && place){isValid=false;document.getElementById("placeErr").style.display = "block";}
+
+    return isValid;
+  }
+
   const handleNewSquad = (e) => {
     e.preventDefault();
 
     setMessage("");
     setLoading(true);
 
-    let cityCheck = citiesList.filter((val) => val===city);
-    let streetCheck= streetsList.filter((val) => val===street);
-    let placeCheck= placesList.filter((val) => val===place);
-    
-    let noErrorFound=true;
-
-    if(cityCheck.length===0 && city){noErrorFound=false;document.getElementById("cityErr").style.display = "block";}
-    if(streetCheck.length===0 && street){noErrorFound=false;document.getElementById("streetErr").style.display = "block";}
-    if(placeCheck.length===0 && place){noErrorFound=false;document.getElementById("placeErr").style.display = "block";}
-
     form.current.validateAll();
 
-    if (checkBtn.current.context._errors.length === 0 && noErrorFound) {
+    if (checkBtn.current.context._errors.length === 0 && isValid()) {
       SquadService.publish(place, city, street,
         formData.sport, formData.date,
         formData.fee, formData.maxMembers).then(
