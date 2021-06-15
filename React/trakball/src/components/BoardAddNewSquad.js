@@ -34,6 +34,11 @@ const BoardAddNewSquad = (props) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  const currentDate=new Date();
+currentDate.setDate(currentDate.getDate()+1);
+  const minDate=currentDate.toISOString().split('T')[0]+'T' +
+  currentDate.toTimeString().split(' ')[0].substr(0,5);
+
   const changeFormData = (e) => {
     setFormData({
       ...formData,
@@ -172,15 +177,6 @@ const BoardAddNewSquad = (props) => {
     let cityCheck = citiesList.filter((val) => val===city);
     let streetCheck= streetsList.filter((val) => val===street);
     let placeCheck= placesList.filter((val) => val===place);
-
-    console.log(cityCheck);
-    console.log(streetCheck);
-    console.log(placeCheck);
-
-    
-    console.log(citiesList);
-    console.log(streetsList);
-    console.log(placesList);
     
     if(cityCheck.length===0 && city){isValid=false;document.getElementById("cityErr").style.display = "block";}
     if(streetCheck.length===0 && street){isValid=false;document.getElementById("streetErr").style.display = "block";}
@@ -195,11 +191,13 @@ const BoardAddNewSquad = (props) => {
     setMessage("");
     setLoading(true);
 
+    console.log(minDate);
+
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0 && isValid()) {
       SquadService.publish(place, city, street,
-        formData.sport, formData.date,
+        formData.sport, formData.date.replace("T"," "),
         formData.fee, formData.maxMembers).then(
           () => {
             props.history.push("/squads");
@@ -325,6 +323,7 @@ const BoardAddNewSquad = (props) => {
             <Input
               type="datetime-local"
               className="form-control"
+              min={minDate}
               name="date"
               value={formData.date}
               onChange={changeFormData}

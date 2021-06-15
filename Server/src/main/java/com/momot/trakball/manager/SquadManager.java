@@ -7,13 +7,18 @@ import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.dto.response.MessageResponse;
 import com.momot.trakball.repository.SquadRepository;
 import com.momot.trakball.security.jwt.JwtUtils;
+import org.hibernate.internal.SessionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.momot.trakball.manager.SquadsUpdate.*;
 
@@ -40,8 +45,14 @@ public class SquadManager {
         return squadRepository.findById(id);
     }
 
-    public Iterable<Squad> findAll(){
-        return squadRepository.findAll();
+    public List<Squad> findAll(){
+
+        Optional<List<Squad>> squads = squadRepository.findWithDateAfterToday();
+        List<Squad> resultSquads=new ArrayList<>();
+        if(squads.isPresent()){
+            resultSquads=squads.get().stream().filter(s-> s.getMembers().size()<s.getMaxMembers()).collect(Collectors.toList());
+        }
+        return resultSquads;
     }
 
     public Iterable<Squad> findByMember(){
@@ -90,23 +101,29 @@ public class SquadManager {
 
         Set<Squad> newSquads = user.get().getSquads();
 
-        if(newSquads.contains(squad.get())) {
-            if (updateType == JOIN)
-                return ResponseEntity.badRequest().body(new MessageResponse("You are in this squad already!"));
-            else {
-                squad.ifPresent(newSquads::remove);
-                updateUserSquads(user,newSquads);
-                return ResponseEntity.ok(new MessageResponse("You've left squad!"));
+        switch(updateType){
+            case LEAVE: {
+                if(newSquads.contains(squad.get())) {
+                    squad.ifPresent(newSquads::remove);
+                    updateUserSquads(user,newSquads);
+                    return ResponseEntity.ok(new MessageResponse("You've left squad!"));
+                }
+                return ResponseEntity.badRequest().body(new MessageResponse("You can't leave this squad! You are not a member"));
+            }
+            case JOIN:{
+                if(newSquads.contains(squad.get())){
+                    return ResponseEntity.badRequest().body(new MessageResponse("You are in this squad already!"));
+                } else {
+                    if(squad.get().getMembers().size()>=squad.get().getMaxMembers())
+                        return ResponseEntity.badRequest().body(new MessageResponse("Squad is full"));
+
+                    squad.ifPresent(newSquads::add);
+                    updateUserSquads(user,newSquads);
+                    return ResponseEntity.ok(new MessageResponse("You've joined squad!"));
+                }
             }
         }
-        else
-            if (updateType==LEAVE)
-                return ResponseEntity.badRequest().body(new MessageResponse("You can't leave this squad! You are not a member"));
-            else {
-                squad.ifPresent(newSquads::add);
-                updateUserSquads(user,newSquads);
-                return ResponseEntity.ok(new MessageResponse("You've joined squad!"));
-            }
+        return ResponseEntity.badRequest().body(new MessageResponse("Bad update type"));
     }
 
 /*
