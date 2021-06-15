@@ -10,13 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class Start {
 
-    private SquadRepository squadRepository;
-
-    @Autowired
-    public Start(SquadRepository squadRepository){
-        this.squadRepository=squadRepository;
-    }
-
 
    /* @EventListener(ApplicationReadyEvent.class)
     public void test(){

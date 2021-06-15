@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import static com.momot.trakball.manager.SquadsUpdate.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +31,7 @@ public class SquadsController {
 
    @GetMapping("/all")
    public Iterable<Squad> getSquads(){
-       return squadManager.findAll();
+           return squadManager.findAll();
    }
 
     @GetMapping("/user/all")
