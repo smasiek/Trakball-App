@@ -3,7 +3,7 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { positions, Provider } from "react-alert";
-import AlertTemplate from "react-alert-template-basic";
+import AlertTemplate from "./AlertTemplate";
 import Squad from "./Squad"
 
 import SquadService from "../services/squad.service";
@@ -22,7 +22,7 @@ const BoardYourSquads = () => {
   const [foundResults,setFound]=useState(true);
 
   const options = {
-    timeout: 2000,
+    timeout: 5000,
     position: positions.BOTTOM_CENTER
   };
 

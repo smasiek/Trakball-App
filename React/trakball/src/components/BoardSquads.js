@@ -4,11 +4,12 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import Squad from "./Squad"
 import { positions, Provider } from "react-alert";
-import AlertTemplate from "react-alert-template-basic";
+import AlertTemplate from "./AlertTemplate";
 import { useParams } from "react-router-dom";
 
 import SquadService from "../services/squad.service";
 import "../assets/css/squad.css";
+
 
 const BoardSquads = () => {
 
