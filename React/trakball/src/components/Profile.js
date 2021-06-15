@@ -31,7 +31,7 @@ const Profile = () => {
               <strong>Phone:</strong> {currentUser.phone}
             </p>
 
-            <button onClick={handleEditProfile}>Edit profile</button>
+            <button className="btn btn-danger" onClick={handleEditProfile}>Edit profile</button>
           </div>
         </div>
       </div>

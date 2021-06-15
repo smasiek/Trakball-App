@@ -17,7 +17,7 @@ const PlaceMarker = (props) => {
                 <div className="popup">
                     <h6>{props.place.name}</h6>
                     <span>ul. {props.place.street}</span>
-                    <button onClick={e=>handlePlaceSquads(e)}>Check squads</button>
+                    <button className="btn btn-warning" onClick={e=>handlePlaceSquads(e)}>Check squads</button>
                 </div>
             </Popup>
         </Marker>

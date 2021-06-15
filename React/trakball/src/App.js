@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import "./App.css";
 
 import logo from './assets/img/Logo big.png';
@@ -35,90 +36,40 @@ const App = () => {
 
   return (
     <div>
-      <nav className="navbar navbar-expand navbar-dark bg-success">
-        <Link to={"/"} className="navbar-brand">
+      <Navbar collapseOnSelect expand="lg" bg="success" variant="dark">
+        {/* <nav className="navbar navbar-expand navbar-dark bg-success"> */}
+        <Navbar.Brand href={"/"}>
           <img src={logo} alt="Logo" style={{ height: '6vh' }} />
-        </Link>
+        </Navbar.Brand>
+        {/* <Link to={"/"} className="navbar-brand">
+          <img src={logo} alt="Logo" style={{ height: '6vh' }} />
+        </Link> */}
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
 
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
-          aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        <Nav className="mr-auto">
 
-        <div className="collapse navbar-collapse" id="basicExampleNav">
-
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
-              </Link>
-            </li>
-
-
-            <li className="nav-item">
-              <Link to={"/squads"} className="nav-link">
-                Squads
-              </Link>
-            </li>
-
-            {showYourSquadsBoard && (
-              <li className="nav-item">
-                <Link to={"/your_squads"} className="nav-link">
-                  Your Squads
-                </Link>
-              </li>
-            )
-            }
-
-            {currentUser && (
-              <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  User
-                </Link>
-              </li>,
-
-              <li className="nav-item">
-                <Link to={"/new_squad"} className="nav-link">
-                  New squad
-                </Link>
-              </li>
-            )}
-          </div>
-
-          {currentUser ? (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                  Your Profile
-                </Link>
-              </li>
-              <li className="nav-item float-lg-right">
-                <a href="/login" className="nav-link" onClick={logOut}>
-                  Log out
-                </a>
-              </li>
-            </div>
-          ) : (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/login"} className="nav-link">
-                  Login
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link to={"/register"} className="nav-link">
-                  Sign Up
-                </Link>
-              </li>
-            </div>
+          <Nav.Link href={"/home"}>Home</Nav.Link>
+          <Nav.Link href={"/squads"}>Squads</Nav.Link>
+          {showYourSquadsBoard && (<Nav.Link href={"/your_squads"}>Your Squads</Nav.Link>)
+          }
+          {currentUser && (
+            <Nav.Link href={"/new_squad"}>New squad</Nav.Link>
           )}
 
-        </div>
+          {currentUser ? ([
+            <Nav.Link href={"/profile"}>Your Profile</Nav.Link>,
+            <Nav.Link href={"/login"} onClick={logOut}>Log out</Nav.Link>
+          ]
+          ) : (
+            [<Nav.Link href={"/login"}>Login</Nav.Link>,
+            <Nav.Link href={"/register"}>Sign Up</Nav.Link>]
+          )}
+        </Nav>
+      </Navbar.Collapse>
 
-
-
-      </nav>
+      </Navbar>
+      {/* </nav> */}
 
       <div className="container mt-3">
         <Switch>

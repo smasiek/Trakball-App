@@ -24,15 +24,20 @@ const BoardAddNewSquad = (props) => {
   const [formData, setFormData] = useState({});
   const [city, setCity] = useState("");
   const [citiesList, setCitiesList] = useState([]);
-  
+
   const [street, setStreet] = useState("");
   const [streetsList, setStreetsList] = useState([]);
-  
+
   const [place, setPlace] = useState("");
   const [placesList, setPlacesList] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + 1);
+  const minDate = currentDate.toISOString().split('T')[0] + 'T' +
+    currentDate.toTimeString().split(' ')[0].substr(0, 5);
 
   const changeFormData = (e) => {
     setFormData({
@@ -51,13 +56,13 @@ const BoardAddNewSquad = (props) => {
   const handleCitiesInputChange = () => {
     if (city && city.length > 1) {
       //if (city.length % 2 === 0) {
-        fetchCitiesList()
+      fetchCitiesList()
       //}
     }
   }
 
   const fetchCitiesList = () => {
-    PlaceService.getCitiesList(city,street,place).then(
+    PlaceService.getCitiesList(city, street, place).then(
       (response) => {
         setCitiesList(response.data);
       },
@@ -75,17 +80,17 @@ const BoardAddNewSquad = (props) => {
   }
 
   const CitySuggestions = (e) => {
-    const options = e.results.map((r,index) => (
-       <option value={r} key={index}/>
+    const options = e.results.map((r, index) => (
+      <option value={r} key={index} />
     ))
     return <datalist id="cities">{options}</datalist>
   }
 
-  
+
   const changeStreetInput = (e) => {
     const street = e.target.value
     setStreet(street)
-    
+
     document.getElementById("streetErr").style.display = "none";
     handleStreetsInputChange(e)
   }
@@ -93,13 +98,13 @@ const BoardAddNewSquad = (props) => {
   const handleStreetsInputChange = (e) => {
     if (e.target.value && e.target.value.length > 1) {
       //if (e.target.value.length % 2 === 0) {
-        fetchStreetsList()
+      fetchStreetsList()
       //}
     }
   }
 
   const fetchStreetsList = () => {
-    PlaceService.getStreetsList(city,street,place).then(
+    PlaceService.getStreetsList(city, street, place).then(
       (response) => {
         setStreetsList(response.data);
       },
@@ -117,8 +122,8 @@ const BoardAddNewSquad = (props) => {
   }
 
   const StreetSuggestions = (e) => {
-    const options = e.results.map((r,index) => (
-       <option value={r} key={index}/>
+    const options = e.results.map((r, index) => (
+      <option value={r} key={index} />
     ))
     return <datalist id="streets">{options}</datalist>
   }
@@ -127,7 +132,7 @@ const BoardAddNewSquad = (props) => {
   const changePlaceInput = (e) => {
     const place = e.target.value
     setPlace(place)
-    
+
     document.getElementById("placeErr").style.display = "none";
     handlePlacesInputChange(e)
   }
@@ -135,13 +140,13 @@ const BoardAddNewSquad = (props) => {
   const handlePlacesInputChange = (e) => {
     if (e.target.value && e.target.value.length > 1) {
       //if (e.target.value.length % 2 === 0) {
-        fetchPlacesList()
+      fetchPlacesList()
       //}
     }
   }
 
   const fetchPlacesList = () => {
-    PlaceService.getPlacesList(city,street,place).then(
+    PlaceService.getPlacesList(city, street, place).then(
       (response) => {
         setPlacesList(response.data);
       },
@@ -153,38 +158,29 @@ const BoardAddNewSquad = (props) => {
           error.message ||
           error.toString();
 
-          setPlacesList(_content);
+        setPlacesList(_content);
       }
     );
   }
 
   const PlaceSuggestions = (e) => {
-    const options = e.results.map((r,index) => (
-       <option value={r} key={index}/>
+    const options = e.results.map((r, index) => (
+      <option value={r} key={index} />
     ))
     return <datalist id="places">{options}</datalist>
   }
 
 
-  const isValid = ()=>{
-    let isValid=true;
+  const isValid = () => {
+    let isValid = true;
 
-    let cityCheck = citiesList.filter((val) => val===city);
-    let streetCheck= streetsList.filter((val) => val===street);
-    let placeCheck= placesList.filter((val) => val===place);
+    let cityCheck = citiesList.filter((val) => val === city);
+    let streetCheck = streetsList.filter((val) => val === street);
+    let placeCheck = placesList.filter((val) => val === place);
 
-    console.log(cityCheck);
-    console.log(streetCheck);
-    console.log(placeCheck);
-
-    
-    console.log(citiesList);
-    console.log(streetsList);
-    console.log(placesList);
-    
-    if(cityCheck.length===0 && city){isValid=false;document.getElementById("cityErr").style.display = "block";}
-    if(streetCheck.length===0 && street){isValid=false;document.getElementById("streetErr").style.display = "block";}
-    if(placeCheck.length===0 && place){isValid=false;document.getElementById("placeErr").style.display = "block";}
+    if (cityCheck.length === 0 && city) { isValid = false; document.getElementById("cityErr").style.display = "block"; }
+    if (streetCheck.length === 0 && street) { isValid = false; document.getElementById("streetErr").style.display = "block"; }
+    if (placeCheck.length === 0 && place) { isValid = false; document.getElementById("placeErr").style.display = "block"; }
 
     return isValid;
   }
@@ -199,7 +195,7 @@ const BoardAddNewSquad = (props) => {
 
     if (checkBtn.current.context._errors.length === 0 && isValid()) {
       SquadService.publish(place, city, street,
-        formData.sport, formData.date,
+        formData.sport, formData.date.replace("T", " "),
         formData.fee, formData.maxMembers).then(
           () => {
             props.history.push("/squads");
@@ -225,13 +221,13 @@ const BoardAddNewSquad = (props) => {
 
   return (
     <div className="col-md-12">
-      <div className="card card-container">
+      <div className="card card-container" style={{padding:'20px 40px'}}>
 
 
         <Form onSubmit={handleNewSquad} ref={form}>
-        <div className="intro">
-          <h2 className="text-center">Add new squad</h2>
-        </div>
+          <div className="intro">
+            <h2 className="text-center">Add new squad</h2>
+          </div>
           <div className="form-group">
             <label htmlFor="city">City</label>
             <Input
@@ -251,16 +247,16 @@ const BoardAddNewSquad = (props) => {
               className="form-control"
               value={city}
               list="cities"
-              
-              style={{display: 'none'}}
+
+              style={{ display: 'none' }}
             />
 
             <CitySuggestions results={citiesList} />
-            <div id="cityErr" className="alert alert-danger" role="alert" style={{display:"none"}}>
-        No such city in database
-      </div>
+            <div id="cityErr" className="alert alert-danger" role="alert" style={{ display: "none" }}>
+              No such city in database
+            </div>
 
-            
+
           </div>
 
           <div className="form-group">
@@ -277,9 +273,9 @@ const BoardAddNewSquad = (props) => {
               autoComplete="new-password"
             />
 
-<div id="streetErr" className="alert alert-danger" role="alert" style={{display:"none"}}>
-        No such street in database
-      </div>
+            <div id="streetErr" className="alert alert-danger" role="alert" style={{ display: "none" }}>
+              No such street in database
+            </div>
 
           </div>
 
@@ -299,12 +295,12 @@ const BoardAddNewSquad = (props) => {
               autoComplete="new-password"
             />
 
-<div id="placeErr" className="alert alert-danger" role="alert" style={{display:"none"}}>
-        No such place in database
-      </div>
+            <div id="placeErr" className="alert alert-danger" role="alert" style={{ display: "none" }}>
+              No such place in database
+            </div>
 
           </div>
-          
+
           <PlaceSuggestions results={placesList} />
 
           <div className="form-group">
@@ -355,8 +351,8 @@ const BoardAddNewSquad = (props) => {
             />
           </div>
 
-          <div className="form-group">
-            <button className="btn btn-primary btn-block" disabled={loading}>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <button className="btn btn-danger btn-block" disabled={loading}>
               {loading && (
                 <span className="spinner-border spinner-border-sm"></span>
               )}

@@ -171,7 +171,7 @@ const BoardSquads = () => {
               onChange={changeSearchInput}
             />
 
-            <button className="btn btn-primary btn-block" disabled={loading}>
+            <button className="btn btn-danger" disabled={loading}>
               {loading && (
                 <span className="spinner-border spinner-border-sm"></span>
               )}
