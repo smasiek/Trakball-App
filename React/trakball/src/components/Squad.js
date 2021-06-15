@@ -52,14 +52,6 @@ const Squad = (props) => {
   const handleLeaveSquad = () => {
     SquadService.leaveSquad(props.info.squad_id).then(
       () => {
-        //history.push("/your_squads");
-        /*const message =
-          (response &&
-            response.data &&
-            response.data.message) ||
-            response.message ||
-          response.toString();
-          alertReact.show(message);*/
         window.location.reload();
         
       },
@@ -113,7 +105,7 @@ const Squad = (props) => {
 
   const Footer = () => {
       return <div className="row">
-<div className="social">
+<div className="social" style={{margin:'auto'}}>
 {(props.board==="squads")? 
       <div><button onClick= {handleTextOrganizer} ><TiContacts style={{margin:'5px'}}/>Text organizer</button><button onClick= {handleJoinSquad} ><TiUserAdd  style={{margin:'5px'}}/>Join squad</button></div>
         :

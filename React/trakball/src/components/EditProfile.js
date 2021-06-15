@@ -5,6 +5,7 @@ import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
 
 import UserService from "../services/user.service";
+import "../assets/css/squad.css";
 
 
 const validEmail = (value) => {
@@ -98,9 +99,7 @@ const EditProfile = (props) => {
           className="profile-img-card"
         />
 
-        <Form onSubmit={handleEdit} ref={form}>
-
-          <div>
+        <Form onSubmit={handleEdit} ref={form} >
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <Input
@@ -173,10 +172,9 @@ const EditProfile = (props) => {
               />
             </div>
 
-            <div className="form-group">
-              <button className="btn btn-primary btn-block">Save</button>
+            <div className="form-group" style={{marginBottom:0}}>
+              <button className="btn btn-danger btn-block">Save</button>
             </div>
-          </div>
 
           {message && (
             <div className="form-group">

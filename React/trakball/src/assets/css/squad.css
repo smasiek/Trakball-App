@@ -111,12 +111,21 @@
     width: 100%;
   }
 
-  .alert-danger {
-    width: 40%;
+  form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
   }
 
   .error{
     margin: auto;
   }
   
+  .form-group{
+    width: 100%;
+  }
+  
+  button {
+    margin: 0
+  }
   

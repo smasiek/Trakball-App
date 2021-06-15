@@ -40,8 +40,6 @@ public class Squad {
     @JsonIgnoreProperties(value = "squads",allowSetters = true)
     private User creator;
 
-    //TODO wykminic jak zapobiec cyklowi
-
     @ManyToOne
     @JoinColumn(name= "place_id")
     @JsonIgnoreProperties(value = "squads",allowSetters = true)

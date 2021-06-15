@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.momot.trakball.manager.SquadsUpdate.*;
@@ -56,9 +59,23 @@ public class SquadManager {
         return resultSquads;
     }
 
+    private boolean isSquadValid(Squad squad){
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date date = dateFormat.parse(squad.getDate());
+            Date currentDate= new Date();
+
+            long diffInMillies = date.getTime() - currentDate.getTime();
+            return (diffInMillies>0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public Iterable<Squad> findByMember(){
         return userManager.getUserFromContext().isPresent() ?
-                userManager.getUserFromContext().get().getSquads() : new ArrayList<>();
+                userManager.getUserFromContext().get().getSquads().stream().filter(this::isSquadValid).collect(Collectors.toList()) : new ArrayList<>();
     }
 
     public Optional<Iterable<Squad>> findByPlace(Long id){
