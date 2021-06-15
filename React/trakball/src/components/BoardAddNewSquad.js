@@ -224,21 +224,18 @@ currentDate.setDate(currentDate.getDate()+1);
   return (
     <div className="col-md-12">
       <div className="card card-container">
-        {/* <img
-          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-          alt="profile-img"
-          className="profile-img-card"
-        /> */}
-
 
 
         <Form onSubmit={handleNewSquad} ref={form}>
-        
+        <div className="intro">
+          <h2 className="text-center">Add new squad</h2>
+        </div>
           <div className="form-group">
             <label htmlFor="city">City</label>
             <Input
               type="text"
               className="form-control"
+              placeholder="type and choose from list..."
               name="city"
               value={city}
               list="cities"
@@ -269,6 +266,7 @@ currentDate.setDate(currentDate.getDate()+1);
             <Input
               type="text"
               className="form-control"
+              placeholder="type and choose from list..."
               name="street"
               value={street}
               list="streets"
@@ -290,6 +288,7 @@ currentDate.setDate(currentDate.getDate()+1);
             <Input
               type="text"
               className="form-control"
+              placeholder="type and choose from list..."
               name="placeName"
               value={place}
               list="places"

@@ -2,6 +2,8 @@ package com.momot.trakball.dao;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -46,6 +48,7 @@ public class Squad {
     private Place place;
 
     @ManyToMany(mappedBy="squads")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnoreProperties(value = "squads",allowSetters = true)
     private Set<User> members=new HashSet<>();
 

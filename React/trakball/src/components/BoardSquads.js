@@ -8,6 +8,7 @@ import AlertTemplate from "./AlertTemplate";
 import { useParams } from "react-router-dom";
 
 import SquadService from "../services/squad.service";
+import AuthService from "../services/auth.service";
 import "../assets/css/squad.css";
 
 
@@ -26,6 +27,8 @@ const BoardSquads = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [showAdminButtons, setShowAdminButtons] = useState(false);
+
   const options = {
     timeout: 2000,
     position: positions.BOTTOM_CENTER
@@ -35,6 +38,12 @@ const BoardSquads = () => {
   const NO_PLACE_MESSAGE = "No such place in database 😓";
 
   useEffect(() => {
+
+    const user = AuthService.getCurrentUser();
+
+    if (user) {
+      setShowAdminButtons(user.roles.includes("ROLE_ADMIN"));
+    }
 
     SquadService.getSquadsBoard().then(
       (response) => {
@@ -183,7 +192,7 @@ const BoardSquads = () => {
 
 
         <div className="row squads">
-          {searchResult.map((squad, index) => <Provider template={AlertTemplate} {...options} key={index} ><Squad info={squad} board={"squads"} /></Provider>)}
+          {searchResult.map((squad, index) => <Provider template={AlertTemplate} {...options} key={index} ><Squad info={squad} board={"squads"} mod={showAdminButtons}/></Provider>)}
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 const PlaceMarker = (props) => {
     const history = useHistory();
 
-    const handlePlaceSquads = ()=>{
+    const handlePlaceSquads = (e)=>{
         history.push("/squads/" +props.place.id);
     }
     
@@ -17,7 +17,7 @@ const PlaceMarker = (props) => {
                 <div className="popup">
                     <h6>{props.place.name}</h6>
                     <span>ul. {props.place.street}</span>
-                    <button onClick={handlePlaceSquads}>Check squads</button>
+                    <button onClick={e=>handlePlaceSquads(e)}>Check squads</button>
                 </div>
             </Popup>
         </Marker>

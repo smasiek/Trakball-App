@@ -13,13 +13,11 @@ import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
 import BoardSquads from "./components/BoardSquads";
 import BoardYourSquads from "./components/BoardYourSquads";
-import BoardAdmin from "./components/BoardAdmin";
 import BoardAddNewSquad from "./components/BoardAddNewSquad";
 import EditProfile from "./components/EditProfile";
 
 const App = () => {
   const [showYourSquadsBoard, setShowYourSquadsBoard] = useState(false);
-  const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(() => {
@@ -28,8 +26,6 @@ const App = () => {
     if (user) {
       setCurrentUser(user);
       setShowYourSquadsBoard(user.roles.includes("ROLE_USER"));
-      //setShowSquadsBoard(user.roles.includes("ROLE_MODERATOR"));
-      setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
     }
   }, []);
 
@@ -41,114 +37,84 @@ const App = () => {
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-success">
         <Link to={"/"} className="navbar-brand">
-          <img src={logo} alt="Logo" style={{height:'6vh'}}/>
+          <img src={logo} alt="Logo" style={{ height: '6vh' }} />
         </Link>
-        <div className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link to={"/home"} className="nav-link">
-              Home
-            </Link>
-          </li>
 
-          {//showSquadsBoard && (
+        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+          aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse" id="basicExampleNav">
+
+          <div className="navbar-nav mr-auto">
+            <li className="nav-item">
+              <Link to={"/home"} className="nav-link">
+                Home
+              </Link>
+            </li>
+
+
             <li className="nav-item">
               <Link to={"/squads"} className="nav-link">
                 Squads
               </Link>
             </li>
-         // )
-        }
 
-        {showYourSquadsBoard && (
-            <li className="nav-item">
-            <Link to={"/your_squads"} className="nav-link">
-              Your Squads
-            </Link>
-          </li>
-        )
-      }
+            {showYourSquadsBoard && (
+              <li className="nav-item">
+                <Link to={"/your_squads"} className="nav-link">
+                  Your Squads
+                </Link>
+              </li>
+            )
+            }
 
-          {showAdminBoard && (
-            <li className="nav-item">
-              <Link to={"/admin"} className="nav-link">
-                Admin Board
-              </Link>
-            </li>
+            {currentUser && (
+              <li className="nav-item">
+                <Link to={"/user"} className="nav-link">
+                  User
+                </Link>
+              </li>,
+
+              <li className="nav-item">
+                <Link to={"/new_squad"} className="nav-link">
+                  New squad
+                </Link>
+              </li>
+            )}
+          </div>
+
+          {currentUser ? (
+            <div className="navbar-nav ml-auto">
+              <li className="nav-item">
+                <Link to={"/profile"} className="nav-link">
+                  Your Profile
+                </Link>
+              </li>
+              <li className="nav-item float-lg-right">
+                <a href="/login" className="nav-link" onClick={logOut}>
+                  Log out
+                </a>
+              </li>
+            </div>
+          ) : (
+            <div className="navbar-nav ml-auto">
+              <li className="nav-item">
+                <Link to={"/login"} className="nav-link">
+                  Login
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to={"/register"} className="nav-link">
+                  Sign Up
+                </Link>
+              </li>
+            </div>
           )}
 
-          {currentUser && (
-            <li className="nav-item">
-              <Link to={"/user"} className="nav-link">
-                User
-              </Link>
-            </li>,
-
-            <li className="nav-item">
-              <Link to={"/new_squad"} className="nav-link">
-                New squad
-              </Link>
-            </li>
-          )}
         </div>
-
-        {currentUser ? (
-          <div className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <Link to={"/profile"} className="nav-link">
-                Your Profile
-              </Link>
-            </li>
-            <li className="nav-item float-lg-right">
-              <a href="/login" className="nav-link" onClick={logOut}>
-                LogOut
-              </a>
-            </li>
-          </div>
-        ) : (
-          <div className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <Link to={"/login"} className="nav-link">
-                Login
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link to={"/register"} className="nav-link">
-                Sign Up
-              </Link>
-            </li>
-          </div>
-        )}
-        
-{/* 
-        {currentUser ? (
-          <div className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <Link to={"/profile"} className="nav-link">
-                {currentUser.username}
-              </Link>
-            </li>
-            <li className="nav-item">
-              <a href="/login" className="nav-link" onClick={logOut}>
-                LogOut
-              </a>
-            </li>
-          </div>
-        ) : (
-          <div className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <Link to={"/login"} className="nav-link">
-                Login
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link to={"/register"} className="nav-link">
-                Sign Up
-              </Link>
-            </li>
-          </div>
-        )} */}
 
 
 
@@ -160,12 +126,11 @@ const App = () => {
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/profile" component={Profile} />
-          <Route exact path="/edit_profile" component={EditProfile}/>
+          <Route exact path="/edit_profile" component={EditProfile} />
           <Route path="/user" component={BoardUser} />
           <Route path="/squads/:id" component={BoardSquads} />
           <Route path="/squads" component={BoardSquads} />
           <Route path="/your_squads" component={BoardYourSquads} />
-          <Route path="/admin" component={BoardAdmin} />
           <Route path="/new_squad" component={BoardAddNewSquad} />
         </Switch>
       </div>
@@ -174,62 +139,3 @@ const App = () => {
 };
 
 export default App;
-/*
-
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-import Places from "./Places"
-import Squads from "./Squads"
-import Home from "./Home"
-import './App.css';
-
-
-
- function App() {
-  return (
-    <Router>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/squads">Squads</Link>
-          </li>
-          <li>
-            <Link to="/places">Places</Link>
-          </li>
-        </ul>
-
-        <hr />
-
-        {/*
-          A <Switch> looks through all its children <Route>
-          elements and renders the first one whose path
-          matches the current URL. Use a <Switch> any time
-          you have multiple routes, but you want only one
-          of them to render at a time
-        *//*}
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/squads">
-            <Squads />
-          </Route>
-          <Route path="/places">
-            <Places />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
-  );
-}
-
-
-export default App;
-*/

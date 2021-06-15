@@ -68,7 +68,7 @@ public class AuthController {
         Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
 
         /*
-        //TODO ZAPYTAC O TO
+        //TODO Czy da sie jakos w ten sposob skonsturowac lamby, jak tego Optionala poprawnie uzywac?
         user.ifPresentOrElse((u)->{
                     return ResponseEntity.ok(new JwtResponse(jwt,
                             userDetails.getId(),

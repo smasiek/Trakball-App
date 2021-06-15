@@ -9,15 +9,15 @@
   
   .squads-boxed h2 {
     font-weight:bold;
-    margin-bottom:40px;
-    padding-top:40px;
+    margin-bottom:20px;
+    padding-top:20px;
     color:inherit;
   }
   
   @media (max-width:767px) {
     .squads-boxed h2 {
-      margin-bottom:25px;
-      padding-top:25px;
+      margin-bottom:20px;
+      padding-top:20px;
       font-size:24px;
     }
   }
@@ -33,7 +33,7 @@
   }
   
   .squads-boxed .squads {
-    padding:50px 0;
+    padding:20px 5px 10px 5px
   }
   
   .squads-boxed .item {
@@ -42,9 +42,9 @@
   
   .squads-boxed .item .box {
     text-align:center;
-    padding:30px;
+    padding:10px;
     background-color:#fff;
-    margin-bottom:30px;
+    margin-bottom:10px;
   }
   
   .squads-boxed .item .name {
