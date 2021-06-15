@@ -84,9 +84,7 @@ public class SquadManager {
             return squadRepository.findByPlace(place.get());
         }
 
-        Optional<Iterable<Squad>> optional = Optional.empty();
         return Optional.empty();
-
     }
 
     public Squad addSquad(NewSquadRequest newSquadRequestSquad){
@@ -99,8 +97,6 @@ public class SquadManager {
 
         return squadRepository.save(squad);
     }
-
-//    public Squad addYourSquad()
 
     public Squad save(Squad squad){
         return squadRepository.save(squad);
@@ -148,55 +144,12 @@ public class SquadManager {
         return ResponseEntity.badRequest().body(new MessageResponse("Bad update type"));
     }
 
-/*
-
-    public ResponseEntity<?> joinSquad(Long id) {
-        Optional<User> user=userManager.getUserFromContext();
-        Optional<Squad> squad=findById(id);
-
-        if(checkUserAndSquadEmpty(user,squad))
-            return ResponseEntity.badRequest().body(new MessageResponse("No user in context or squad doesn't exist!"));
-
-        Set<Squad> newSquads = user.get().getSquads();
-
-        if(newSquads.contains(squad.get()))
-            return ResponseEntity.badRequest().body(new MessageResponse("You are in this squad already!"));
-
-        squad.ifPresent(newSquads::add);
-        updateUserSquads(user,newSquads);
-        return ResponseEntity.ok(new MessageResponse("You've joined squad!"));
-    }
-
-
-public ResponseEntity<?> leaveSquad(Long id) {
-
-        Optional<User> user=userManager.getUserFromContext();
-        Optional<Squad> squad=findById(id);
-
-        if(checkUserAndSquadEmpty(user,squad))
-            return ResponseEntity.badRequest().body(new MessageResponse("No user in context or squad doesn't exist!"));
-
-        Set<Squad> newSquads = user.get().getSquads();
-
-        if(newSquads.contains(squad.get()))
-            return ResponseEntity.badRequest().body(new MessageResponse("You can't leave this squad! You are not a member"));
-
-        updateUserSquads(user,newSquads);
-        return ResponseEntity.ok(new MessageResponse("You've left squad!"));
-    }*/
-
     private boolean checkUserAndSquadEmpty(Optional<User> user, Optional<Squad> squad){
         return user.isEmpty() || squad.isEmpty();
     }
 
     private void updateUserSquads(Optional<User> user,Set<Squad> newSquads){
-        Set<Squad> finalNewSquads = newSquads;
-        user.ifPresent(u -> u.setSquads(finalNewSquads));
+        user.ifPresent(u -> u.setSquads(newSquads));
         user.ifPresent(userManager::save);
     }
-
-    /*public Long getIdFromToken(String token){
-        jwtUtils.validateJwtToken(token);
-        return Long.parseLong(jwtUtils.getIdFromJwtToken(token));
-    }*/
 }

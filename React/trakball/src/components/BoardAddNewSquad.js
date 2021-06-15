@@ -54,10 +54,8 @@ const BoardAddNewSquad = (props) => {
   }
 
   const handleCitiesInputChange = () => {
-    if (city && city.length > 1) {
-      //if (city.length % 2 === 0) {
+    if (city && city.length >= 1) {
       fetchCitiesList()
-      //}
     }
   }
 
@@ -96,10 +94,8 @@ const BoardAddNewSquad = (props) => {
   }
 
   const handleStreetsInputChange = (e) => {
-    if (e.target.value && e.target.value.length > 1) {
-      //if (e.target.value.length % 2 === 0) {
+    if (e.target.value && e.target.value.length >= 1) {
       fetchStreetsList()
-      //}
     }
   }
 
@@ -138,10 +134,8 @@ const BoardAddNewSquad = (props) => {
   }
 
   const handlePlacesInputChange = (e) => {
-    if (e.target.value && e.target.value.length > 1) {
-      //if (e.target.value.length % 2 === 0) {
+    if (e.target.value && e.target.value.length >= 1) {
       fetchPlacesList()
-      //}
     }
   }
 

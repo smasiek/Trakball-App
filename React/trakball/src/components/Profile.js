@@ -14,7 +14,6 @@ const Profile = () => {
   }
 
   return (
-   // <div className="squads-boxed">
    <div className="squads-boxed" style={{ background: "white" }}>
      
       <div className="container-fluid">

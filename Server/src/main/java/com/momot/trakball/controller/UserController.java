@@ -32,13 +32,6 @@ public class UserController {
     @Autowired
     private UserManager userManager;
 
-/*
-    @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public Optional<User> getSquad(@RequestParam Long id){
-        return squadManager.findById(id);
-    }
-*/
     @PutMapping
     public ResponseEntity<?> editProfile(@RequestHeader("Authorization") String header, @RequestBody EditProfileRequest editProfileRequest) {
         String jwt="";

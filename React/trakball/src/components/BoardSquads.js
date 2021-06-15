@@ -39,11 +39,7 @@ const BoardSquads = () => {
 
   useEffect(() => {
 
-    const user = AuthService.getCurrentUser();
-
-    if (user) {
-      setShowAdminButtons(user.roles.includes("ROLE_ADMIN"));
-    }
+   
 
     SquadService.getSquadsBoard().then(
       (response) => {
@@ -52,9 +48,18 @@ const BoardSquads = () => {
           handleMapRedirection(id);
         } else {
           setSearchResult(response.data);
-          if (response.data.length === 0) { setErrorMessage(NO_SQUADS_MESSAGE); setShowError(true) };
+          if (response.data.length === 0) { 
+            setErrorMessage(NO_SQUADS_MESSAGE); 
+            setShowError(true) 
+          };
         }
 
+        let user = AuthService.getCurrentUser();
+
+        if (user) {
+          setShowAdminButtons(user.roles.includes("ROLE_ADMIN"));
+        }
+        
       },
       (error) => {
         const _content =
@@ -64,9 +69,8 @@ const BoardSquads = () => {
           error.message ||
           error.toString();
 
-        setErrorMessage(NO_SQUADS_MESSAGE);
         setShowError(true);
-        setSearchResult(_content);
+        setErrorMessage(_content);
       }
     );
   },[]);
@@ -97,13 +101,11 @@ const BoardSquads = () => {
           error.message ||
           error.toString();
 
-        setErrorMessage(NO_SQUADS_MESSAGE);
+        setErrorMessage(_content);
         setShowError(true);
-        setSearchResult(_content);
       }
     );
 
-    //console.log(match.params.id);
   }
 
   const changeSearchInput = (e) => {
@@ -114,7 +116,6 @@ const BoardSquads = () => {
   const filterSquads = (squad) => {
     let match = false;
     let lowerSquad = search.toLowerCase()
-    console.log(lowerSquad);
     match = (squad.creator.userDetails.name.toLowerCase().includes(lowerSquad) ||
       squad.creator.userDetails.surname.toLowerCase().includes(lowerSquad) ||
       (squad.creator.userDetails.name + ' ' + squad.creator.userDetails.surname).toLowerCase().includes(lowerSquad) ||
@@ -192,7 +193,9 @@ const BoardSquads = () => {
 
 
         <div className="row squads">
-          {searchResult.map((squad, index) => <Provider template={AlertTemplate} {...options} key={index} ><Squad info={squad} board={"squads"} mod={showAdminButtons}/></Provider>)}
+          {searchResult && 
+          (searchResult.map((squad, index) => <Provider template={AlertTemplate} {...options} key={index} ><Squad info={squad} board={"squads"} mod={showAdminButtons}/></Provider>)
+          )}
         </div>
       </div>
     </div>

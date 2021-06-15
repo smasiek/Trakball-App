@@ -9,7 +9,6 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 
 const Squad = (props) => {
 
-  //const [message, setMessage] = useState("");
   const alertReact = useAlert();
 
   const history = useHistory();
@@ -25,14 +24,6 @@ const Squad = (props) => {
   const handleJoinSquad = () => {
     SquadService.joinSquad(props.info.squad_id).then(
       () => {
-        
-        /*const message =
-          (response &&
-            response.data &&
-            response.data.message) ||
-            response.message ||
-          response.toString();
-          alertReact.show(message);*/
         history.push("/your_squads");
         window.location.reload();
       },
@@ -44,7 +35,6 @@ const Squad = (props) => {
           error.message ||
           error.toString();
           alertReact.show(message);
-        //setMessage(message);
       }
     );
   }
@@ -63,7 +53,6 @@ const Squad = (props) => {
           error.message ||
           error.toString();
           alertReact.show(message);
-        //setMessage(message);
       }
     );
   }
@@ -72,14 +61,6 @@ const Squad = (props) => {
   const handleDeleteSquad = () => {
     SquadService.deleteSquad(props.info.squad_id).then(
       () => {
-        //history.push("/your_squads");
-        /*const message =
-          (response &&
-            response.data &&
-            response.data.message) ||
-            response.message ||
-          response.toString();
-          alertReact.show(message);*/
         window.location.reload();
         
       },
@@ -91,7 +72,6 @@ const Squad = (props) => {
           error.message ||
           error.toString();
           alertReact.show(message);
-        //setMessage(message);
       }
     );
   }

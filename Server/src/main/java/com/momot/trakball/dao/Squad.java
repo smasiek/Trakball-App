@@ -50,9 +50,6 @@ public class Squad {
     @JsonIgnoreProperties(value = "squads",allowSetters = true)
     private Set<User> members=new HashSet<>();
 
-    /*@ManyToMany(mappedBy = "squads")
-    private Set<User> users = new HashSet<>();*/
-
     public Squad(Long squad_id, String sport, int maxMembers, String fee, String date,
                  Optional<User> creator, Optional<Place> place) {
         this.squad_id = squad_id;

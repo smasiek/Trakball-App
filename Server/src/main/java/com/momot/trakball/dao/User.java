@@ -47,12 +47,6 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "creator")
-    //@JsonIgnoreProperties(value = "creator",allowSetters = true)
-    private Set<Squad> createdSquads;
-
-
-
     public User(String email, String password, String name, String surname, String phone) {
         this.email = email;
         this.password = password;

@@ -7,6 +7,7 @@ import "../assets/css/map.css";
 const Home = () => {
 
   const [places, setPlaces] = useState([]);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     PlaceService.getPlaces().then(
@@ -20,7 +21,7 @@ const Home = () => {
             error.response.data.message) ||
           error.message ||
           error.toString();
-        //setSearchResult(_content);
+        setMessage(_content);
       }
     );
   }, []);
@@ -53,6 +54,13 @@ const Home = () => {
       <header style={{ display: 'flex', justifyContent: 'center' }}>
        <h3>Map of places</h3>
       </header>
+      {message && (
+            <div className="form-group">
+              <div className="alert alert-danger" role="alert">
+                {message}
+              </div>
+            </div>
+          )}
       <div className="map">
 
       <MapContainer center={[51.919437, 19.145136]} zoom={12} scrollWheelZoom={true}>

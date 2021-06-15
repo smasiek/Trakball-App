@@ -43,6 +43,7 @@ const EditProfile = (props) => {
     changeFormData(e);
     document.getElementById("confPassErr").style.display = "none";
   }
+  
   const changeFormData = (e) => {
     setFormData({
       ...formData,
@@ -146,7 +147,7 @@ const EditProfile = (props) => {
                 className="form-control"
                 name="name"
                 value={formData.name}
-                onChange={changeFormData}// (e)=>{setName(e.target.value);}
+                onChange={changeFormData}
               />
             </div>
 

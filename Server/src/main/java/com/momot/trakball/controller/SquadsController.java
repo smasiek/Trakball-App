@@ -22,8 +22,6 @@ import java.util.Optional;
 @RequestMapping("/api/squads")
 public class SquadsController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
-
     @Autowired
     private SquadManager squadManager;
 
@@ -37,14 +35,12 @@ public class SquadsController {
 
     @GetMapping("/user/all")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    //@PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Iterable<Squad> getYourSquads(){
         return squadManager.findByMember();
     }
 
     @GetMapping("/place/all")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    //@PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
     public Optional<Iterable<Squad>> getPlaceSquads(@RequestParam Long id){
         return squadManager.findByPlace(id);
     }
@@ -72,13 +68,7 @@ public class SquadsController {
     public ResponseEntity<?> leaveSquad(@RequestParam Long id){
         return squadManager.updateSquad(id,LEAVE);
     }
-   /*
-    @PutMapping
-    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN')")
-    public Squad editSquad(@RequestBody NewSquadRequest squadRequest){
-        return squadManager.save(squadRequest);
-    }
-*/
+
     @DeleteMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteSquad(@RequestBody DeleteRequest deleteRequest){

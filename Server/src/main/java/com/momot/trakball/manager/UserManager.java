@@ -68,22 +68,6 @@ public class UserManager {
             editProfileRequest.getSurname().ifPresent(user.getUserDetails()::setSurname);
             editProfileRequest.getPhone().ifPresent(user.getUserDetails()::setPhone);
 
-
-           /* user.setEmail((editProfileRequest.getEmail().isEmpty())?
-                    user.getEmail():editProfileRequest.getEmail());
-
-            user.setPassword((editProfileRequest.getPassword().isEmpty())?
-                    user.getPassword():editProfileRequest.getPassword());
-
-            user.getUserDetails().setName((editProfileRequest.getName().isEmpty())?
-                    user.getUserDetails().getName():editProfileRequest.getName());
-
-            user.getUserDetails().setSurname((editProfileRequest.getSurname().isEmpty())?
-                    user.getUserDetails().getSurname():editProfileRequest.getSurname());
-
-            user.getUserDetails().setPhone((editProfileRequest.getPhone().isEmpty())?
-                    user.getUserDetails().getPhone():editProfileRequest.getPhone());*/
-
             userRepository.save(user);
 
             Set<String> roles = user.getRoles().stream()
