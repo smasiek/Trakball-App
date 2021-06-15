@@ -26,6 +26,12 @@ const leaveSquad = (squadId) => {
   return axios.post(API_URL + "leave",{}, { headers: authHeader(), params: {id: squadId}});
 }
 
+const deleteSquad = (squadId) => {
+  console.log(squadId + 'asdas');
+  return axios.delete(API_URL,{ headers: authHeader(), data: { id: squadId} });
+}
+
+
 const publish = (place,city,street,sport, date, fee, maxMembers) => {
   return axios.post(API_URL, {
     place,
@@ -50,5 +56,6 @@ export default {
   getPlaceSquads,
   joinSquad,
   leaveSquad,
+  deleteSquad,  
   publish
 };

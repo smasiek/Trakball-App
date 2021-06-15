@@ -1,6 +1,7 @@
 package com.momot.trakball.controller;
 
 import com.momot.trakball.dao.Squad;
+import com.momot.trakball.dto.request.DeleteRequest;
 import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.manager.SquadManager;
 import com.momot.trakball.security.jwt.AuthTokenFilter;
@@ -79,8 +80,8 @@ public class SquadsController {
 */
     @DeleteMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteSquad(@RequestParam Long id){
-       squadManager.deleteById(id);
+    public ResponseEntity<?> deleteSquad(@RequestBody DeleteRequest deleteRequest){
+       return squadManager.deleteById(deleteRequest);
     }
 
 
