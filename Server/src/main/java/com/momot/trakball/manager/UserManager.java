@@ -1,19 +1,14 @@
 package com.momot.trakball.manager;
 
-import com.momot.trakball.dao.Squad;
 import com.momot.trakball.dao.User;
 import com.momot.trakball.dto.request.EditProfileRequest;
 import com.momot.trakball.dto.response.JwtResponse;
 import com.momot.trakball.dto.response.MessageResponse;
-import com.momot.trakball.repository.SquadRepository;
 import com.momot.trakball.repository.UserRepository;
 import com.momot.trakball.security.services.UserDetailsImpl;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

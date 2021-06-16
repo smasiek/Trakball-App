@@ -8,23 +8,14 @@ import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.dto.response.MessageResponse;
 import com.momot.trakball.repository.SquadRepository;
 import com.momot.trakball.security.jwt.JwtUtils;
-import org.hibernate.internal.SessionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.momot.trakball.manager.SquadsUpdate.*;
 
 @Service
 public class SquadManager {

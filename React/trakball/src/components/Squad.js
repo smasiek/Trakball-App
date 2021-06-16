@@ -15,9 +15,10 @@ const Squad = (props) => {
 
   const handleTextOrganizer = () =>{
     let creator = props.info.creator
+
+    let surname=creator.userDetails.surname?creator.userDetails.surname:''
     let phone =creator.userDetails.phone?creator.userDetails.phone:'-'
-    let info = 'Organiser: ' + creator.userDetails.name +' ' + creator.userDetails.surname
-      +' \nPhone: ' + phone + ' \nE-mail: ' + creator.email;
+    let info = 'Organiser: ' + creator.userDetails.name + ' ' + surname +' \nPhone: ' + phone + ' \nE-mail: ' + creator.email;
     alert(info);
   }
 

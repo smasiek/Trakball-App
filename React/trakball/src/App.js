@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Nav, Navbar } from "react-bootstrap";
-import "./App.css";
+import "./assets/css/App.css";
 
 import logo from './assets/img/Logo big.png';
 import AuthService from "./services/auth.service";

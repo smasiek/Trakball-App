@@ -4,8 +4,7 @@ import PlaceMarker from "./PlaceMarker";
 const Markers = (props) => {
 
     return props.places.map(place => {
-        return <PlaceMarker place={place} key={place.id} //handlePetView={props.handlePetView}
-        />
+        return <PlaceMarker place={place} key={place.id}/>
         })
 
 }

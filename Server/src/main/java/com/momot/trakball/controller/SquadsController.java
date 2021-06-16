@@ -4,18 +4,16 @@ import com.momot.trakball.dao.Squad;
 import com.momot.trakball.dto.request.DeleteRequest;
 import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.manager.SquadManager;
-import com.momot.trakball.security.jwt.AuthTokenFilter;
 import com.momot.trakball.security.jwt.JwtUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import static com.momot.trakball.manager.SquadsUpdate.*;
 
-import java.util.ArrayList;
 import java.util.Optional;
+
+import static com.momot.trakball.manager.SquadsUpdate.JOIN;
+import static com.momot.trakball.manager.SquadsUpdate.LEAVE;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)

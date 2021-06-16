@@ -1,6 +1,5 @@
 package com.momot.trakball.dto.response;
 
-import java.util.List;
 import java.util.Set;
 
 public class JwtResponse {
