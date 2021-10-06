@@ -8,27 +8,23 @@ const getSquadsBoard = () => {
   return axios.get(API_URL + "all", { headers: authHeader() });
 };
 
-const getYourSquadsBoard = () => {
-  return axios.get(API_URL + "user/all", { headers: authHeader() });
-};
-
 const getPlaceSquads = (placeId) => {
-  return axios.get(API_URL + "place/all", { headers: authHeader(), params: {id: placeId} });
+  return axios.get(API_URL + "place/all", { headers: authHeader(), params: {place_id: placeId} });
 };
 
 const joinSquad = (squadId) => {
   console.log(squadId);
-  return axios.post(API_URL + "join",{}, { headers: authHeader(), params: {id: squadId}});
+  return axios.post(API_URL + "join",{}, { headers: authHeader(), params: {squad_id: squadId}});
 }
 
 const leaveSquad = (squadId) => {
   console.log(squadId);
-  return axios.post(API_URL + "leave",{}, { headers: authHeader(), params: {id: squadId}});
+  return axios.post(API_URL + "leave",{}, { headers: authHeader(), params: {squad_id: squadId}});
 }
 
 const deleteSquad = (squadId) => {
   console.log(squadId + 'asdas');
-  return axios.delete(API_URL,{ headers: authHeader(), data: { id: squadId} });
+  return axios.delete(API_URL,{ headers: authHeader(), data: { squad_id: squadId} });
 }
 
 
@@ -52,7 +48,6 @@ const publish = (place,city,street,sport, date, fee, maxMembers) => {
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default {
   getSquadsBoard,
-  getYourSquadsBoard,
   getPlaceSquads,
   joinSquad,
   leaveSquad,

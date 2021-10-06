@@ -5,13 +5,13 @@ import javax.validation.constraints.NotBlank;
 public class DeleteRequest {
 
     @NotBlank
-    private Long id;
+    private Long squad_id;
 
     public Long getId() {
-        return id;
+        return squad_id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.squad_id = id;
     }
 }

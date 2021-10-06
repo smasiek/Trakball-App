@@ -6,7 +6,7 @@ import { positions, Provider } from "react-alert";
 import AlertTemplate from "./AlertTemplate";
 import Squad from "./Squad"
 
-import SquadService from "../services/squad.service";
+import UserService from "../services/user.service";
 import "../assets/css/squad.css";
 
 const BoardYourSquads = () => {
@@ -28,7 +28,7 @@ const BoardYourSquads = () => {
 
 
   useEffect(() => {
-    SquadService.getYourSquadsBoard().then(
+    UserService.getYourSquadsBoard().then(
       (response) => {
         setContent(response.data);
         setSearchResult(response.data);

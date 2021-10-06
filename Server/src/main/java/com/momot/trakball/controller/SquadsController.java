@@ -26,52 +26,44 @@ public class SquadsController {
     @Autowired
     JwtUtils jwtUtils;
 
-   @GetMapping("/all")
-   public Iterable<Squad> getSquads(){
-           return squadManager.findAll();
-   }
-
-    @GetMapping("/user/all")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public Iterable<Squad> getYourSquads(){
-        return squadManager.findByMember();
+    @GetMapping("/all")
+    public Iterable<Squad> getSquads() {
+        return squadManager.findAll();
     }
 
     @GetMapping("/place/all")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public Optional<Iterable<Squad>> getPlaceSquads(@RequestParam Long id){
-        return squadManager.findByPlace(id);
+    public Optional<Iterable<Squad>> getPlaceSquads(@RequestParam Long place_id) {
+        return squadManager.findByPlace(place_id);
     }
 
-   @GetMapping
-   @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-   public Optional<Squad> getSquad(@RequestParam Long id){
-       return squadManager.findById(id);
-   }
+    @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public Optional<Squad> getSquad(@RequestParam Long squad_id) {
+        return squadManager.findById(squad_id);
+    }
 
-   @PostMapping
-   @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-   public Squad addSquad(@RequestBody NewSquadRequest squadRequest){
-       return squadManager.addSquad(squadRequest);
-   }
+    @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public Squad addSquad(@RequestBody NewSquadRequest squadRequest) {
+        return squadManager.addSquad(squadRequest);
+    }
 
     @PostMapping("/join")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> joinSquad(@RequestParam Long id){
-        return squadManager.updateSquad(id,JOIN);
+    public ResponseEntity<?> joinSquad(@RequestParam Long squad_id) {
+        return squadManager.updateSquad(squad_id, JOIN);
     }
 
     @PostMapping("/leave")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> leaveSquad(@RequestParam Long id){
-        return squadManager.updateSquad(id,LEAVE);
+    public ResponseEntity<?> leaveSquad(@RequestParam Long squad_id) {
+        return squadManager.updateSquad(squad_id, LEAVE);
     }
 
     @DeleteMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteSquad(@RequestBody DeleteRequest deleteRequest){
-       return squadManager.deleteById(deleteRequest);
+    public ResponseEntity<?> deleteSquad(@RequestBody DeleteRequest deleteRequest) {
+        return squadManager.deleteById(deleteRequest);
     }
-
-
 }
