@@ -1,8 +1,8 @@
 package com.momot.trakball.manager;
 
-import com.momot.trakball.dao.Place;
-import com.momot.trakball.dao.Squad;
 import com.momot.trakball.dao.User;
+import com.momot.trakball.dto.PlaceDto;
+import com.momot.trakball.dto.SquadDto;
 import com.momot.trakball.dto.request.EditProfileRequest;
 import com.momot.trakball.dto.response.JwtResponse;
 import com.momot.trakball.dto.response.MessageResponse;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserManager {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserManager(UserRepository userRepository) {
@@ -90,8 +90,30 @@ public class UserManager {
         return userRepository.findByEmail(userDetails.getUsername());
     }
 
-    public Iterable<Squad> findYourSquads() {
+    public Iterable<SquadDto> findYourSquads() {
         return getUserFromContext().isPresent() ?
-                getUserFromContext().get().getSquads().stream().filter(SquadValidator::isSquadValid).collect(Collectors.toList()) : new ArrayList<>();
+                new ArrayList<>(getUserFromContext().get().getSquads().stream().filter(SquadValidator::isSquadValid).map(squad ->
+                        new SquadDto(squad.getSquad_id(),
+                                squad.getSport(),
+                                squad.getMaxMembers(),
+                                squad.getFee(),
+                                squad.getDate(),
+                                squad.getCreator(),
+                                squad.getPlace())
+                ).collect(Collectors.toList())) : new ArrayList<>();
+    }
+
+    public Iterable<PlaceDto> findYourPlaces() {
+        return getUserFromContext().isPresent() ?
+                new ArrayList<>(getUserFromContext().get().getYourPlaces().stream().map(place ->
+                        new PlaceDto(place.getId(),
+                                place.getName(),
+                                place.getCity(),
+                                place.getPostal_code(),
+                                place.getStreet(),
+                                place.getLatitude(),
+                                place.getLongitude(),
+                                place.getPhoto()))
+                        .collect(Collectors.toList())) : new ArrayList<>();
     }
 }

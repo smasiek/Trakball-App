@@ -3,6 +3,7 @@ package com.momot.trakball.manager;
 import com.momot.trakball.dao.Place;
 import com.momot.trakball.dao.Squad;
 import com.momot.trakball.dao.User;
+import com.momot.trakball.dto.SquadDto;
 import com.momot.trakball.dto.request.DeleteRequest;
 import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.dto.response.MessageResponse;
@@ -27,47 +28,82 @@ public class SquadManager {
 
     private final PlaceManager placeManager;
 
-    @Autowired
-    JwtUtils jwtUtils;
+    final JwtUtils jwtUtils;
 
     @Autowired
-    public SquadManager(SquadRepository squadRepository, UserManager userManager, PlaceManager placeManager) {
+    public SquadManager(SquadRepository squadRepository, UserManager userManager, PlaceManager placeManager, JwtUtils jwtUtils) {
         this.squadRepository = squadRepository;
         this.userManager = userManager;
         this.placeManager = placeManager;
+        this.jwtUtils = jwtUtils;
     }
 
-    public Optional<Squad> findById(Long id) {
-        return squadRepository.findById(id);
+    public SquadDto findById(Long id) {
+        SquadDto squadDto = new SquadDto();
+        squadRepository.findById(id).ifPresent(squad -> {
+            // squadDto = new SquadDto(squad.getSquad_id(),squad.getSport(),squad.getMaxMembers(),squad.getFee(),squad.getDate(),squad.getCreator(),squad.getPlace());
+            squadDto.setSquad_id(squad.getSquad_id());
+            squadDto.setSport(squad.getSport());
+            squadDto.setMaxMembers(squad.getMaxMembers());
+            squadDto.setFee(squad.getFee());
+            squadDto.setDate(squad.getDate());
+            squadDto.setCreator(squad.getCreator());
+            squadDto.setPlace(squad.getPlace());
+        });
+        return squadDto;
     }
 
-    public List<Squad> findAll() {
+    public List<SquadDto> findAll() {
         Optional<List<Squad>> squads = squadRepository.findWithDateAfterToday();
-        List<Squad> resultSquads = new ArrayList<>();
+        List<SquadDto> resultSquads = new ArrayList<>();
         if (squads.isPresent()) {
-            resultSquads = squads.get().stream().filter(s -> s.getMembers().size() < s.getMaxMembers()).collect(Collectors.toList());
+            resultSquads = squads.get().stream().filter(s -> s.getMembers().size() < s.getMaxMembers()).map(
+                    s -> new SquadDto(s.getSquad_id(),
+                            s.getSport(),
+                            s.getMaxMembers(),
+                            s.getFee(), s.getDate(),
+                            s.getCreator(),
+                            s.getPlace())
+            ).collect(Collectors.toList());
         }
         return resultSquads;
     }
 
-    public Optional<Iterable<Squad>> findByPlace(Long id) {
-        Optional<Place> place = placeManager.findById(id);
-        if (place.isPresent()) {
-            return squadRepository.findByPlace(place.get());
-        }
+    public Iterable<SquadDto> findByPlace(Long id) {
+        Place place = new Place(placeManager.findById(id));
+        Optional<Iterable<Squad>> foundSquads = squadRepository.findByPlace(place);
+        List<Squad> result = new ArrayList<>();
+        foundSquads.ifPresent(squads -> squads.forEach(result::add));
 
-        return Optional.empty();
+        return result.stream().map(
+                s -> new SquadDto(s.getSquad_id(),
+                        s.getSport(),
+                        s.getMaxMembers(),
+                        s.getFee(), s.getDate(),
+                        s.getCreator(),
+                        s.getPlace())
+        ).collect(Collectors.toList());
     }
 
-    public Squad addSquad(NewSquadRequest newSquadRequestSquad) {
+    public ResponseEntity<?> addSquad(NewSquadRequest newSquadRequestSquad) {
         Optional<User> creator = userManager.getUserFromContext();
+
         Optional<Place> place = placeManager.findByNameAndStreetAndCity(newSquadRequestSquad.getPlace(),
                 newSquadRequestSquad.getStreet(), newSquadRequestSquad.getCity());
+        if (place.isPresent() && creator.isPresent()) {
+            Squad squad = new Squad(null, newSquadRequestSquad.getSport(), newSquadRequestSquad.getMaxMembers(),
+                    newSquadRequestSquad.getFee(), newSquadRequestSquad.getDate(), creator.get(), place.get());
+            save(squad);
+            return ResponseEntity.ok(new SquadDto(squad.getSquad_id(),
+                    squad.getSport(),
+                    squad.getMaxMembers(),
+                    squad.getFee(), squad.getDate(),
+                    squad.getCreator(),
+                    squad.getPlace()));
+        } else {
+            return ResponseEntity.badRequest().body("Creating squad failed!");
+        }
 
-        Squad squad = new Squad(null, newSquadRequestSquad.getSport(), newSquadRequestSquad.getMaxMembers(),
-                newSquadRequestSquad.getFee(), newSquadRequestSquad.getDate(), creator, place);
-
-        return squadRepository.save(squad);
     }
 
     public Squad save(Squad squad) {
@@ -84,10 +120,11 @@ public class SquadManager {
 
     public ResponseEntity<?> updateSquad(Long squadId, SquadsUpdate updateType) {
         Optional<User> user = userManager.getUserFromContext();
-        Optional<Squad> squad = findById(squadId);
+        Optional<Squad> squad = squadRepository.findById(squadId);
 
-        if (checkUserAndSquadEmpty(user, squad))
+        if (checkUserAndSquadEmpty(user, squad)) {
             return ResponseEntity.badRequest().body(new MessageResponse("No user in context or squad doesn't exist!"));
+        }
 
         Set<Squad> newSquads = user.get().getSquads();
 

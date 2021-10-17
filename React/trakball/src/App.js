@@ -14,10 +14,11 @@ import Profile from "./components/Profile";
 import BoardSquads from "./components/BoardSquads";
 import BoardYourSquads from "./components/BoardYourSquads";
 import BoardAddNewSquad from "./components/BoardAddNewSquad";
+import BoardYourPlaces from "./components/BoardYourPlaces";
 import EditProfile from "./components/EditProfile";
 
 const App = () => {
-  const [showYourSquadsBoard, setShowYourSquadsBoard] = useState(false);
+  const [showUserBoards, setShowYourSquadsBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(() => {
@@ -48,19 +49,21 @@ const App = () => {
 
             <Nav.Link href={"/home"}>Home</Nav.Link>
             <Nav.Link href={"/squads"}>Squads</Nav.Link>
-            {showYourSquadsBoard && (<Nav.Link href={"/your_squads"}>Your Squads</Nav.Link>)
+            {showUserBoards && (
+            [<Nav.Link href={"/your_squads"}>Your squads</Nav.Link>,
+            <Nav.Link href={"/your_places"}>Your places</Nav.Link>])
             }
             {currentUser && (
               <Nav.Link href={"/new_squad"}>New squad</Nav.Link>
             )}
 
             {currentUser ? ([
-              <Nav.Link href={"/profile"}>Your Profile</Nav.Link>,
+              <Nav.Link href={"/profile"}>Your profile</Nav.Link>,
               <Nav.Link href={"/login"} onClick={logOut}>Log out</Nav.Link>
             ]
             ) : (
               [<Nav.Link href={"/login"}>Login</Nav.Link>,
-              <Nav.Link href={"/register"}>Sign Up</Nav.Link>]
+              <Nav.Link href={"/register"}>Sign up</Nav.Link>]
             )}
           </Nav>
         </Navbar.Collapse>
@@ -70,6 +73,7 @@ const App = () => {
       <div className="container mt-3">
         <Switch>
           <Route exact path={["/", "/home"]} component={Home} />
+          <Route path="/home/:lat/:lng" component={Home} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/profile" component={Profile} />
@@ -77,6 +81,7 @@ const App = () => {
           <Route path="/squads/:id" component={BoardSquads} />
           <Route path="/squads" component={BoardSquads} />
           <Route path="/your_squads" component={BoardYourSquads} />
+          <Route path="/your_places" component={BoardYourPlaces} />
           <Route path="/new_squad" component={BoardAddNewSquad} />
         </Switch>
       </div>

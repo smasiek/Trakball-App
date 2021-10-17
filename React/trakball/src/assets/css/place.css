@@ -1,0 +1,137 @@
+.places-boxed {
+    color: #313437;
+    background-color: #eef4f7;
+}
+
+.places-boxed p {
+    color: #7d8285;
+}
+
+.places-boxed h2 {
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding-top: 20px;
+    color: inherit;
+}
+
+.react-3d-carousel {
+    width: 100%;
+    height: 75vh !important;
+}
+
+.place-footer {
+    background: white;
+}
+
+@media (max-width: 767px) {
+    .places-boxed h2 {
+        margin-bottom: 20px;
+        padding-top: 20px;
+        font-size: 24px;
+    }
+}
+
+.places-boxed .intro {
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.places-boxed .intro p {
+    margin-bottom: 0;
+}
+
+.places-boxed .squads {
+    padding: 20px 5px 10px 5px
+}
+
+.places-boxed .item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.places-boxed .item .box {
+    text-align: center;
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+.places-boxed .item .name {
+    font-weight: bold;
+    margin-top: 1rem;
+    color: inherit;
+}
+
+.places-boxed .item .sport {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #d0d0d0;
+    letter-spacing: 2px;
+    font-size: 13px;
+}
+
+.places-boxed .item p {
+    font-size: 15px;
+    margin: 0.5rem 0 0.5rem 0 !important;
+}
+
+.place-photo {
+    width: 10em;
+    height: 10em;
+    object-fit: cover;
+}
+
+.places-boxed .item img {
+    width: 100%;
+    height: 55vh;
+}
+
+.places-boxed .controls {
+    font-size: 18px;
+    color: #a2a8ae;
+    margin: 0.5rem 0 0.5rem 0 !important;
+}
+
+.places-boxed .controls button {
+    color: inherit;
+    margin: 5px 10px;
+    display: inline-block;
+    opacity: 0.7;
+    border: solid 1px;
+    padding: 0.5em;
+}
+
+.places-boxed .controls button:hover {
+    opacity: 1;
+}
+
+.search > div {
+    width: 80%
+}
+
+.search {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.error {
+    margin: auto;
+}
+
+.form-group {
+    width: 100%;
+}
+
+button {
+    margin: 0
+}
+  

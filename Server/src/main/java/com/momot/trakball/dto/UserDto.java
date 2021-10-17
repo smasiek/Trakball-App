@@ -1,32 +1,25 @@
-package com.momot.trakball.dao;
+package com.momot.trakball.dto;
 
-import javax.persistence.*;
+public class UserDto {
 
-@Entity
-@Table(name = "user_details")
-public class UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String phone;
+    private Long user_id;
     private String name;
     private String surname;
+    private String phone;
 
-    public UserDetails(String name, String surname, String phone) {
+    public UserDto(Long user_id, String name, String surname, String phone) {
+        this.user_id = user_id;
         this.phone = phone;
         this.name = name;
         this.surname = surname;
     }
 
-    public UserDetails() {
+    public Long getUser_id() {
+        return user_id;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
     public String getPhone() {

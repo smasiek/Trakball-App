@@ -1,7 +1,5 @@
 package com.momot.trakball.dao;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -30,28 +28,33 @@ public class User {
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "details_id")
-    @JsonIgnoreProperties(value = "user",allowSetters = true)
+    //@JsonIgnoreProperties(value = "user", allowSetters = true)
     private UserDetails userDetails;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "user_squads",
+    @JoinTable(name = "user_squads",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "squad_id"))
-    @JsonIgnoreProperties(value = "members",allowSetters = true)
+    // @JsonIgnoreProperties(value = "members", allowSetters = true)
     private Set<Squad> squads = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "user_roles",
+    @JoinTable(name = "user_places",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "place_id"))
+    //@JsonIgnoreProperties(value = "followers", allowSetters = true)
+    private Set<Place> yourPlaces = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-
     public User(String email, String password, String name, String surname, String phone) {
         this.email = email;
         this.password = password;
-        this.userDetails=new UserDetails(name,surname,phone,this);
-
+        this.userDetails = new UserDetails(name, surname, phone);
     }
 
     public User() {
@@ -105,4 +108,35 @@ public class User {
         this.squads = squads;
     }
 
+    public Set<Place> getYourPlaces() {
+        return yourPlaces;
+    }
+
+    public void setYourPlaces(Set<Place> yourPlaces) {
+        this.yourPlaces = yourPlaces;
+    }
+
+    public String getPhone() {
+        return userDetails.getPhone();
+    }
+
+    public void setPhone(String phone) {
+        this.userDetails.setPhone(phone);
+    }
+
+    public String getName() {
+        return userDetails.getName();
+    }
+
+    public void setName(String name) {
+        this.userDetails.setName(name);
+    }
+
+    public String getSurname() {
+        return userDetails.getSurname();
+    }
+
+    public void setSurname(String surname) {
+        this.userDetails.setSurname(surname);
+    }
 }

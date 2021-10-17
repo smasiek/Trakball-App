@@ -1,8 +1,11 @@
 package com.momot.trakball.dao;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.momot.trakball.dto.PlaceDto;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -21,21 +24,26 @@ public class Place {
     private String photo;
 
     @OneToMany(mappedBy = "place")
-    @JsonIgnoreProperties(value = "place",allowSetters = true)
+    //@JsonIgnoreProperties(value = "place",allowSetters = true)
     private Set<Squad> squads;
 
-    public Place(Long id, String name, String city, String postal_code, String street, double latitude, double longitude, String photo) {
-        this.id = id;
-        this.name = name;
-        this.city = city;
-        this.postal_code = postal_code;
-        this.street = street;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.photo = photo;
-    }
+    @ManyToMany(mappedBy = "yourPlaces")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    //@JsonIgnoreProperties(value = "yourPlaces",allowSetters = true)
+    private Set<User> followers = new HashSet<>();
 
     public Place() {
+    }
+
+    public Place(PlaceDto placeDto) {
+        this.id = placeDto.getPlace_id();
+        this.name = placeDto.getName();
+        this.city = placeDto.getCity();
+        this.postal_code = placeDto.getPostal_code();
+        this.street = placeDto.getStreet();
+        this.latitude = placeDto.getLatitude();
+        this.longitude = placeDto.getLongitude();
+        this.photo = placeDto.getPhoto();
     }
 
     public Long getId() {
@@ -108,5 +116,13 @@ public class Place {
 
     public void setSquads(Set<Squad> squads) {
         this.squads = squads;
+    }
+
+    public Set<User> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(Set<User> followers) {
+        this.followers = followers;
     }
 }

@@ -2,6 +2,8 @@ package com.momot.trakball.dao;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.momot.trakball.dto.PlaceDto;
+import com.momot.trakball.dto.UserDto;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -37,28 +39,28 @@ public class Squad {
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
-    @JsonIgnoreProperties(value = "squads",allowSetters = true)
+    //@JsonIgnoreProperties(value = "squads",allowSetters = true)
     private User creator;
 
     @ManyToOne
     @JoinColumn(name= "place_id")
-    @JsonIgnoreProperties(value = "squads",allowSetters = true)
+    //@JsonIgnoreProperties(value = "squads",allowSetters = true)
     private Place place;
 
     @ManyToMany(mappedBy="squads")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnoreProperties(value = "squads",allowSetters = true)
+    //@JsonIgnoreProperties(value = "squads",allowSetters = true)
     private Set<User> members=new HashSet<>();
 
     public Squad(Long squad_id, String sport, int maxMembers, String fee, String date,
-                 Optional<User> creator, Optional<Place> place) {
+                 User creator, Place place) {
         this.squad_id = squad_id;
         this.sport = sport;
         this.maxMembers = maxMembers;
         this.fee = fee;
         this.date = date;
-        creator.ifPresent(c -> this.creator = c);
-        place.ifPresent(p->this.place=p);
+        this.creator = creator;
+        this.place=place;
     }
 
     public Squad() {
@@ -128,6 +130,4 @@ public class Squad {
     public void setMembers(Set<User> members) {
         this.members = members;
     }
-
-
 }

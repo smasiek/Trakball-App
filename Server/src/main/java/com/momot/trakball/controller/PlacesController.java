@@ -1,33 +1,51 @@
 package com.momot.trakball.controller;
 
 import com.momot.trakball.dao.Place;
+import com.momot.trakball.dto.PlaceDto;
 import com.momot.trakball.manager.PlaceManager;
 import com.momot.trakball.security.jwt.AuthTokenFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import static com.momot.trakball.manager.PlaceFollow.FOLLOW;
+import static com.momot.trakball.manager.PlaceFollow.UNFOLLOW;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/api/places")
 public class PlacesController {
 
-    @Autowired
-    private PlaceManager placeManager;
+    private final PlaceManager placeManager;
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+    @Autowired
+    public PlacesController(PlaceManager placeManager) {
+        this.placeManager = placeManager;
+    }
 
     @GetMapping("/all")
-    public Iterable<Place> getPlaces() {
+    public Iterable<PlaceDto> getPlaces() {
         return placeManager.findAll();
     }
 
     @GetMapping
-    public Optional<Place> getPlace(@RequestParam Long id) {
+    public PlaceDto getPlace(@RequestParam Long id) {
         return placeManager.findById(id);
+    }
+
+    @PostMapping("/follow")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> followPlace(@RequestParam Long place_id) {
+        return placeManager.followPlace(place_id, FOLLOW);
+    }
+
+    @PostMapping("/unfollow")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> unfollowPlace(@RequestParam Long place_id) {
+        return placeManager.followPlace(place_id, UNFOLLOW);
     }
 
     @GetMapping("/cities")
