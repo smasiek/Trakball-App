@@ -8,24 +8,6 @@ const Place = (props) => {
     const history = useHistory();
     const alertReact = useAlert();
 
-    const handleFollowPlace = () => {
-        PlaceService.followPlace(props.info.place_id).then(
-            () => {
-                history.push("/your_places");
-                window.location.reload();
-            },
-            (error) => {
-                const message =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                alertReact.show(message);
-            }
-        );
-    }
-
     const handleShowOnMap = () => {
         history.push("/home/" + props.info.latitude + "/" + props.info.longitude);
         window.location.reload();
