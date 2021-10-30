@@ -1,14 +1,25 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import PlaceService from "../services/place.service";
 import {MapContainer, TileLayer, Marker, Popup, useMap} from 'react-leaflet';
 import Markers from "./Markers";
 import "../assets/css/map.css";
 import {useParams} from "react-router-dom";
+import BoardAddNewPlace from "./BoardAddNewPlace";
 
 const Home = () => {
     const [places, setPlaces] = useState([]);
     const [message, setMessage] = useState("");
     const [isLatLngPassed, setLatLngPassed] = useState(false);
+    const [addNewPlaceDisplay, setAddNewPlaceDisplay] = useState('none');
+
+    const newPlaceLat = useRef(0);
+    const newPlaceLng = useRef(0);
+    const [newPlaceMarkers, setNewPlaceMarkers] = useState([]);
+
+    const newPlaceMarker = useRef();
+    const mapRef = useRef();
+
+    const CENTER_OF_POLAND = [51.919437, 19.145136];
 
     const {lat, lng} = useParams();
 
@@ -16,7 +27,6 @@ const Home = () => {
         PlaceService.getPlaces().then(
             (response) => {
                 setPlaces(response.data);
-
             },
             (error) => {
                 const _content =
@@ -42,8 +52,19 @@ const Home = () => {
         useEffect(() => {
             map.locate().on("locationfound", function (e) {
                 setPosition(e.latlng);
-                const latLng = props.latLngPassed ? [lat, lng] : e.latlng;
+                let latLng;
+                if (newPlaceMarkers.length !== 0) {
+                    latLng=[newPlaceMarkers[0]['lat'],newPlaceMarkers[0]['lng']];
+                } else if (props.latLngPassed) {
+                    latLng = [lat, lng];
+                } else {
+                    latLng = e.latlng;
+                }
                 map.flyTo(latLng, 12);
+            });
+
+            map.locate().on('locationerror', function () {
+                map.flyTo(CENTER_OF_POLAND, 12);
             });
         }, [map, props.latLngPassed]);
 
@@ -56,30 +77,67 @@ const Home = () => {
         );
     }
 
+    const getOnClick = () => {
+        if (addNewPlaceDisplay === 'none') {
+            setAddNewPlaceDisplay('inherit')
+        } else {
+            setAddNewPlaceDisplay('none')
+        }
+    }
+
+    const newPlaceMarkerRefresh = () => {
+        setNewPlaceMarkers([{'lat': newPlaceLat.current, 'lng': newPlaceLng.current}])
+    }
+
     return (
-        <div className="container">
+        <div className={'home-container'}>
             <header style={{display: 'flex', justifyContent: 'center'}}>
                 <h3>Map of places</h3>
             </header>
-            {message && (
-                <div className="form-group">
-                    <div className="alert alert-danger" role="alert">
-                        {message}
-                    </div>
+
+            <div className="map-container">
+                <div className={" card p-0 m-0 w-100 add-new-place"} style={{display: addNewPlaceDisplay}}>
+                    <BoardAddNewPlace newPlaceLat={newPlaceLat} newPlaceLng={newPlaceLng}/>
+
+                    <button className="btn btn-danger btn-block" onClick={newPlaceMarkerRefresh}>Show on map</button>
                 </div>
-            )}
-            <div className="map">
+                <div className="map">
 
-                <MapContainer center={[51.919437, 19.145136]} zoom={12} scrollWheelZoom={true}>
-                    <TileLayer
-                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <YourLocationMarker latLngPassed={isLatLngPassed} lat={lat} lng={lng}/>
-                    <Markers places={places}/>
-                </MapContainer>
+                    {message && (
+                        <div className="form-group">
+                            <div className="alert alert-danger" role="alert">
+                                {message}
+                            </div>
+                        </div>
+                    )}
+
+                    <MapContainer ref={mapRef} center={CENTER_OF_POLAND} zoom={12} scrollWheelZoom={true}>
+                        <TileLayer
+                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        <YourLocationMarker latLngPassed={isLatLngPassed} lat={lat} lng={lng}/>
+                        <Markers places={places}/>
+
+                        <Marker ref={newPlaceMarker} position={[0, 0]}>
+                            <Popup>
+                                Search result.<br/>
+                            </Popup>
+                        </Marker>
+
+                        {newPlaceMarkers.length !== 0 && newPlaceMarkers.map(m => (
+                            <Marker ref={newPlaceMarker} position={[m['lat'], m['lng']]}>
+                                <Popup>
+                                    Search result.<br/>
+                                </Popup>
+                            </Marker>
+                        ))}
+                    </MapContainer>
+
+                </div>
             </div>
-
+            <h4>Didn't find your place? Try to <button className={'btn btn-warning'} onClick={getOnClick}>Add new sport
+                center</button></h4>
         </div>
     );
 };

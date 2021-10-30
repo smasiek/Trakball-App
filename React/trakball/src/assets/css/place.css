@@ -23,6 +23,30 @@
     background: white;
 }
 
+.result-list {
+    max-height: 35%;
+    width: 100%;
+    margin: 1.5em;
+    overflow: auto;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+
+.add-new-place {
+    height: 75vh;
+
+    margin: 1em;
+}
+
+.add-new-place > form {
+    max-height: 45%;
+}
+
+.form-groups {
+    overflow: auto;
+    width: 100%;
+}
+
 @media (max-width: 767px) {
     .places-boxed h2 {
         margin-bottom: 20px;

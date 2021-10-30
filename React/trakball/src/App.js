@@ -16,6 +16,7 @@ import BoardYourSquads from "./components/BoardYourSquads";
 import BoardAddNewSquad from "./components/BoardAddNewSquad";
 import BoardYourPlaces from "./components/BoardYourPlaces";
 import EditProfile from "./components/EditProfile";
+import BoardAddNewPlace from "./components/BoardAddNewPlace";
 
 const App = () => {
   const [showUserBoards, setShowYourSquadsBoard] = useState(false);
@@ -70,7 +71,7 @@ const App = () => {
 
       </Navbar>
 
-      <div className="container mt-3">
+      <div className="container-xl mt-3">
         <Switch>
           <Route exact path={["/", "/home"]} component={Home} />
           <Route path="/home/:lat/:lng" component={Home} />
@@ -82,6 +83,7 @@ const App = () => {
           <Route path="/squads" component={BoardSquads} />
           <Route path="/your_squads" component={BoardYourSquads} />
           <Route path="/your_places" component={BoardYourPlaces} />
+          <Route path="/new_place" component={BoardAddNewPlace} />
           <Route path="/new_squad" component={BoardAddNewSquad} />
         </Switch>
       </div>

@@ -4,7 +4,30 @@
     align-items: center;
 }
 
-
 span {
     margin-bottom: .5rem;
+}
+
+.map-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 80vh;
+}
+
+.map {
+    height: 95%;
+    width: 100%;
+    min-width: 60%;
+}
+
+.add-new-place {
+    height: 95%;
+    min-width: 40%;
+}
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
