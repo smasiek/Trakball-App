@@ -26,15 +26,14 @@
 .result-list {
     max-height: 35%;
     width: 100%;
-    margin: 1.5em;
-    overflow: auto;
+    margin: 1.5em 0;
     border: 1px solid #ced4da;
     border-radius: .25rem;
+    overflow: auto;
 }
 
 .add-new-place {
     height: 75vh;
-
     margin: 1em;
 }
 

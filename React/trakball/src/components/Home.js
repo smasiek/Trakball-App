@@ -1,10 +1,15 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, {useEffect, useState} from "react";
+import {renderToStaticMarkup} from 'react-dom/server';
 import PlaceService from "../services/place.service";
-import {MapContainer, TileLayer, Marker, Popup, useMap} from 'react-leaflet';
+import {MapContainer, Marker, Popup, TileLayer, useMap} from 'react-leaflet';
 import Markers from "./Markers";
 import "../assets/css/map.css";
 import {useParams} from "react-router-dom";
 import BoardAddNewPlace from "./BoardAddNewPlace";
+import {divIcon} from "leaflet/dist/leaflet-src.esm";
+import {FaMapMarkerAlt} from "react-icons/all";
+import AlertTemplate from "./AlertTemplate";
+import {positions, Provider} from "react-alert";
 
 const Home = () => {
     const [places, setPlaces] = useState([]);
@@ -12,21 +17,25 @@ const Home = () => {
     const [isLatLngPassed, setLatLngPassed] = useState(false);
     const [addNewPlaceDisplay, setAddNewPlaceDisplay] = useState('none');
 
-    const newPlaceLat = useRef(0);
-    const newPlaceLng = useRef(0);
     const [newPlaceMarkers, setNewPlaceMarkers] = useState([]);
 
-    const newPlaceMarker = useRef();
-    const mapRef = useRef();
+    const [newPlaceLatLng, setNewPlaceLatLng] = useState([])
+    const [shouldLocateOnInit, setLocateLocateOnInit] = useState(true);
 
     const CENTER_OF_POLAND = [51.919437, 19.145136];
 
     const {lat, lng} = useParams();
 
+    const options = {
+        timeout: 5000,
+        position: positions.BOTTOM_CENTER
+    };
+
     useEffect(() => {
         PlaceService.getPlaces().then(
             (response) => {
                 setPlaces(response.data);
+                console.log(response.data);
             },
             (error) => {
                 const _content =
@@ -45,33 +54,82 @@ const Home = () => {
             setLatLngPassed(true);
     }, [lat, lng])
 
+    useEffect(() => {
+        if (newPlaceLatLng && newPlaceLatLng.length === 2) {
+            setNewPlaceMarkers([{'lat': newPlaceLatLng[1], 'lng': newPlaceLatLng[0]}])
+        }
+    }, [newPlaceLatLng])
+
+    const setSearchResultLatLng = (latLng) => {
+        setLocateLocateOnInit(false);
+        if (latLng.length === 2) {
+            setNewPlaceLatLng(latLng)
+            setLatLngPassed(false);
+        }
+    }
+
     const YourLocationMarker = (props) => {
         const [position, setPosition] = useState(null);
         const map = useMap();
+        const iconMarkup = renderToStaticMarkup(<FaMapMarkerAlt
+            style={{width: '100%', height: '100%', color: "#28a745"}}/>);
+        const customMarkerIcon = divIcon({
+            iconSize: [25, 41],
+            iconAnchor: [0, 40],
+            popupAnchor: [13, -35],
+            html: iconMarkup,
+        });
 
         useEffect(() => {
-            map.locate().on("locationfound", function (e) {
-                setPosition(e.latlng);
-                let latLng;
-                if (newPlaceMarkers.length !== 0) {
-                    latLng=[newPlaceMarkers[0]['lat'],newPlaceMarkers[0]['lng']];
-                } else if (props.latLngPassed) {
-                    latLng = [lat, lng];
-                } else {
-                    latLng = e.latlng;
-                }
-                map.flyTo(latLng, 12);
-            });
-
-            map.locate().on('locationerror', function () {
-                map.flyTo(CENTER_OF_POLAND, 12);
-            });
-        }, [map, props.latLngPassed]);
+            map.invalidateSize(true);
+            if (props.shouldLocateOnInit) {
+                map.locate().on("locationfound", function (e) {
+                    setPosition(e.latlng);
+                    let latLng;
+                    if (props.latLngPassed) {
+                        latLng = [props.lat, props.lng];
+                    } else {
+                        latLng = e.latlng;
+                    }
+                    map.flyTo(latLng, 12);
+                });
+                map.locate().on('locationerror', function () {
+                    map.flyTo(CENTER_OF_POLAND, 12);
+                });
+            }
+        }, [map, props.lat, props.latLngPassed, props.lng, props.shouldLocateOnInit]);
 
         return position === null ? null : (
-            <Marker position={position}>
+            <Marker position={position} icon={customMarkerIcon}>
                 <Popup>
                     You are here. <br/>
+                </Popup>
+            </Marker>
+        );
+    }
+
+    const SearchResultMarker = (props) => {
+        const [position, setPosition] = useState(props.position);
+        const map = useMap();
+
+        const iconMarkup = renderToStaticMarkup(<FaMapMarkerAlt
+            style={{width: '100%', height: '100%', color: "#dc3545"}}/>);
+        const customMarkerIcon = divIcon({
+            iconSize: [25, 41],
+            iconAnchor: [0, 40],
+            popupAnchor: [13, -35],
+            html: iconMarkup,
+        });
+
+        useEffect(() => {
+            map.flyTo(position, 12);
+
+        }, [map, position]);
+
+        return position === null ? null : (
+            <Marker position={position} icon={customMarkerIcon}>
+                <Popup>
+                    Search result. <br/>
                 </Popup>
             </Marker>
         );
@@ -85,10 +143,6 @@ const Home = () => {
         }
     }
 
-    const newPlaceMarkerRefresh = () => {
-        setNewPlaceMarkers([{'lat': newPlaceLat.current, 'lng': newPlaceLng.current}])
-    }
-
     return (
         <div className={'home-container'}>
             <header style={{display: 'flex', justifyContent: 'center'}}>
@@ -96,10 +150,11 @@ const Home = () => {
             </header>
 
             <div className="map-container">
-                <div className={" card p-0 m-0 w-100 add-new-place"} style={{display: addNewPlaceDisplay}}>
-                    <BoardAddNewPlace newPlaceLat={newPlaceLat} newPlaceLng={newPlaceLng}/>
-
-                    <button className="btn btn-danger btn-block" onClick={newPlaceMarkerRefresh}>Show on map</button>
+                <div className={"add-new-place"} style={{display: addNewPlaceDisplay}}>
+                    <Provider template={AlertTemplate} {...options}>
+                        <BoardAddNewPlace setNewPlaceLatLng={setSearchResultLatLng}
+                                          setNewPlaceMarker={setNewPlaceMarkers}/>
+                    </Provider>
                 </div>
                 <div className="map">
 
@@ -111,26 +166,22 @@ const Home = () => {
                         </div>
                     )}
 
-                    <MapContainer ref={mapRef} center={CENTER_OF_POLAND} zoom={12} scrollWheelZoom={true}>
+                    <MapContainer center={CENTER_OF_POLAND} zoom={12} scrollWheelZoom={true}>
                         <TileLayer
                             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
-                        <YourLocationMarker latLngPassed={isLatLngPassed} lat={lat} lng={lng}/>
+                        <YourLocationMarker shouldLocateOnInit={shouldLocateOnInit} latLngPassed={isLatLngPassed}
+                                            lat={lat} lng={lng}/>
                         <Markers places={places}/>
 
-                        <Marker ref={newPlaceMarker} position={[0, 0]}>
-                            <Popup>
-                                Search result.<br/>
-                            </Popup>
-                        </Marker>
-
                         {newPlaceMarkers.length !== 0 && newPlaceMarkers.map(m => (
-                            <Marker ref={newPlaceMarker} position={[m['lat'], m['lng']]}>
+                            <SearchResultMarker //ref={newPlaceMarker}
+                                position={[m['lat'], m['lng']]}>
                                 <Popup>
                                     Search result.<br/>
                                 </Popup>
-                            </Marker>
+                            </SearchResultMarker>
                         ))}
                     </MapContainer>
 
