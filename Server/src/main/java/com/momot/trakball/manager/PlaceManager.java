@@ -1,10 +1,14 @@
 package com.momot.trakball.manager;
 
 import com.momot.trakball.dao.Place;
+import com.momot.trakball.dao.PlaceRequest;
+import com.momot.trakball.dao.Role;
 import com.momot.trakball.dao.User;
 import com.momot.trakball.dto.PlaceDto;
+import com.momot.trakball.dto.request.NewPlaceRequest;
 import com.momot.trakball.dto.response.MessageResponse;
 import com.momot.trakball.repository.PlaceRepository;
+import com.momot.trakball.repository.PlaceRequestRepository;
 import com.momot.trakball.repository.SearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +18,22 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.momot.trakball.dao.ERole.ROLE_ADMIN;
+import static com.momot.trakball.dao.ERole.ROLE_MODERATOR;
+
 @Service
 public class PlaceManager {
 
     private final PlaceRepository placeRepository;
+    private final PlaceRequestRepository placeRequestRepository;
     private final SearchRepository searchRepository;
 
     private final UserManager userManager;
 
     @Autowired
-    public PlaceManager(PlaceRepository placeRepository, SearchRepository searchRepository, UserManager userManager) {
+    public PlaceManager(PlaceRepository placeRepository, SearchRepository searchRepository, PlaceRequestRepository placeRequestRepository, UserManager userManager) {
         this.placeRepository = placeRepository;
+        this.placeRequestRepository = placeRequestRepository;
         this.searchRepository = searchRepository;
         this.userManager = userManager;
     }
@@ -97,6 +106,10 @@ public class PlaceManager {
         return placeRepository.save(place);
     }
 
+    public PlaceRequest savePlaceRequest(PlaceRequest place) {
+        return placeRequestRepository.save(place);
+    }
+
     public void deleteById(Long id) {
         placeRepository.deleteById(id);
     }
@@ -140,5 +153,28 @@ public class PlaceManager {
     private void updateUsersPlaces(Optional<User> user, Set<Place> place) {
         user.ifPresent(u -> u.setYourPlaces(place));
         user.ifPresent(userManager::save);
+    }
+
+    public ResponseEntity<?> addPlace(NewPlaceRequest newPlaceRequest) {
+
+        Optional<Place> existingPlace = placeRepository.findPlaceByLatitudeAndLongitude(newPlaceRequest.getLatitude(), newPlaceRequest.getLongitude());
+
+        if (existingPlace.isPresent()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Place already exists!"));
+        }
+
+        Optional<User> requester = userManager.getUserFromContext();
+
+        if (requester.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Your session expired! Log in once again"));
+        }
+
+        if (requester.get().getRoles().contains(new Role(ROLE_ADMIN)) || requester.get().getRoles().contains(new Role(ROLE_MODERATOR))) {
+            save(new Place(newPlaceRequest));
+            return ResponseEntity.ok(newPlaceRequest);
+        }
+
+        savePlaceRequest(new PlaceRequest(newPlaceRequest, requester.get()));
+        return ResponseEntity.ok(newPlaceRequest);
     }
 }

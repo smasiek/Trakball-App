@@ -101,9 +101,8 @@ public class SquadManager {
                     squad.getCreator(),
                     squad.getPlace()));
         } else {
-            return ResponseEntity.badRequest().body("Creating squad failed!");
+            return ResponseEntity.badRequest().body(new MessageResponse("Creating squad failed!"));
         }
-
     }
 
     public Squad save(Squad squad) {
@@ -115,7 +114,7 @@ public class SquadManager {
             squadRepository.deleteById(deleteRequest.getId());
             return ResponseEntity.ok("Squad deleted");
         }
-        return ResponseEntity.badRequest().body("Squad not found 🤐");
+        return ResponseEntity.badRequest().body(new MessageResponse("Squad not found 🤐"));
     }
 
     public ResponseEntity<?> updateSquad(Long squadId, SquadsUpdate updateType) {

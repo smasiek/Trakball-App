@@ -2,10 +2,8 @@ package com.momot.trakball.controller;
 
 import com.momot.trakball.dao.Place;
 import com.momot.trakball.dto.PlaceDto;
+import com.momot.trakball.dto.request.NewPlaceRequest;
 import com.momot.trakball.manager.PlaceManager;
-import com.momot.trakball.security.jwt.AuthTokenFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,6 +34,12 @@ public class PlacesController {
         return placeManager.findById(id);
     }
 
+    @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> addPlace(@RequestBody NewPlaceRequest newPlaceRequest) {
+        return placeManager.addPlace(newPlaceRequest);
+    }
+
     @PostMapping("/follow")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> followPlace(@RequestParam Long place_id) {
@@ -64,11 +68,6 @@ public class PlacesController {
     public Iterable<String> getPlaceNames(@RequestParam String city, @RequestParam String street,
                                           @RequestParam String place) {
         return placeManager.findNamesByInput(city, street, place);
-    }
-
-    @PostMapping
-    public Place addPlace(@RequestBody Place place) {
-        return placeManager.save(place);
     }
 
     @PutMapping

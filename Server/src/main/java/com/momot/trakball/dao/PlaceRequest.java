@@ -2,16 +2,12 @@ package com.momot.trakball.dao;
 
 import com.momot.trakball.dto.PlaceDto;
 import com.momot.trakball.dto.request.NewPlaceRequest;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Table(name = "places")
-public class Place {
+@Table(name = "place_requests")
+public class PlaceRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,17 +20,13 @@ public class Place {
     private double longitude;
     private String photo;
 
-    @OneToMany(mappedBy = "place")
-    private Set<Squad> squads;
+    @ManyToOne()
+    private User requester;
 
-    @ManyToMany(mappedBy = "yourPlaces")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<User> followers = new HashSet<>();
-
-    public Place() {
+    public PlaceRequest() {
     }
 
-    public Place(PlaceDto placeDto) {
+    public PlaceRequest(PlaceDto placeDto) {
         this.id = placeDto.getPlace_id();
         this.name = placeDto.getName();
         this.city = placeDto.getCity();
@@ -45,13 +37,14 @@ public class Place {
         this.photo = placeDto.getPhoto();
     }
 
-    public Place(NewPlaceRequest newPlaceRequest) {
+    public PlaceRequest(NewPlaceRequest newPlaceRequest, User requester) {
         this.name = newPlaceRequest.getName();
         this.city = newPlaceRequest.getCity();
         this.postal_code = newPlaceRequest.getPostal_code();
         this.street = newPlaceRequest.getStreet();
         this.latitude = newPlaceRequest.getLatitude();
         this.longitude = newPlaceRequest.getLongitude();
+        this.requester = requester;
     }
 
     public Long getId() {
@@ -118,19 +111,12 @@ public class Place {
         this.photo = photo;
     }
 
-    public Set<Squad> getSquads() {
-        return squads;
+    public User getRequester() {
+        return requester;
     }
 
-    public void setSquads(Set<Squad> squads) {
-        this.squads = squads;
+    public void setRequester(User requester) {
+        this.requester = requester;
     }
 
-    public Set<User> getFollowers() {
-        return followers;
-    }
-
-    public void setFollowers(Set<User> followers) {
-        this.followers = followers;
-    }
 }

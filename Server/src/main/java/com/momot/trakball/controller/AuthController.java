@@ -66,23 +66,7 @@ public class AuthController {
 
         Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
 
-        /*
-        //TODO Czy da sie jakos w ten sposob skonsturowac lamby, jak tego Optionala poprawnie uzywac?
-        user.ifPresentOrElse((u)->{
-                    return ResponseEntity.ok(new JwtResponse(jwt,
-                            userDetails.getId(),
-                            userDetails.getUsername(),
-                            u.getUserDetails().getName(),
-                            u.getUserDetails().getSurname(),
-                            u.getUserDetails().getPhone(),
-                            roles));
-        },
-                ()->{
-                    return ResponseEntity.badRequest().body("User doesn't exist!");
-                });
-        */
-
-        if(user.isPresent()){
+        if (user.isPresent()) {
             return ResponseEntity.ok(new JwtResponse(jwt,
                     userDetails.getId(),
                     userDetails.getUsername(),
@@ -91,7 +75,7 @@ public class AuthController {
                     user.get().getUserDetails().getPhone(),
                     roles));
         }
-        return ResponseEntity.badRequest().body("User doesn't exist!");
+        return ResponseEntity.badRequest().body(new MessageResponse("User doesn't exist!"));
     }
 
     @PostMapping("/signup")
