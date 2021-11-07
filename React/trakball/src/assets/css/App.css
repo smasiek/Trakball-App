@@ -3,6 +3,11 @@ label {
     margin-top: 10px;
 }
 
+.navbar-toggler-icon {
+    display: flex;
+    height: 2em;
+}
+
 .card-container.card {
     max-width: 500px !important;
     padding: 40px 40px;

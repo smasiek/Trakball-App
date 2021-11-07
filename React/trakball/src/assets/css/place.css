@@ -24,12 +24,16 @@
 }
 
 .result-list {
-    max-height: 35%;
+    height: 35%;
     width: 100%;
     margin: 1.5em 0;
     border: 1px solid #ced4da;
     border-radius: .25rem;
     overflow: auto;
+}
+
+.result-list > ul {
+    height: 100%;
 }
 
 .add-new-place {

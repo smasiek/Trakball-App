@@ -8,22 +8,36 @@ const getPlaces = () => {
     return axios.get(API_URL + "all", {headers: authHeader()});
 };
 
+const getPlaceRequests = () => {
+    return axios.get(API_URL + "requests", {headers: authHeader()});
+};
+
+const removeRequest = (place_id) => {
+    console.log(place_id)
+    return axios.delete(API_URL + "requests", {headers: authHeader(), data: {placeRequestId: place_id}});
+}
+
+const approveRequest = (placeId) => {
+    return axios.post(API_URL + "requests", {}, {headers: authHeader(), params: {placeRequestId: placeId}});
+}
+
 const getPlace = (id) => {
     return axios.get(API_URL, {headers: authHeader(), params: {id: id}});
 };
 
 const newPlace = (name, street, city, latitude, longitude, postal_code) => {
     return axios.post(API_URL, {
-        name: name,
-        street: street,
-        city: city,
-        latitude: latitude,
-        longitude: longitude,
-        postal_code: postal_code
-    },
-        {headers: authHeader(),
-            params:{token:userToken()}
-    });
+            name: name,
+            street: street,
+            city: city,
+            latitude: latitude,
+            longitude: longitude,
+            postal_code: postal_code
+        },
+        {
+            headers: authHeader(),
+            params: {token: userToken()}
+        });
 };
 
 const followPlace = (placeId) => {
@@ -74,6 +88,9 @@ const getPlacesList = (city, street, place) => {
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default {
     getPlaces,
+    getPlaceRequests,
+    removeRequest,
+    approveRequest,
     getPlace,
     newPlace,
     followPlace,
