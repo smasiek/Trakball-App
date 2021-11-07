@@ -54,6 +54,15 @@ public class Place {
         this.longitude = newPlaceRequest.getLongitude();
     }
 
+    public Place(PlaceRequest placeRequest) {
+        this.name = placeRequest.getName();
+        this.city = placeRequest.getCity();
+        this.postal_code = placeRequest.getPostal_code();
+        this.street = placeRequest.getStreet();
+        this.latitude = placeRequest.getLatitude();
+        this.longitude = placeRequest.getLongitude();
+    }
+
     public Long getId() {
         return id;
     }

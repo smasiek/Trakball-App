@@ -1,7 +1,7 @@
 package com.momot.trakball.controller;
 
 import com.momot.trakball.dto.SquadDto;
-import com.momot.trakball.dto.request.DeleteRequest;
+import com.momot.trakball.dto.request.DeleteSquadRequest;
 import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.manager.SquadManager;
 import com.momot.trakball.security.jwt.JwtUtils;
@@ -65,7 +65,7 @@ public class SquadsController {
 
     @DeleteMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteSquad(@RequestBody DeleteRequest deleteRequest) {
-        return squadManager.deleteById(deleteRequest);
+    public ResponseEntity<?> deleteSquad(@RequestBody DeleteSquadRequest deleteSquadRequest) {
+        return squadManager.deleteById(deleteSquadRequest);
     }
 }

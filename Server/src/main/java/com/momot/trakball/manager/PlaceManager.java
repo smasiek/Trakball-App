@@ -5,6 +5,9 @@ import com.momot.trakball.dao.PlaceRequest;
 import com.momot.trakball.dao.Role;
 import com.momot.trakball.dao.User;
 import com.momot.trakball.dto.PlaceDto;
+import com.momot.trakball.dto.PlaceRequestDto;
+import com.momot.trakball.dto.request.ApprovePlaceRequest;
+import com.momot.trakball.dto.request.DeletePlaceRequest;
 import com.momot.trakball.dto.request.NewPlaceRequest;
 import com.momot.trakball.dto.response.MessageResponse;
 import com.momot.trakball.repository.PlaceRepository;
@@ -23,7 +26,6 @@ import static com.momot.trakball.dao.ERole.ROLE_MODERATOR;
 
 @Service
 public class PlaceManager {
-
     private final PlaceRepository placeRepository;
     private final PlaceRequestRepository placeRequestRepository;
     private final SearchRepository searchRepository;
@@ -176,5 +178,28 @@ public class PlaceManager {
 
         savePlaceRequest(new PlaceRequest(newPlaceRequest, requester.get()));
         return ResponseEntity.ok(newPlaceRequest);
+    }
+
+    public Iterable<PlaceRequestDto> getPlaceRequests() {
+        return placeRequestRepository.findAll().stream().map(place -> new PlaceRequestDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
+                place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto(), place.getRequester().getUser_id(), place.getRequester().getName() + ' ' + place.getRequester().getSurname())).collect(Collectors.toList());
+    }
+
+    public ResponseEntity<?> approvePlaceRequests(ApprovePlaceRequest approvedPlaceId) {
+        Optional<PlaceRequest> placeRequest = placeRequestRepository.findById(approvedPlaceId.getPlaceRequestId());
+        placeRequest.ifPresent(request -> {
+            save(new Place(request));
+            placeRequestRepository.deleteById(request.getId());
+        });
+
+        return ResponseEntity.ok(new MessageResponse("Place approved! 🙂"));
+    }
+
+    public ResponseEntity<?> deletePlaceRequests(DeletePlaceRequest deletedPlaceRequestId) {
+        if (placeRequestRepository.existsById(deletedPlaceRequestId.getPlaceRequestId())) {
+            placeRequestRepository.deleteById(deletedPlaceRequestId.getPlaceRequestId());
+            return ResponseEntity.ok("New place request deleted");
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Request not found. Something went wrong."));
     }
 }

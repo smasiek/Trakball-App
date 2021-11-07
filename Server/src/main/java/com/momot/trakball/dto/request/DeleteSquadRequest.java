@@ -2,7 +2,7 @@ package com.momot.trakball.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
-public class DeleteRequest {
+public class DeleteSquadRequest {
 
     @NotBlank
     private Long squad_id;

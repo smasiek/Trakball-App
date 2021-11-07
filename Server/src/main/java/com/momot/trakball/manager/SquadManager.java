@@ -4,7 +4,7 @@ import com.momot.trakball.dao.Place;
 import com.momot.trakball.dao.Squad;
 import com.momot.trakball.dao.User;
 import com.momot.trakball.dto.SquadDto;
-import com.momot.trakball.dto.request.DeleteRequest;
+import com.momot.trakball.dto.request.DeleteSquadRequest;
 import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.dto.response.MessageResponse;
 import com.momot.trakball.repository.SquadRepository;
@@ -109,9 +109,9 @@ public class SquadManager {
         return squadRepository.save(squad);
     }
 
-    public ResponseEntity<?> deleteById(DeleteRequest deleteRequest) {
-        if (squadRepository.existsById(deleteRequest.getId())) {
-            squadRepository.deleteById(deleteRequest.getId());
+    public ResponseEntity<?> deleteById(DeleteSquadRequest deleteSquadRequest) {
+        if (squadRepository.existsById(deleteSquadRequest.getId())) {
+            squadRepository.deleteById(deleteSquadRequest.getId());
             return ResponseEntity.ok("Squad deleted");
         }
         return ResponseEntity.badRequest().body(new MessageResponse("Squad not found 🤐"));

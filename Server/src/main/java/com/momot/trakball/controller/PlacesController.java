@@ -2,6 +2,9 @@ package com.momot.trakball.controller;
 
 import com.momot.trakball.dao.Place;
 import com.momot.trakball.dto.PlaceDto;
+import com.momot.trakball.dto.PlaceRequestDto;
+import com.momot.trakball.dto.request.ApprovePlaceRequest;
+import com.momot.trakball.dto.request.DeletePlaceRequest;
 import com.momot.trakball.dto.request.NewPlaceRequest;
 import com.momot.trakball.manager.PlaceManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,24 @@ public class PlacesController {
     @GetMapping("/all")
     public Iterable<PlaceDto> getPlaces() {
         return placeManager.findAll();
+    }
+
+    @GetMapping("/requests")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Iterable<PlaceRequestDto> getPlaceRequests() {
+        return placeManager.getPlaceRequests();
+    }
+
+    @PostMapping("/requests")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> approvePlaceRequests(@RequestBody ApprovePlaceRequest approvedPlaceRequest) {
+        return placeManager.approvePlaceRequests(approvedPlaceRequest);
+    }
+
+    @DeleteMapping("/requests")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deletePlaceRequests(@RequestBody DeletePlaceRequest deletePlaceRequest) {
+        return placeManager.deletePlaceRequests(deletePlaceRequest);
     }
 
     @GetMapping
