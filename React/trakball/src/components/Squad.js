@@ -2,13 +2,20 @@ import def from '../assets/img/default.png';
 import {useAlert} from "react-alert";
 import SquadService from "../services/squad.service";
 import {useHistory} from 'react-router-dom';
-import {TiUserAdd, TiContacts, TiUserDelete} from "react-icons/ti";
+import {TiContacts, TiUserAdd, TiUserDelete} from "react-icons/ti";
 import {RiDeleteBin5Fill} from "react-icons/ri";
+import {useEffect, useState} from "react";
 
 const Squad = (props) => {
 
     const alertReact = useAlert();
     const history = useHistory();
+    const [date, setDate] = useState("");
+
+    useEffect(() => {
+        const dateString = new Date(props.info.date).toLocaleString();
+        setDate(dateString.substr(0, dateString.length - 3));
+    }, [props.info.date])
 
     const handleTextOrganizer = () => {
         let creator = props.info.creator
@@ -58,7 +65,6 @@ const Squad = (props) => {
         SquadService.deleteSquad(props.info.squad_id).then(
             () => {
                 window.location.reload();
-
             },
             (error) => {
                 const message =
@@ -85,7 +91,9 @@ const Squad = (props) => {
                     <div>
                         <button onClick={handleTextOrganizer}><TiContacts style={{margin: '5px'}}/>Text organizer
                         </button>
-                        <button onClick={handleLeaveSquad} style={{color: 'lightcoral'}} ><TiUserDelete style={{margin: '5px'}}/>Leave squad</button>
+                        <button onClick={handleLeaveSquad} style={{color: 'lightcoral'}}><TiUserDelete
+                            style={{margin: '5px'}}/>Leave squad
+                        </button>
                     </div>
                 }
                 {props.mod && (
@@ -110,7 +118,7 @@ const Squad = (props) => {
                     <p>Miejsce: {props.info.place.name}</p>
                     <p>Miasto: {props.info.place.city}</p>
                     <p>Ulica: {props.info.place.street}</p>
-                    <p>Data: {props.info.date}</p>
+                    <p>Data: {date}</p>
                 </div>
                 <Footer/>
             </div>

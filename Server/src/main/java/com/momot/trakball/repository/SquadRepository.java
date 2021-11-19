@@ -14,12 +14,12 @@ import java.util.Optional;
 public interface SquadRepository extends JpaRepository<Squad, Long> {
 
     @Query("select s from Squad s " +
-            "where to_timestamp(s.date,'YYYY-MM-DD HH24:MI')>= CURRENT_TIMESTAMP " +
+            "where s.date >= CURRENT_TIMESTAMP " +
             "and s.place = :place")
     Optional<Iterable<Squad>> findByPlace(@Param("place") Place place);
 
     @Query("select s from Squad s " +
-            "where to_timestamp(s.date,'YYYY-MM-DD HH24:MI')>= CURRENT_TIMESTAMP")
+            "where s.date >= CURRENT_TIMESTAMP")
     Optional<List<Squad>> findWithDateAfterToday();
 
 }

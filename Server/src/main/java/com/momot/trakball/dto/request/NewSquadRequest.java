@@ -2,34 +2,33 @@ package com.momot.trakball.dto.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.sql.Timestamp;
 
 public class NewSquadRequest {
 
     @NotBlank
-    @Size(min=2,max = 200)
+    @Size(min = 2, max = 200)
     private String city;
 
     @NotBlank
-    @Size(min=2,max = 200)
+    @Size(min = 2, max = 200)
     private String street;
 
     @NotBlank
-    @Size(min=2,max = 200)
+    @Size(min = 2, max = 200)
     private String place;
 
     @NotBlank
-    @Size(min=2,max = 200)
+    @Size(min = 2, max = 200)
     private String sport;
 
     private int maxMembers;
 
     @NotBlank
-    @Size(min=0,max = 50)
+    @Size(max = 50)
     private String fee;
 
-    @NotBlank
-    @Size(min=2,max = 50)
-    private String date;
+    private Timestamp date;
 
 
     public String getStreet() {
@@ -48,11 +47,11 @@ public class NewSquadRequest {
         this.city = city;
     }
 
-    public String getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 

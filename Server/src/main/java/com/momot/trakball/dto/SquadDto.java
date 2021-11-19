@@ -3,27 +3,29 @@ package com.momot.trakball.dto;
 import com.momot.trakball.dao.Place;
 import com.momot.trakball.dao.User;
 
+import java.sql.Timestamp;
+
 public class SquadDto {
     private Long squad_id;
     private String sport;
     private int maxMembers;
     private String fee;
-    private String date;
+    private Timestamp date;
     private UserDto creator;
     private PlaceDto place;
 
-    public SquadDto(){
+    public SquadDto() {
     }
 
-    public SquadDto(Long squad_id, String sport, int maxMembers, String fee, String date, User creator, Place place) {
+    public SquadDto(Long squad_id, String sport, int maxMembers, String fee, Timestamp date, User creator, Place place) {
         this.squad_id = squad_id;
         this.sport = sport;
         this.maxMembers = maxMembers;
         this.fee = fee;
         this.date = date;
-        this.creator = new UserDto(creator.getUser_id(),creator.getName(), creator.getSurname(), creator.getPhone());
-        this.place = new PlaceDto(place.getId(),place.getName(),place.getCity(),place.getPostal_code(),
-                place.getStreet(),place.getLatitude(),place.getLongitude(), place.getPhoto());
+        this.creator = new UserDto(creator.getUser_id(), creator.getName(), creator.getSurname(), creator.getPhone());
+        this.place = new PlaceDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
+                place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto());
     }
 
     public Long getSquad_id() {
@@ -58,11 +60,11 @@ public class SquadDto {
         this.fee = fee;
     }
 
-    public String getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 
@@ -71,8 +73,9 @@ public class SquadDto {
     }
 
     public void setCreator(User creator) {
-        this.creator = new UserDto(creator.getUser_id(),creator.getName(), creator.getSurname(), creator.getPhone());
+        this.creator = new UserDto(creator.getUser_id(), creator.getName(), creator.getSurname(), creator.getPhone());
     }
+
     public void setCreator(UserDto creator) {
         this.creator = creator;
     }
@@ -86,7 +89,7 @@ public class SquadDto {
     }
 
     public void setPlace(Place place) {
-        this.place = new PlaceDto(place.getId(),place.getName(),place.getCity(),place.getPostal_code(),
-                place.getStreet(),place.getLatitude(),place.getLongitude(), place.getPhoto());
+        this.place = new PlaceDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
+                place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto());
     }
 }

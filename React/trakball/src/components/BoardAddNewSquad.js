@@ -194,7 +194,7 @@ const BoardAddNewSquad = (props) => {
 
         if (checkBtn.current.context._errors.length === 0 && isValid()) {
             SquadService.publish(place, city, street,
-                formData.sport, formData.date.replace("T", " "),
+                formData.sport, new Date(formData.date).getTime(),
                 formData.fee, formData.maxMembers).then(
                 () => {
                     props.history.push("/squads");

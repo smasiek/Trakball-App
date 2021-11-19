@@ -2,25 +2,14 @@ package com.momot.trakball.utils;
 
 import com.momot.trakball.dao.Squad;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Timestamp;
 
 final public class SquadValidator {
+    public static boolean isSquadValid(Squad squad) {
+        Timestamp date = squad.getDate();
+        Timestamp currentDate = new Timestamp(System.currentTimeMillis());
 
-    public static boolean isSquadValid(Squad squad){
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            Date date = dateFormat.parse(squad.getDate());
-            Date currentDate= new Date();
-
-            long diffInMillies = date.getTime() - currentDate.getTime();
-            return (diffInMillies>0);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return false;
-        }
+        long diffInMillies = date.getTime() - currentDate.getTime();
+        return (diffInMillies > 0);
     }
-
-
 }

@@ -1,17 +1,14 @@
 package com.momot.trakball.dao;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.momot.trakball.dto.PlaceDto;
-import com.momot.trakball.dto.UserDto;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -23,36 +20,31 @@ public class Squad {
     private Long squad_id;
 
     @NotBlank
-    @Size(min=2,max = 200)
+    @Size(min = 2, max = 200)
     private String sport;
 
-    @Column(name="max_members")
+    @Column(name = "max_members")
     private int maxMembers;
 
     @NotBlank
-    @Size(min=0,max = 50)
+    @Size(max = 50)
     private String fee;
 
-    @NotBlank
-    @Size(min=2,max = 50)
-    private String date;
+    private Timestamp date;
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
-    //@JsonIgnoreProperties(value = "squads",allowSetters = true)
     private User creator;
 
     @ManyToOne
-    @JoinColumn(name= "place_id")
-    //@JsonIgnoreProperties(value = "squads",allowSetters = true)
+    @JoinColumn(name = "place_id")
     private Place place;
 
-    @ManyToMany(mappedBy="squads")
+    @ManyToMany(mappedBy = "squads")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    //@JsonIgnoreProperties(value = "squads",allowSetters = true)
-    private Set<User> members=new HashSet<>();
+    private Set<User> members = new HashSet<>();
 
-    public Squad(Long squad_id, String sport, int maxMembers, String fee, String date,
+    public Squad(Long squad_id, String sport, int maxMembers, String fee, Timestamp date,
                  User creator, Place place) {
         this.squad_id = squad_id;
         this.sport = sport;
@@ -60,7 +52,7 @@ public class Squad {
         this.fee = fee;
         this.date = date;
         this.creator = creator;
-        this.place=place;
+        this.place = place;
     }
 
     public Squad() {
@@ -99,11 +91,11 @@ public class Squad {
         this.fee = fee;
     }
 
-    public String getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 
