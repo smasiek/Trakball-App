@@ -25,6 +25,10 @@ const getPlace = (id) => {
     return axios.get(API_URL, {headers: authHeader(), params: {id: id}});
 };
 
+const getPlacesFromCity = (city) => {
+    return axios.get(API_URL + "city", {headers: authHeader(), params: {city: city}});
+};
+
 const newPlace = (name, street, city, latitude, longitude, postal_code) => {
     return axios.post(API_URL, {
             name: name,
@@ -92,6 +96,7 @@ export default {
     removeRequest,
     approveRequest,
     getPlace,
+    getPlacesFromCity,
     newPlace,
     followPlace,
     unfollowPlace,

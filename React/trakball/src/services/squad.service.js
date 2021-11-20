@@ -40,6 +40,16 @@ const publish = (place, city, street, sport, date, fee, maxMembers) => {
         });
 };
 
+const generateSquads = (squadRequests) => {
+    return axios.post(API_URL + "all", {
+            squadRequests
+        },
+        {
+            headers: authHeader(),
+            params: {token: userToken()}
+        });
+}
+
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
 export default {
     getSquadsBoard,
@@ -47,5 +57,6 @@ export default {
     joinSquad,
     leaveSquad,
     deleteSquad,
-    publish
+    publish,
+    generateSquads,
 };

@@ -2,6 +2,7 @@ package com.momot.trakball.controller;
 
 import com.momot.trakball.dto.SquadDto;
 import com.momot.trakball.dto.request.DeleteSquadRequest;
+import com.momot.trakball.dto.request.GenerateSquadsRequest;
 import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.manager.SquadManager;
 import com.momot.trakball.security.jwt.JwtUtils;
@@ -28,11 +29,6 @@ public class SquadsController {
         this.jwtUtils = jwtUtils;
     }
 
-    @GetMapping("/all")
-    public Iterable<SquadDto> getSquads() {
-        return squadManager.findAll();
-    }
-
     @GetMapping("/place/all")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public Iterable<SquadDto> getPlaceSquads(@RequestParam Long place_id) {
@@ -45,10 +41,21 @@ public class SquadsController {
         return squadManager.findById(squad_id);
     }
 
+    @GetMapping("/all")
+    public Iterable<SquadDto> getSquads() {
+        return squadManager.findAll();
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> addSquad(@RequestBody NewSquadRequest squadRequest) {
         return squadManager.addSquad(squadRequest);
+    }
+
+    @PostMapping("/all")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> addSquads(@RequestBody GenerateSquadsRequest squadRequests) {
+        return squadManager.addSquads(squadRequests.getSquadRequests());
     }
 
     @PostMapping("/join")

@@ -19,16 +19,14 @@ public class Squad {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long squad_id;
 
-    @NotBlank
-    @Size(min = 2, max = 200)
+    @NotBlank(message = "Sport can't be blank")
+    @Size(min = 2, max = 200, message = "Type valid sport")
     private String sport;
 
     @Column(name = "max_members")
     private int maxMembers;
 
-    @NotBlank
-    @Size(max = 50)
-    private String fee;
+    private Double fee;
 
     private Timestamp date;
 
@@ -44,7 +42,7 @@ public class Squad {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<User> members = new HashSet<>();
 
-    public Squad(Long squad_id, String sport, int maxMembers, String fee, Timestamp date,
+    public Squad(Long squad_id, String sport, int maxMembers, Double fee, Timestamp date,
                  User creator, Place place) {
         this.squad_id = squad_id;
         this.sport = sport;
@@ -83,11 +81,11 @@ public class Squad {
         this.maxMembers = maxMembers;
     }
 
-    public String getFee() {
+    public Double getFee() {
         return fee;
     }
 
-    public void setFee(String fee) {
+    public void setFee(Double fee) {
         this.fee = fee;
     }
 

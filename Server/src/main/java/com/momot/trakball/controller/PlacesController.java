@@ -55,6 +55,11 @@ public class PlacesController {
         return placeManager.findById(id);
     }
 
+    @GetMapping("/city")
+    public Iterable<PlaceDto> getPlacesFromCity(@RequestParam String city) {
+        return placeManager.findByCity(city);
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> addPlace(@RequestBody NewPlaceRequest newPlaceRequest) {

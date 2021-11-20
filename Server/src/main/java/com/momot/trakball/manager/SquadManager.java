@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -105,7 +107,46 @@ public class SquadManager {
         }
     }
 
-    public Squad save(Squad squad) {
+    public ResponseEntity<?> addSquads(List<NewSquadRequest> squadRequests) {
+        Optional<User> creator = userManager.getUserFromContext();
+        if (creator.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("User session error!"));
+        }
+
+        int failCounter = 0;
+        int successCounter = 0;
+        StringBuilder failMessages = new StringBuilder();
+        for (NewSquadRequest squadRequest : squadRequests) {
+            Optional<Place> place = placeManager.findByNameAndStreetAndCity(squadRequest.getPlace(),
+                    squadRequest.getStreet(), squadRequest.getCity());
+            try{
+                if (place.isPresent()) {
+                    Squad squad = new Squad(null, squadRequest.getSport(), squadRequest.getMaxMembers(),
+                            squadRequest.getFee(), squadRequest.getDate(), creator.get(), place.get());
+                    save(squad);
+                    successCounter++;
+                }
+            } catch(ConstraintViolationException e){
+                Set<ConstraintViolation<?>> exceptions = e.getConstraintViolations();
+                for (ConstraintViolation<?> exception : exceptions) {
+                    failMessages.append(" ").append(exception.getMessageTemplate()).append(";");
+                }
+                failCounter++;
+            }
+        }
+
+        if (successCounter > 0) {
+            String successMessage = "Created " + successCounter + " squads";
+            if(failCounter>0){
+                successMessage+=" with " + failCounter + " errors. Error messages: \"" + failMessages;
+            }
+            return ResponseEntity.ok(new MessageResponse(successMessage));
+        } else {
+            return ResponseEntity.badRequest().body(new MessageResponse("Creation of squads failed!"+ failMessages));
+        }
+    }
+
+    public Squad save(Squad squad) throws ConstraintViolationException {
         return squadRepository.save(squad);
     }
 

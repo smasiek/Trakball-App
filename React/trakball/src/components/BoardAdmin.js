@@ -7,10 +7,18 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import PlaceService from "../services/place.service";
 import {TiTick, TiTimes} from "react-icons/all";
+import SquadGenerator from "./SquadGenerator";
+import AlertTemplate from "./AlertTemplate";
+import {positions, Provider} from "react-alert";
 
 const BoardAdmin = () => {
 
     const [placeRequests, setPlaceRequests] = useState([]);
+
+    const options = {
+        timeout: 5000,
+        position: positions.BOTTOM_CENTER,
+    };
 
     useEffect(() => {
         PlaceService.getPlaceRequests().then(
@@ -40,12 +48,12 @@ const BoardAdmin = () => {
             (response) => {
             },
             (error) => {
-                const _content =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
+                /*                const _content =
+                                    (error.response &&
+                                        error.response.data &&
+                                        error.response.data.message) ||
+                                    error.message ||
+                                    error.toString();*/
             }
         )
     }
@@ -64,6 +72,7 @@ const BoardAdmin = () => {
                         error.response.data.message) ||
                     error.message ||
                     error.toString();
+
                 //alertReact.show(_content);
             }
         )
@@ -136,9 +145,7 @@ const BoardAdmin = () => {
                     </div>
                     <div className="item col-lg-6 col-md-6 col-sm-12">
                         <div className="box">
-                            <div className="intro">
-                                <h2 className="text-center">Place requests</h2>
-                            </div>
+                            <Provider template={AlertTemplate} {...options}><SquadGenerator/></Provider>
                         </div>
                     </div>
                 </div>

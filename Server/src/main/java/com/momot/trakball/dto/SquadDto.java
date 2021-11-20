@@ -9,7 +9,7 @@ public class SquadDto {
     private Long squad_id;
     private String sport;
     private int maxMembers;
-    private String fee;
+    private Double fee;
     private Timestamp date;
     private UserDto creator;
     private PlaceDto place;
@@ -17,7 +17,7 @@ public class SquadDto {
     public SquadDto() {
     }
 
-    public SquadDto(Long squad_id, String sport, int maxMembers, String fee, Timestamp date, User creator, Place place) {
+    public SquadDto(Long squad_id, String sport, int maxMembers, Double fee, Timestamp date, User creator, Place place) {
         this.squad_id = squad_id;
         this.sport = sport;
         this.maxMembers = maxMembers;
@@ -52,11 +52,11 @@ public class SquadDto {
         this.maxMembers = maxMembers;
     }
 
-    public String getFee() {
+    public Double getFee() {
         return fee;
     }
 
-    public void setFee(String fee) {
+    public void setFee(Double fee) {
         this.fee = fee;
     }
 
