@@ -59,6 +59,11 @@ public class PlaceManager {
         return placeRepository.findPlaceByNameAndStreetAndCity(name, street, city);
     }
 
+    public Iterable<PlaceDto> findByCity(String city) {
+        return placeRepository.findPlacesByCity(city).stream().map(place -> new PlaceDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
+                place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto())).collect(Collectors.toList());
+    }
+
     public Iterable<PlaceDto> findAll() {
         return placeRepository.findAll().stream().map(place -> new PlaceDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
                 place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto())).collect(Collectors.toList());
@@ -101,6 +106,10 @@ public class PlaceManager {
         if (!place.equals("") && !street.equals("")) {
             return searchRepository.findPlacesWithStreet(place, street);
         }
+        if (!street.equals("") && !city.equals("")) {
+            return searchRepository.findPlacesWithCityAndStreetWithoutPlace(city, street);
+        }
+
         return searchRepository.findPlaces(place);
     }
 
@@ -108,8 +117,8 @@ public class PlaceManager {
         return placeRepository.save(place);
     }
 
-    public PlaceRequest savePlaceRequest(PlaceRequest place) {
-        return placeRequestRepository.save(place);
+    public void savePlaceRequest(PlaceRequest place) {
+        placeRequestRepository.save(place);
     }
 
     public void deleteById(Long id) {
@@ -120,7 +129,7 @@ public class PlaceManager {
         Optional<User> user = userManager.getUserFromContext();
         Optional<Place> place = placeRepository.findById(place_id);
 
-        if (checkUserAndPlace(user, place)) {
+        if (user.isEmpty() || place.isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("No user in context or place doesn't exist!"));
         }
 
@@ -146,10 +155,6 @@ public class PlaceManager {
             }
         }
         return ResponseEntity.badRequest().body(new MessageResponse("Bad action on place"));
-    }
-
-    private boolean checkUserAndPlace(Optional<User> user, Optional<Place> place) {
-        return user.isEmpty() || place.isEmpty();
     }
 
     private void updateUsersPlaces(Optional<User> user, Set<Place> place) {
