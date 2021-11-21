@@ -67,7 +67,7 @@ const BoardSquads = () => {
                 setErrorMessage(_content);
             }
         );
-    }, []);
+    }, [id]);
 
     const handleMapRedirection = (id) => {
         SquadService.getPlaceSquads(id).then(

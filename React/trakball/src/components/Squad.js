@@ -38,7 +38,7 @@ const Squad = (props) => {
                         error.response.data.message) ||
                     error.message ||
                     error.toString();
-                alertReact.show(message);
+                alertReact.error(message);
             }
         );
     }
@@ -47,7 +47,6 @@ const Squad = (props) => {
         SquadService.leaveSquad(props.info.squad_id).then(
             () => {
                 window.location.reload();
-
             },
             (error) => {
                 const message =
@@ -56,7 +55,7 @@ const Squad = (props) => {
                         error.response.data.message) ||
                     error.message ||
                     error.toString();
-                alertReact.show(message);
+                alertReact.error(message);
             }
         );
     }
@@ -73,7 +72,7 @@ const Squad = (props) => {
                         error.response.data.message) ||
                     error.message ||
                     error.toString();
-                alertReact.show(message);
+                alertReact.error(message);
             }
         );
     }

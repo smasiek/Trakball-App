@@ -17,7 +17,6 @@ const BoardYourSquads = () => {
     const [searchResult, setSearchResult] = useState([]);
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(false);
-    const [foundResults, setFound] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
     const [showError, setShowError] = useState(false);
 
