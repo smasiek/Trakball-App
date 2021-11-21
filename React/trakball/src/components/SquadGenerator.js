@@ -6,6 +6,7 @@ import CheckButton from "react-validation/build/button";
 import React, {useEffect, useRef, useState} from "react";
 import PlaceService from "../services/place.service";
 import "../assets/css/squad_generator.css";
+import {floatRegExp} from "../utils/InputUtils";
 
 const required = (value, props) => {
     if (!value && !props.commited) {
@@ -103,7 +104,6 @@ const SquadGenerator = () => {
         document.getElementById("cityErr").style.display = "none";
         handleCitiesInputChange()
     }
-
 
     const handleCitiesInputChange = () => {
         if (city && city.length >= 1) {
@@ -214,8 +214,6 @@ const SquadGenerator = () => {
         let floatMax = parseFloat(max);
         return ((Math.random() * (floatMax - floatMin) + floatMin).toFixed(2));
     }
-
-    const floatRegExp = new RegExp('^(([1-9]\\d*\\.?\\d{0,2})|(0(\\.\\d{0,2})?))$')
 
     const handleValidationOnFromChange = (e) => {
         let value = e.target.value;

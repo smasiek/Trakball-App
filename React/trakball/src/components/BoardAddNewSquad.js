@@ -5,6 +5,7 @@ import CheckButton from "react-validation/build/button";
 
 import SquadService from "../services/squad.service";
 import PlaceService from "../services/place.service";
+import {floatRegExp} from "../utils/InputUtils";
 
 const required = (value) => {
     if (!value) {
@@ -50,6 +51,18 @@ const BoardAddNewSquad = (props) => {
         setCity(city)
         document.getElementById("cityErr").style.display = "none";
         handleCitiesInputChange()
+    }
+
+
+    const changeFeeInput = (e) => {
+        let value = e.target.value;
+        if (value === '' || floatRegExp.test(value)) {
+            changeFormData(e)
+        } else {
+            console.log(formData.fee);
+            e.target.value = (!!formData.fee) ? formData.fee : 0;
+            changeFormData(e);
+        }
     }
 
     const handleCitiesInputChange = () => {
@@ -329,7 +342,7 @@ const BoardAddNewSquad = (props) => {
                             className="form-control"
                             name="fee"
                             value={formData.fee}
-                            onChange={changeFormData}
+                            onChange={changeFeeInput}
                             validations={[required]}
                         />
                     </div>

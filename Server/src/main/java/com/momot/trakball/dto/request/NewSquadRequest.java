@@ -24,12 +24,9 @@ public class NewSquadRequest {
 
     private int maxMembers;
 
-    @NotBlank
-    @Size(max = 50)
-    private String fee;
+    private Double fee;
 
     private Timestamp date;
-
 
     public String getStreet() {
         return street;
@@ -55,11 +52,11 @@ public class NewSquadRequest {
         this.date = date;
     }
 
-    public String getFee() {
+    public Double getFee() {
         return fee;
     }
 
-    public void setFee(String fee) {
+    public void setFee(Double fee) {
         this.fee = fee;
     }
 
