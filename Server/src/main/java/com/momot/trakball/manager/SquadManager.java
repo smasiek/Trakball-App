@@ -151,8 +151,8 @@ public class SquadManager {
     }
 
     public ResponseEntity<?> deleteById(DeleteSquadRequest deleteSquadRequest) {
-        if (squadRepository.existsById(deleteSquadRequest.getId())) {
-            squadRepository.deleteById(deleteSquadRequest.getId());
+        if (squadRepository.existsById(deleteSquadRequest.getSquad_id())) {
+            squadRepository.deleteById(deleteSquadRequest.getSquad_id());
             return ResponseEntity.ok("Squad deleted");
         }
         return ResponseEntity.badRequest().body(new MessageResponse("Squad not found 🤐"));

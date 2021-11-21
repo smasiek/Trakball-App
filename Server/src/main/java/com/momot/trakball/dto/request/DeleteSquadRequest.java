@@ -7,11 +7,11 @@ public class DeleteSquadRequest {
     @NotBlank
     private Long squad_id;
 
-    public Long getId() {
+    public Long getSquad_id() {
         return squad_id;
     }
 
-    public void setId(Long id) {
-        this.squad_id = id;
+    public void setSquad_id(Long squad_id) {
+        this.squad_id = squad_id;
     }
 }
