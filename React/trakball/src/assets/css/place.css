@@ -99,15 +99,13 @@
     font-size: 13px;
 }
 
+.place-footer .controls button {
+    width: 30%;
+}
+
 .places-boxed .item p {
     font-size: 15px;
     margin: 0.5rem 0 0.5rem 0 !important;
-}
-
-.place-photo {
-    width: 10em;
-    height: 10em;
-    object-fit: cover;
 }
 
 .places-boxed .item img {
@@ -121,19 +119,6 @@
     margin: 0.5rem 0 0.5rem 0 !important;
 }
 
-.places-boxed .controls button {
-    color: inherit;
-    margin: 5px 10px;
-    display: inline-block;
-    opacity: 0.7;
-    border: solid 1px;
-    padding: 0.5em;
-}
-
-.places-boxed .controls button:hover {
-    opacity: 1;
-}
-
 .search > div {
     width: 80%
 }
@@ -144,7 +129,7 @@
     width: 100%;
 }
 
-form {
+.places-boxed form {
     display: flex;
     align-items: center;
     flex-direction: column;

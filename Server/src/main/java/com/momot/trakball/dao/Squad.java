@@ -1,6 +1,5 @@
 package com.momot.trakball.dao;
 
-
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -38,17 +37,27 @@ public class Squad {
     @JoinColumn(name = "place_id")
     private Place place;
 
+    @OneToMany(mappedBy = "squad")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Comment> comments;
+
     @ManyToMany(mappedBy = "squads")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<User> members = new HashSet<>();
 
-    public Squad(Long squad_id, String sport, int maxMembers, Double fee, Timestamp date,
+    private String password;
+
+    private boolean secured;
+
+    public Squad(Long squad_id, String sport, int maxMembers, Double fee, Timestamp date, boolean secured, String password,
                  User creator, Place place) {
         this.squad_id = squad_id;
         this.sport = sport;
         this.maxMembers = maxMembers;
         this.fee = fee;
         this.date = date;
+        this.secured = secured;
+        this.password = password;
         this.creator = creator;
         this.place = place;
     }
@@ -63,7 +72,6 @@ public class Squad {
     public void setSquad_id(Long id) {
         this.squad_id = id;
     }
-
 
     public String getSport() {
         return sport;
@@ -119,5 +127,29 @@ public class Squad {
 
     public void setMembers(Set<User> members) {
         this.members = members;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isSecured() {
+        return secured;
+    }
+
+    public void setSecured(boolean secured) {
+        this.secured = secured;
     }
 }

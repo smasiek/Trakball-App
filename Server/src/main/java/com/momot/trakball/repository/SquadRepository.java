@@ -21,5 +21,4 @@ public interface SquadRepository extends JpaRepository<Squad, Long> {
     @Query("select s from Squad s " +
             "where s.date >= CURRENT_TIMESTAMP")
     Optional<List<Squad>> findWithDateAfterToday();
-
 }

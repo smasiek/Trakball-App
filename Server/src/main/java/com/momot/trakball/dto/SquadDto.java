@@ -23,7 +23,7 @@ public class SquadDto {
         this.maxMembers = maxMembers;
         this.fee = fee;
         this.date = date;
-        this.creator = new UserDto(creator.getUser_id(), creator.getName(), creator.getSurname(), creator.getPhone());
+        this.creator = new UserDto(creator.getUserId(), creator.getName(), creator.getSurname(), creator.getEmail(), creator.getPhone(), creator.getPhoto());
         this.place = new PlaceDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
                 place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto());
     }
@@ -73,7 +73,7 @@ public class SquadDto {
     }
 
     public void setCreator(User creator) {
-        this.creator = new UserDto(creator.getUser_id(), creator.getName(), creator.getSurname(), creator.getPhone());
+        this.creator = new UserDto(creator.getUserId(), creator.getName(), creator.getSurname(), creator.getEmail(), creator.getPhone(), creator.getPhoto());
     }
 
     public void setCreator(UserDto creator) {

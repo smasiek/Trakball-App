@@ -15,15 +15,12 @@ const Squad = (props) => {
     useEffect(() => {
         const dateString = new Date(props.info.date).toLocaleString();
         setDate(dateString.substr(0, dateString.length - 3));
-    }, [props.info.date])
+    }, [props.info.date]);
 
-    const handleTextOrganizer = () => {
-        let creator = props.info.creator
-        let surname = creator.surname ? creator.surname : ''
-        let phone = creator.phone ? creator.phone : '-'
-        let info = 'Organiser: ' + creator.name + ' ' + surname + ' \nPhone: ' + phone + ' \nE-mail: ' + creator.email;
-        alert(info);
-    }
+    const handleShowDetailedInfo = () => {
+        history.push("/squad/" + props.info.squad_id);
+        window.location.reload();
+    };
 
     const handleJoinSquad = () => {
         SquadService.joinSquad(props.info.squad_id).then(
@@ -41,7 +38,7 @@ const Squad = (props) => {
                 alertReact.error(message);
             }
         );
-    }
+    };
 
     const handleLeaveSquad = () => {
         SquadService.leaveSquad(props.info.squad_id).then(
@@ -58,7 +55,7 @@ const Squad = (props) => {
                 alertReact.error(message);
             }
         );
-    }
+    };
 
     const handleDeleteSquad = () => {
         SquadService.deleteSquad(props.info.squad_id).then(
@@ -75,34 +72,32 @@ const Squad = (props) => {
                 alertReact.error(message);
             }
         );
-    }
+    };
 
     const Footer = () => {
-        return <div className="row">
-            <div className="social" style={{margin: 'auto'}}>
-                {(props.board === "squads") ?
-                    <div>
-                        <button onClick={handleTextOrganizer}><TiContacts style={{margin: '5px'}}/>Text organizer
-                        </button>
-                        <button onClick={handleJoinSquad}><TiUserAdd style={{margin: '5px'}}/>Join squad</button>
-                    </div>
-                    :
-                    <div>
-                        <button onClick={handleTextOrganizer}><TiContacts style={{margin: '5px'}}/>Text organizer
-                        </button>
-                        <button onClick={handleLeaveSquad} style={{color: 'lightcoral'}}><TiUserDelete
-                            style={{margin: '5px'}}/>Leave squad
-                        </button>
-                    </div>
-                }
-                {props.mod && (
-                    <button onClick={handleDeleteSquad} style={{color: 'lightcoral'}}><RiDeleteBin5Fill
-                        style={{margin: '5px'}}/>Delete</button>
-                )
-                }
-            </div>
+        return <div className="controls">
+            {(props.board === "squads") ?
+                <div>
+                    <button onClick={handleShowDetailedInfo}><TiContacts style={{margin: '5px'}}/>Detailed info
+                    </button>
+                    <button onClick={handleJoinSquad}><TiUserAdd style={{margin: '5px'}}/>Join squad</button>
+                </div>
+                :
+                <div>
+                    <button onClick={handleShowDetailedInfo}><TiContacts style={{margin: '5px'}}/>Detailed info
+                    </button>
+                    <button onClick={handleLeaveSquad} style={{color: 'lightcoral'}}><TiUserDelete
+                        style={{margin: '5px'}}/>Leave squad
+                    </button>
+                </div>
+            }
+            {props.mod && (
+                <button onClick={handleDeleteSquad} style={{color: 'lightcoral'}}><RiDeleteBin5Fill
+                    style={{margin: '5px'}}/>Delete</button>
+            )
+            }
         </div>
-    }
+    };
 
     return (
         <div className="col-sm-12 col-md-6 col-lg-4 item" key={props.info.squad_id}>
@@ -125,4 +120,4 @@ const Squad = (props) => {
     );
 };
 
-export default Squad
+export default Squad;

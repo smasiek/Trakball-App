@@ -12,7 +12,6 @@ import com.momot.trakball.repository.UserDetailsRepository;
 import com.momot.trakball.repository.UserRepository;
 import com.momot.trakball.security.jwt.JwtUtils;
 import com.momot.trakball.security.services.UserDetailsImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,23 +31,24 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    @Autowired
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+    final AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserDetailsRepository userDetailsRepository;
+    final UserRepository userRepository;
+    final UserDetailsRepository userDetailsRepository;
+    final RoleRepository roleRepository;
 
-    @Autowired
-    RoleRepository roleRepository;
+    final PasswordEncoder encoder;
+    final JwtUtils jwtUtils;
 
-    @Autowired
-    PasswordEncoder encoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, UserDetailsRepository userDetailsRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.userDetailsRepository = userDetailsRepository;
+        this.roleRepository = roleRepository;
+        this.encoder = encoder;
+        this.jwtUtils = jwtUtils;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -73,6 +73,7 @@ public class AuthController {
                     user.get().getUserDetails().getName(),
                     user.get().getUserDetails().getSurname(),
                     user.get().getUserDetails().getPhone(),
+                    user.get().getPhoto(),
                     roles));
         }
         return ResponseEntity.badRequest().body(new MessageResponse("User doesn't exist!"));
@@ -92,7 +93,9 @@ public class AuthController {
                 encoder.encode(signUpRequest.getPassword()),
                 signUpRequest.getName(),
                 signUpRequest.getSurname(),
-                signUpRequest.getPhone());
+                signUpRequest.getPhone(),
+                (signUpRequest.getPhoto().equals("")) ? "https://ui-avatars.com/api/name=" + signUpRequest.getName() +
+                        "%20" + signUpRequest.getSurname() + "&background=random" : signUpRequest.getPhoto());
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -122,7 +125,6 @@ public class AuthController {
                 }
             });
         }
-
         user.setRoles(roles);
         userRepository.save(user);
 

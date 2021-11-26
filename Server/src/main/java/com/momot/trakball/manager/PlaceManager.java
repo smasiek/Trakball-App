@@ -187,7 +187,7 @@ public class PlaceManager {
 
     public Iterable<PlaceRequestDto> getPlaceRequests() {
         return placeRequestRepository.findAll().stream().map(place -> new PlaceRequestDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
-                place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto(), place.getRequester().getUser_id(), place.getRequester().getName() + ' ' + place.getRequester().getSurname())).collect(Collectors.toList());
+                place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto(), place.getRequester().getUserId(), place.getRequester().getName() + ' ' + place.getRequester().getSurname())).collect(Collectors.toList());
     }
 
     public ResponseEntity<?> approvePlaceRequests(ApprovePlaceRequest approvedPlaceId) {

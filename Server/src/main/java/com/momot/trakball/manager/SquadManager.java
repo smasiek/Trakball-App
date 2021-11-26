@@ -1,40 +1,42 @@
 package com.momot.trakball.manager;
 
-import com.momot.trakball.dao.Place;
-import com.momot.trakball.dao.Squad;
-import com.momot.trakball.dao.User;
+import com.momot.trakball.dao.*;
+import com.momot.trakball.dto.CommentDto;
 import com.momot.trakball.dto.SquadDto;
+import com.momot.trakball.dto.UserDto;
 import com.momot.trakball.dto.request.DeleteSquadRequest;
 import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.dto.response.MessageResponse;
+import com.momot.trakball.repository.CommentRepository;
 import com.momot.trakball.repository.SquadRepository;
 import com.momot.trakball.security.jwt.JwtUtils;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.momot.trakball.dao.ERole.ROLE_ADMIN;
 
 @Service
 public class SquadManager {
 
     private final SquadRepository squadRepository;
+    private final CommentRepository commentRepository;
 
     private final UserManager userManager;
-
     private final PlaceManager placeManager;
 
     final JwtUtils jwtUtils;
 
     @Autowired
-    public SquadManager(SquadRepository squadRepository, UserManager userManager, PlaceManager placeManager, JwtUtils jwtUtils) {
+    public SquadManager(SquadRepository squadRepository, CommentRepository commentRepository, UserManager userManager, PlaceManager placeManager, JwtUtils jwtUtils) {
         this.squadRepository = squadRepository;
+        this.commentRepository = commentRepository;
         this.userManager = userManager;
         this.placeManager = placeManager;
         this.jwtUtils = jwtUtils;
@@ -43,7 +45,6 @@ public class SquadManager {
     public SquadDto findById(Long id) {
         SquadDto squadDto = new SquadDto();
         squadRepository.findById(id).ifPresent(squad -> {
-            // squadDto = new SquadDto(squad.getSquad_id(),squad.getSport(),squad.getMaxMembers(),squad.getFee(),squad.getDate(),squad.getCreator(),squad.getPlace());
             squadDto.setSquad_id(squad.getSquad_id());
             squadDto.setSport(squad.getSport());
             squadDto.setMaxMembers(squad.getMaxMembers());
@@ -53,6 +54,17 @@ public class SquadManager {
             squadDto.setPlace(squad.getPlace());
         });
         return squadDto;
+    }
+
+    public List<UserDto> findMembers(Long id) {
+        Optional<Squad> squad = squadRepository.findById(id);
+        List<UserDto> resultSquads = new ArrayList<>();
+        if (squad.isPresent()) {
+            resultSquads = squad.get().getMembers().stream().map(
+                    c -> new UserDto(c.getUserId(), c.getName(), c.getSurname(), c.getEmail(), c.getPhone(), c.getPhoto())
+            ).collect(Collectors.toList());
+        }
+        return resultSquads;
     }
 
     public List<SquadDto> findAll() {
@@ -94,7 +106,9 @@ public class SquadManager {
                 newSquadRequestSquad.getStreet(), newSquadRequestSquad.getCity());
         if (place.isPresent() && creator.isPresent()) {
             Squad squad = new Squad(null, newSquadRequestSquad.getSport(), newSquadRequestSquad.getMaxMembers(),
-                    newSquadRequestSquad.getFee(), newSquadRequestSquad.getDate(), creator.get(), place.get());
+                    newSquadRequestSquad.getFee(), newSquadRequestSquad.getDate(), newSquadRequestSquad.isSecured(),
+                    (newSquadRequestSquad.isSecured()) ? BCrypt.hashpw(newSquadRequestSquad.getPassword(),
+                            BCrypt.gensalt()) : "", creator.get(), place.get());
             save(squad);
             return ResponseEntity.ok(new SquadDto(squad.getSquad_id(),
                     squad.getSport(),
@@ -119,14 +133,14 @@ public class SquadManager {
         for (NewSquadRequest squadRequest : squadRequests) {
             Optional<Place> place = placeManager.findByNameAndStreetAndCity(squadRequest.getPlace(),
                     squadRequest.getStreet(), squadRequest.getCity());
-            try{
+            try {
                 if (place.isPresent()) {
                     Squad squad = new Squad(null, squadRequest.getSport(), squadRequest.getMaxMembers(),
-                            squadRequest.getFee(), squadRequest.getDate(), creator.get(), place.get());
+                            squadRequest.getFee(), squadRequest.getDate(), false, "", creator.get(), place.get());
                     save(squad);
                     successCounter++;
                 }
-            } catch(ConstraintViolationException e){
+            } catch (ConstraintViolationException e) {
                 Set<ConstraintViolation<?>> exceptions = e.getConstraintViolations();
                 for (ConstraintViolation<?> exception : exceptions) {
                     failMessages.append(" ").append(exception.getMessageTemplate()).append(";");
@@ -137,12 +151,12 @@ public class SquadManager {
 
         if (successCounter > 0) {
             String successMessage = "Created " + successCounter + " squads";
-            if(failCounter>0){
-                successMessage+=" with " + failCounter + " errors. Error messages: \"" + failMessages;
+            if (failCounter > 0) {
+                successMessage += " with " + failCounter + " errors. Error messages: \"" + failMessages;
             }
             return ResponseEntity.ok(new MessageResponse(successMessage));
         } else {
-            return ResponseEntity.badRequest().body(new MessageResponse("Creation of squads failed!"+ failMessages));
+            return ResponseEntity.badRequest().body(new MessageResponse("Creation of squads failed!" + failMessages));
         }
     }
 
@@ -151,18 +165,30 @@ public class SquadManager {
     }
 
     public ResponseEntity<?> deleteById(DeleteSquadRequest deleteSquadRequest) {
-        if (squadRepository.existsById(deleteSquadRequest.getSquad_id())) {
-            squadRepository.deleteById(deleteSquadRequest.getSquad_id());
-            return ResponseEntity.ok("Squad deleted");
+        Optional<User> user = userManager.getUserFromContext();
+        Optional<Squad> squad = squadRepository.findById(deleteSquadRequest.getSquad_id());
+
+        if (squad.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Squad not found 🤐"));
         }
-        return ResponseEntity.badRequest().body(new MessageResponse("Squad not found 🤐"));
+
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("User session problem"));
+        }
+
+        if (!user.get().getRoles().contains(new Role(ROLE_ADMIN)) && !user.get().getUserId().equals(squad.get().getCreator().getUserId())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("You have to be Admin or creator of a team"));
+        }
+
+        squadRepository.deleteById(deleteSquadRequest.getSquad_id());
+        return ResponseEntity.ok("Squad deleted");
     }
 
     public ResponseEntity<?> updateSquad(Long squadId, SquadsUpdate updateType) {
         Optional<User> user = userManager.getUserFromContext();
         Optional<Squad> squad = squadRepository.findById(squadId);
 
-        if (checkUserAndSquadEmpty(user, squad)) {
+        if (user.isEmpty() || squad.isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("No user in context or squad doesn't exist!"));
         }
 
@@ -193,12 +219,44 @@ public class SquadManager {
         return ResponseEntity.badRequest().body(new MessageResponse("Bad update type"));
     }
 
-    private boolean checkUserAndSquadEmpty(Optional<User> user, Optional<Squad> squad) {
-        return user.isEmpty() || squad.isEmpty();
-    }
-
     private void updateUserSquads(Optional<User> user, Set<Squad> newSquads) {
         user.ifPresent(u -> u.setSquads(newSquads));
         user.ifPresent(userManager::save);
+    }
+
+    public List<CommentDto> findCommentsById(Long squad_id) {
+        Optional<Squad> squad = squadRepository.findById(squad_id);
+        List<CommentDto> result = new ArrayList<>();
+        squad.ifPresent(value -> result.addAll(value.getComments().stream().map(
+                CommentDto::new
+        ).sorted().collect(Collectors.toList())));
+        Collections.reverse(result);
+        return result;
+    }
+
+    public ResponseEntity<?> addComment(Long squad_id, CommentDto commentDto) {
+        Optional<Squad> squad = squadRepository.findById(squad_id);
+        Optional<User> user = userManager.getUserFromContext();
+
+        if (squad.isPresent() && user.isPresent()) {
+            commentRepository.save(new Comment(commentDto.getText(), commentDto.getDate(), user.get(), squad.get()));
+            return ResponseEntity.ok(new MessageResponse("You've posted a comment! 🙂"));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Comment wasn't posted. Something went wrong."));
+    }
+
+    public ResponseEntity<?> getSecuredInfo(Long squad_id) {
+        Optional<Squad> optionalSquad = squadRepository.findById(squad_id);
+        return optionalSquad.map(squad -> ResponseEntity.ok(new MessageResponse(String.valueOf(squad.isSecured())))).orElseGet(() -> ResponseEntity.badRequest().body(new MessageResponse("Couldn't get info about squad")));
+    }
+
+    public ResponseEntity<?> verifyPassword(Long squad_id, String password) {
+        Optional<Squad> optionalSquad = squadRepository.findById(squad_id);
+        if (optionalSquad.isPresent()) {
+            if (BCrypt.checkpw(password, optionalSquad.get().getPassword())) {
+                return ResponseEntity.ok(new MessageResponse(String.valueOf(true)));
+            }
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse(String.valueOf(false)));
     }
 }

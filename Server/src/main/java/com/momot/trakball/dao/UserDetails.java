@@ -11,11 +11,13 @@ public class UserDetails {
     private String phone;
     private String name;
     private String surname;
+    private String photo;
 
-    public UserDetails(String name, String surname, String phone) {
+    public UserDetails(String name, String surname, String phone, String photo) {
         this.phone = phone;
         this.name = name;
         this.surname = surname;
+        this.photo = photo;
     }
 
     public UserDetails() {
@@ -51,5 +53,13 @@ public class UserDetails {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }

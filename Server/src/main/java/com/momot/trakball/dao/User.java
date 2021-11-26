@@ -1,5 +1,8 @@
 package com.momot.trakball.dao;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -28,21 +31,19 @@ public class User {
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "details_id")
-    //@JsonIgnoreProperties(value = "user", allowSetters = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserDetails userDetails;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_squads",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "squad_id"))
-    // @JsonIgnoreProperties(value = "members", allowSetters = true)
     private Set<Squad> squads = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_places",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "place_id"))
-    //@JsonIgnoreProperties(value = "followers", allowSetters = true)
     private Set<Place> yourPlaces = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -51,16 +52,16 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User(String email, String password, String name, String surname, String phone) {
+    public User(String email, String password, String name, String surname, String phone, String photo) {
         this.email = email;
         this.password = password;
-        this.userDetails = new UserDetails(name, surname, phone);
+        this.userDetails = new UserDetails(name, surname, phone, photo);
     }
 
     public User() {
     }
 
-    public Long getUser_id() {
+    public Long getUserId() {
         return user_id;
     }
 
@@ -138,5 +139,9 @@ public class User {
 
     public void setSurname(String surname) {
         this.userDetails.setSurname(surname);
+    }
+
+    public String getPhoto() {
+        return userDetails.getPhoto();
     }
 }

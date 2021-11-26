@@ -2,10 +2,10 @@ import React, {useRef, useState} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-
 import SquadService from "../services/squad.service";
 import PlaceService from "../services/place.service";
 import {floatRegExp} from "../utils/InputUtils";
+import {Checkbox} from "@mui/material";
 
 const required = (value) => {
     if (!value) {
@@ -34,6 +34,8 @@ const BoardAddNewSquad = (props) => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
+    const [privateSquad, setPrivateSquad] = useState(false);
+
     const currentDate = new Date();
     currentDate.setDate(currentDate.getDate() + 1);
     const minDate = currentDate.toISOString().split('T')[0] + 'T' +
@@ -44,32 +46,31 @@ const BoardAddNewSquad = (props) => {
             ...formData,
             [e.target.name]: e.target.value
         })
-    }
+    };
 
     const changeCityInput = (e) => {
-        const city = e.target.value
-        setCity(city)
+        const city = e.target.value;
+        setCity(city);
         document.getElementById("cityErr").style.display = "none";
-        handleCitiesInputChange()
-    }
-
+        handleCitiesInputChange();
+    };
 
     const changeFeeInput = (e) => {
         let value = e.target.value;
         if (value === '' || floatRegExp.test(value)) {
-            changeFormData(e)
+            changeFormData(e);
         } else {
             console.log(formData.fee);
             e.target.value = (!!formData.fee) ? formData.fee : 0;
             changeFormData(e);
         }
-    }
+    };
 
     const handleCitiesInputChange = () => {
         if (city && city.length >= 1) {
-            fetchCitiesList()
+            fetchCitiesList();
         }
-    }
+    };
 
     const fetchCitiesList = () => {
         PlaceService.getCitiesList(city, street, place).then(
@@ -87,28 +88,28 @@ const BoardAddNewSquad = (props) => {
                 setCitiesList(_content);
             }
         );
-    }
+    };
 
     const CitySuggestions = (e) => {
         const options = e.results.map((r, index) => (
             <option value={r} key={index}/>
-        ))
+        ));
         return <datalist id="cities">{options}</datalist>
-    }
+    };
 
     const changeStreetInput = (e) => {
-        const street = e.target.value
-        setStreet(street)
+        const street = e.target.value;
+        setStreet(street);
 
         document.getElementById("streetErr").style.display = "none";
-        handleStreetsInputChange(e)
-    }
+        handleStreetsInputChange(e);
+    };
 
     const handleStreetsInputChange = (e) => {
         if (e.target.value && e.target.value.length >= 1) {
-            fetchStreetsList()
+            fetchStreetsList();
         }
-    }
+    };
 
     const fetchStreetsList = () => {
         PlaceService.getStreetsList(city, street, place).then(
@@ -126,28 +127,32 @@ const BoardAddNewSquad = (props) => {
                 setStreetsList(_content);
             }
         );
-    }
+    };
 
     const StreetSuggestions = (e) => {
         const options = e.results.map((r, index) => (
             <option value={r} key={index}/>
         ))
         return <datalist id="streets">{options}</datalist>
-    }
+    };
 
     const changePlaceInput = (e) => {
-        const place = e.target.value
-        setPlace(place)
+        const place = e.target.value;
+        setPlace(place);
 
         document.getElementById("placeErr").style.display = "none";
-        handlePlacesInputChange(e)
-    }
+        handlePlacesInputChange(e);
+    };
 
     const handlePlacesInputChange = (e) => {
         if (e.target.value && e.target.value.length >= 1) {
-            fetchPlacesList()
+            fetchPlacesList();
         }
-    }
+    };
+
+    const handlePrivateSquad = (event) => {
+        setPrivateSquad(event.target.checked);
+    };
 
     const fetchPlacesList = () => {
         PlaceService.getPlacesList(city, street, place).then(
@@ -165,14 +170,14 @@ const BoardAddNewSquad = (props) => {
                 setPlacesList(_content);
             }
         );
-    }
+    };
 
     const PlaceSuggestions = (e) => {
         const options = e.results.map((r, index) => (
             <option value={r} key={index}/>
         ))
         return <datalist id="places">{options}</datalist>
-    }
+    };
 
     const isValid = () => {
         let isValid = true;
@@ -195,7 +200,7 @@ const BoardAddNewSquad = (props) => {
         }
 
         return isValid;
-    }
+    };
 
     const handleNewSquad = (e) => {
         e.preventDefault();
@@ -208,7 +213,7 @@ const BoardAddNewSquad = (props) => {
         if (checkBtn.current.context._errors.length === 0 && isValid()) {
             SquadService.publish(place, city, street,
                 formData.sport, new Date(formData.date).getTime(),
-                formData.fee, formData.maxMembers).then(
+                formData.fee, formData.maxMembers, privateSquad, formData.password).then(
                 () => {
                     props.history.push("/squads");
                     window.location.reload();
@@ -232,7 +237,7 @@ const BoardAddNewSquad = (props) => {
 
     return (
         <div className="col-md-12">
-            <div className="card card-container" style={{padding: '20px 40px'}}>
+            <div className="card card-container" style={{marginTop: "2em", padding: '20px 40px'}}>
 
                 <Form onSubmit={handleNewSquad} ref={form}>
                     <div className="intro">
@@ -358,6 +363,29 @@ const BoardAddNewSquad = (props) => {
                             validations={[required]}
                         />
                     </div>
+
+                    <div className="form-group justify-content-between" style={{display: "flex"}}>
+                        <label htmlFor="maxMembers">Create private squad</label>
+                        <Checkbox
+                            checked={privateSquad}
+                            onChange={handlePrivateSquad}
+                            inputProps={{'aria-label': 'controlled'}}
+                        />
+                    </div>
+
+                    {privateSquad &&
+                    <div className="form-group">
+                        <span htmlFor="password">Password</span>
+                        <Input
+                            type="password"
+                            className="form-control"
+                            name="password"
+                            value={formData.password}
+                            onChange={changeFormData}
+                            validations={[required]}
+                        />
+                    </div>
+                    }
 
                     <div className="form-group" style={{marginBottom: 0}}>
                         <button className="btn btn-danger btn-block" disabled={loading}>

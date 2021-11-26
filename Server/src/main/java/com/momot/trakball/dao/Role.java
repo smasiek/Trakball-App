@@ -1,7 +1,6 @@
 package com.momot.trakball.dao;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "roles")
@@ -15,8 +14,7 @@ public class Role {
     @Column(length = 20)
     private ERole name;
 
-
-    public Role(Long id, ERole name, List<User> user) {
+    public Role(Long id, ERole name) {
         this.id = id;
         this.name = name;
     }

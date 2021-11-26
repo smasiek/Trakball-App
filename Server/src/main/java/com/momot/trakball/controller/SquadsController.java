@@ -1,6 +1,8 @@
 package com.momot.trakball.controller;
 
+import com.momot.trakball.dto.CommentDto;
 import com.momot.trakball.dto.SquadDto;
+import com.momot.trakball.dto.UserDto;
 import com.momot.trakball.dto.request.DeleteSquadRequest;
 import com.momot.trakball.dto.request.GenerateSquadsRequest;
 import com.momot.trakball.dto.request.NewSquadRequest;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.momot.trakball.manager.SquadsUpdate.JOIN;
 import static com.momot.trakball.manager.SquadsUpdate.LEAVE;
@@ -36,14 +40,28 @@ public class SquadsController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public SquadDto getSquad(@RequestParam Long squad_id) {
         return squadManager.findById(squad_id);
+    }
+
+    @GetMapping("/secured")
+    public ResponseEntity<?> getSecured(@RequestParam Long squad_id) {
+        return squadManager.getSecuredInfo(squad_id);
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verifyPassword(@RequestParam Long squad_id, @RequestParam String password) {
+        return squadManager.verifyPassword(squad_id, password);
     }
 
     @GetMapping("/all")
     public Iterable<SquadDto> getSquads() {
         return squadManager.findAll();
+    }
+
+    @GetMapping("/members")
+    public List<UserDto> getSquadMembers(@RequestParam Long squad_id) {
+        return squadManager.findMembers(squad_id);
     }
 
     @PostMapping
@@ -71,8 +89,19 @@ public class SquadsController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteSquad(@RequestBody DeleteSquadRequest deleteSquadRequest) {
         return squadManager.deleteById(deleteSquadRequest);
+    }
+
+    @GetMapping("/comments")
+    public Iterable<CommentDto> getComments(@RequestParam Long squad_id) {
+        return squadManager.findCommentsById(squad_id);
+    }
+
+    @PostMapping("/comments")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> postComment(@RequestParam Long squad_id, @RequestBody CommentDto commentDto) {
+        return squadManager.addComment(squad_id, commentDto);
     }
 }

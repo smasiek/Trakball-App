@@ -14,16 +14,15 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
-
-    private String email;
+    private final Long id;
+    private final String email;
 
     @JsonIgnore
-    private String password;
+    private final String password;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id,String email, String password,
+    public UserDetailsImpl(Long id, String email, String password,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
@@ -37,7 +36,7 @@ public class UserDetailsImpl implements UserDetails {
                 .collect(Collectors.toList());
 
         return new UserDetailsImpl(
-                user.getUser_id(),
+                user.getUserId(),
                 user.getEmail(),
                 user.getPassword(),
                 authorities);
@@ -52,7 +51,6 @@ public class UserDetailsImpl implements UserDetails {
         return id;
     }
 
-
     @Override
     public String getPassword() {
         return password;
@@ -62,6 +60,7 @@ public class UserDetailsImpl implements UserDetails {
     public String getUsername() {
         return email;
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

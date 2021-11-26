@@ -25,6 +25,7 @@ public class Place {
     private String photo;
 
     @OneToMany(mappedBy = "place")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Squad> squads;
 
     @ManyToMany(mappedBy = "yourPlaces")

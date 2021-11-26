@@ -20,11 +20,14 @@ public class SignupRequest {
     @Size(min = 1, max = 40)
     private String name;
 
-    @Size(min = 0, max = 40)
+    @NotBlank
+    @Size(min = 1, max = 40)
     private String surname;
 
-    @Size(min = 0, max = 40)
+    @Size(max = 40)
     private String phone;
+
+    private String photo;
 
     private Set<String> role;
 
@@ -74,5 +77,13 @@ public class SignupRequest {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }

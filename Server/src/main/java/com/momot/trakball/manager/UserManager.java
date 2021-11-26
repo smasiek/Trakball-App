@@ -74,11 +74,12 @@ public class UserManager {
                     .collect(Collectors.toSet());
 
             return ResponseEntity.ok(new JwtResponse(jwt,
-                    user.getUser_id(),
+                    user.getUserId(),
                     user.getEmail(),
                     user.getUserDetails().getName(),
                     user.getUserDetails().getSurname(),
                     user.getUserDetails().getPhone(),
+                    user.getPhoto(),
                     roles));
         }
         return ResponseEntity.badRequest().body(new MessageResponse("Could not load user from context"));

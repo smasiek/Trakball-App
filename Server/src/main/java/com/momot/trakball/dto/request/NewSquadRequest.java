@@ -28,6 +28,10 @@ public class NewSquadRequest {
 
     private Timestamp date;
 
+    private String password;
+
+    private boolean secured;
+
     public String getStreet() {
         return street;
     }
@@ -82,5 +86,21 @@ public class NewSquadRequest {
 
     public void setSport(String sport) {
         this.sport = sport;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isSecured() {
+        return secured;
+    }
+
+    public void setSecured(boolean secured) {
+        this.secured = secured;
     }
 }

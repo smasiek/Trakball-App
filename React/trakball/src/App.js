@@ -3,22 +3,20 @@ import {Route, Switch} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Nav, Navbar} from "react-bootstrap";
 import "./assets/css/App.css";
-
 import logo from './assets/img/Logo big.png';
 import AuthService from "./services/auth.service";
-
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
 import BoardSquads from "./components/BoardSquads";
+import BoardSquadInfo from "./components/BoardSquadInfo";
 import BoardYourSquads from "./components/BoardYourSquads";
 import BoardAddNewSquad from "./components/BoardAddNewSquad";
 import BoardYourPlaces from "./components/BoardYourPlaces";
 import EditProfile from "./components/EditProfile";
 import BoardAddNewPlace from "./components/BoardAddNewPlace";
 import BoardAdmin from "./components/BoardAdmin";
-import {positions} from "react-alert";
 
 const App = () => {
     const [showUserBoards, setShowYourSquadsBoard] = useState(false);
@@ -40,7 +38,7 @@ const App = () => {
     };
 
     return (
-        <div>
+        <div style={{display: "flex"}}>
             <Navbar collapseOnSelect expand="lg" bg="success" variant="dark">
 
                 <Navbar.Brand href={"/"}>
@@ -78,8 +76,7 @@ const App = () => {
                 </Navbar.Collapse>
 
             </Navbar>
-
-            <div className="container-xl mt-3">
+            <div className="container-xl" style={{marginTop: '6em'}}>
                 <Switch>
                     <Route exact path={["/", "/home"]} component={Home}/>
                     <Route path="/home/:lat/:lng" component={Home}/>
@@ -87,6 +84,7 @@ const App = () => {
                     <Route exact path="/register" component={Register}/>
                     <Route exact path="/profile" component={Profile}/>
                     <Route exact path="/edit_profile" component={EditProfile}/>
+                    <Route path="/squad/:id" component={BoardSquadInfo}/>
                     <Route path="/squads/:id" component={BoardSquads}/>
                     <Route path="/squads" component={BoardSquads}/>
                     <Route path="/your_squads" component={BoardYourSquads}/>
