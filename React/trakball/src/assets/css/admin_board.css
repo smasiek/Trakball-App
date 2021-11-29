@@ -48,6 +48,17 @@
     margin-bottom: 20px;
 }
 
-.place-requests ul li div div {
+.admin-boxed ul li div div {
     padding-right: 4em;
+}
+
+.admin-boxed .places .place-item {
+
+}
+
+.admin-boxed .places .place-item img {
+    width: 5em;
+    height: 5em;
+    margin-right: 1em;
+    object-fit: cover;
 }

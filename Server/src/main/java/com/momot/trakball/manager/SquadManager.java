@@ -74,6 +74,7 @@ public class SquadManager {
             resultSquads = squads.get().stream().filter(s -> s.getMembers().size() < s.getMaxMembers()).map(
                     s -> new SquadDto(s.getSquad_id(),
                             s.getSport(),
+                            s.getMembers().size(),
                             s.getMaxMembers(),
                             s.getFee(), s.getDate(),
                             s.getCreator(),
@@ -92,6 +93,7 @@ public class SquadManager {
         return result.stream().map(
                 s -> new SquadDto(s.getSquad_id(),
                         s.getSport(),
+                        s.getMembers().size(),
                         s.getMaxMembers(),
                         s.getFee(), s.getDate(),
                         s.getCreator(),
@@ -112,6 +114,7 @@ public class SquadManager {
             save(squad);
             return ResponseEntity.ok(new SquadDto(squad.getSquad_id(),
                     squad.getSport(),
+                    squad.getMembers().size(),
                     squad.getMaxMembers(),
                     squad.getFee(), squad.getDate(),
                     squad.getCreator(),

@@ -1,21 +1,31 @@
-import def from '../assets/img/default.png';
 import {useAlert} from "react-alert";
 import SquadService from "../services/squad.service";
 import {useHistory} from 'react-router-dom';
 import {TiContacts, TiUserAdd, TiUserDelete} from "react-icons/ti";
 import {RiDeleteBin5Fill} from "react-icons/ri";
 import {useEffect, useState} from "react";
+import {generateAvatarUrl} from "../utils/PhotoUtils";
 
 const Squad = (props) => {
 
     const alertReact = useAlert();
     const history = useHistory();
     const [date, setDate] = useState("");
+    const [creatorPhoto, setCreatorPhoto] = useState("");
+    const [vacancies, setVacancies] = useState(0);
+
+    useEffect(() => {
+        setVacancies(props.info.maxMembers - props.info.currentMembers);
+    }, [props.info.maxMembers, props.info.currentMembers])
 
     useEffect(() => {
         const dateString = new Date(props.info.date).toLocaleString();
         setDate(dateString.substr(0, dateString.length - 3));
     }, [props.info.date]);
+
+    useEffect(() => {
+        setCreatorPhoto(props.info.creator.photo || generateAvatarUrl(props.info.creator.name, props.info.creator.surname))
+    }, [props.info.creator.name, props.info.creator.surname, props.info.creator.photo])
 
     const handleShowDetailedInfo = () => {
         history.push("/squad/" + props.info.squad_id);
@@ -102,17 +112,19 @@ const Squad = (props) => {
     return (
         <div className="col-sm-12 col-md-6 col-lg-4 item" key={props.info.squad_id}>
             <div className="box">
-
-                <img className="rounded-circle user-photo" src={def} alt="creatorPhoto"/>
-                <h3 className="name">{props.info.creator.name} {props.info.creator.surname}</h3>
-                <p className="sport">{props.info.sport}</p>
-                <div className="description">
-                    <p>Liczebność skladu: {props.info.maxMembers}</p>
-                    <p>Opłata: {props.info.fee}</p>
-                    <p>Miejsce: {props.info.place.name}</p>
-                    <p>Miasto: {props.info.place.city}</p>
-                    <p>Ulica: {props.info.place.street}</p>
-                    <p>Data: {date}</p>
+                <div className="info">
+                    <img className="rounded-circle user-photo" src={props.info.creator.photo} alt="creatorPhoto"/>
+                    <h3 className="name">{props.info.creator.name} {props.info.creator.surname}</h3>
+                    <p className="sport">{props.info.sport}</p>
+                    <div className="description">
+                        <p>Liczebność skladu: {props.info.maxMembers}</p>
+                        <p>{vacancies === 1 ? 'Poszukiwany: 1 zawodnik' : 'Poszukiwanych: ' + vacancies + ' zawodników'}</p>
+                        <p>Opłata: {props.info.fee.toFixed(2)} zł</p>
+                        <p>Miejsce: {props.info.place.name}</p>
+                        <p>Miasto: {props.info.place.city}</p>
+                        <p>Ulica: {props.info.place.street}</p>
+                        <p>Data: {date}</p>
+                    </div>
                 </div>
                 <Footer/>
             </div>

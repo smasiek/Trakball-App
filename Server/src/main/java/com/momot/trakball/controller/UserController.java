@@ -2,15 +2,17 @@ package com.momot.trakball.controller;
 
 import com.momot.trakball.dto.PlaceDto;
 import com.momot.trakball.dto.SquadDto;
-import com.momot.trakball.dto.request.EditProfileRequest;
 import com.momot.trakball.manager.UserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+import java.util.Optional;
+
+@CrossOrigin
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -23,13 +25,12 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<?> editProfile(@RequestHeader("Authorization") String header, @RequestBody EditProfileRequest editProfileRequest) {
+    public ResponseEntity<?> editProfile(@RequestHeader("Authorization") String header, @RequestParam Optional<String> email, @RequestParam Optional<String> password, @RequestParam Optional<String> name, @RequestParam Optional<String> surname, @RequestParam Optional<String> phone, @RequestParam Optional<String> oldEmail, @RequestParam Optional<String> oldPassword, @RequestParam("file") Optional<MultipartFile> file) {
         String jwt = "";
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             jwt = header.substring(7);
         }
-        return userManager.editProfile(editProfileRequest, jwt);
-
+        return userManager.editProfile(email, password, name, surname, phone, oldEmail, oldPassword, file, jwt);
     }
 
     @GetMapping("/squads")

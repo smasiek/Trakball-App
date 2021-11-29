@@ -1,16 +1,19 @@
 package com.momot.trakball.controller;
 
-import com.momot.trakball.dao.Place;
 import com.momot.trakball.dto.PlaceDto;
 import com.momot.trakball.dto.PlaceRequestDto;
 import com.momot.trakball.dto.request.ApprovePlaceRequest;
 import com.momot.trakball.dto.request.DeletePlaceRequest;
+import com.momot.trakball.dto.request.DeletePlaceRequestRequest;
 import com.momot.trakball.dto.request.NewPlaceRequest;
 import com.momot.trakball.manager.PlaceManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 import static com.momot.trakball.manager.PlaceFollow.FOLLOW;
 import static com.momot.trakball.manager.PlaceFollow.UNFOLLOW;
@@ -44,9 +47,15 @@ public class PlacesController {
         return placeManager.approvePlaceRequests(approvedPlaceRequest);
     }
 
+    @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deletePlace(@RequestBody DeletePlaceRequest deletePlaceRequest) {
+        return placeManager.deletePlace(deletePlaceRequest);
+    }
+
     @DeleteMapping("/requests")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deletePlaceRequests(@RequestBody DeletePlaceRequest deletePlaceRequest) {
+    public ResponseEntity<?> deletePlaceRequests(@RequestBody DeletePlaceRequestRequest deletePlaceRequest) {
         return placeManager.deletePlaceRequests(deletePlaceRequest);
     }
 
@@ -97,12 +106,7 @@ public class PlacesController {
     }
 
     @PutMapping
-    public Place editPlace(@RequestBody Place place) {
-        return placeManager.save(place);
-    }
-
-    @DeleteMapping
-    public void deletePlace(@RequestParam Long id) {
-        placeManager.deleteById(id);
+    public ResponseEntity<?> updatePlacePhoto(@RequestParam Optional<Long> placeId, @RequestParam Optional<MultipartFile> file) {
+        return placeManager.updatePlacePhoto(placeId, file);
     }
 }

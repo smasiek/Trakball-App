@@ -1,4 +1,3 @@
-import defBuilding from '../assets/img/place1.jpg';
 import PlaceService from "../services/place.service";
 import {useAlert} from "react-alert";
 import {useHistory} from 'react-router-dom';
@@ -11,7 +10,7 @@ const Place = (props) => {
     const handleShowOnMap = () => {
         history.push("/home/" + props.info.latitude + "/" + props.info.longitude);
         window.location.reload();
-    }
+    };
 
     const handleUnfollowPlace = () => {
         PlaceService.unfollowPlace(props.info.place_id).then(
@@ -28,10 +27,11 @@ const Place = (props) => {
                 alertReact.show(message);
             }
         );
-    }
+    };
+
     const handlePlaceSquads = () => {
         history.push("/squads/" + props.info.place_id);
-    }
+    };
 
     const Footer = () => {
         return <div className="place-footer">
@@ -48,14 +48,14 @@ const Place = (props) => {
                 </div>
             </div>
         </div>
-    }
+    };
 
     return (
         <div className="item" key={props.info.place_id}>
-            <img className="place-photo" src={defBuilding} alt="creatorPhoto"/>
+            <img className="place-photo" src={props.info.photo} alt="placePhoto"/>
             <Footer/>
         </div>
     );
 };
 
-export default Place
+export default Place;

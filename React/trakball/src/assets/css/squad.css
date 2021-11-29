@@ -44,7 +44,12 @@
     text-align: center;
     padding: 10px;
     background-color: #fff;
-    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 96%;
+    margin-bottom: 2em;
 }
 
 .squads-boxed .item .name {
@@ -64,8 +69,6 @@
 
 .squads-boxed .item .description {
     font-size: 15px;
-    margin-top: 15px;
-    margin-bottom: 20px;
 }
 
 .rounded-circle {
@@ -85,8 +88,8 @@
 .squads-boxed .controls {
     font-size: 18px;
     color: #a2a8ae;
+    width: 100%;
 }
-
 
 .search > div {
     width: 80%
@@ -115,4 +118,3 @@
 button {
     margin: 0
 }
-  

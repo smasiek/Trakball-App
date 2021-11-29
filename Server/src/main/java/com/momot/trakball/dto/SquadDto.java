@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 public class SquadDto {
     private Long squad_id;
     private String sport;
+    private int currentMembers;
     private int maxMembers;
     private Double fee;
     private Timestamp date;
@@ -17,9 +18,10 @@ public class SquadDto {
     public SquadDto() {
     }
 
-    public SquadDto(Long squad_id, String sport, int maxMembers, Double fee, Timestamp date, User creator, Place place) {
+    public SquadDto(Long squad_id, String sport, int currentMembers, int maxMembers, Double fee, Timestamp date, User creator, Place place) {
         this.squad_id = squad_id;
         this.sport = sport;
+        this.currentMembers = currentMembers;
         this.maxMembers = maxMembers;
         this.fee = fee;
         this.date = date;
@@ -91,5 +93,13 @@ public class SquadDto {
     public void setPlace(Place place) {
         this.place = new PlaceDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
                 place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto());
+    }
+
+    public int getCurrentMembers() {
+        return currentMembers;
+    }
+
+    public void setCurrentMembers(int currentMembers) {
+        this.currentMembers = currentMembers;
     }
 }

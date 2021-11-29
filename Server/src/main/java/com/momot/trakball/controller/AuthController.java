@@ -4,14 +4,15 @@ import com.momot.trakball.dao.ERole;
 import com.momot.trakball.dao.Role;
 import com.momot.trakball.dao.User;
 import com.momot.trakball.dto.request.LoginRequest;
-import com.momot.trakball.dto.request.SignupRequest;
 import com.momot.trakball.dto.response.JwtResponse;
 import com.momot.trakball.dto.response.MessageResponse;
+import com.momot.trakball.manager.CloudinaryManager;
 import com.momot.trakball.repository.RoleRepository;
 import com.momot.trakball.repository.UserDetailsRepository;
 import com.momot.trakball.repository.UserRepository;
 import com.momot.trakball.security.jwt.JwtUtils;
 import com.momot.trakball.security.services.UserDetailsImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,9 +21,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 public class AuthController {
 
     final AuthenticationManager authenticationManager;
+    final CloudinaryManager cloudinaryManager;
 
     final UserRepository userRepository;
     final UserDetailsRepository userDetailsRepository;
@@ -41,8 +44,10 @@ public class AuthController {
     final PasswordEncoder encoder;
     final JwtUtils jwtUtils;
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, UserDetailsRepository userDetailsRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    @Autowired
+    public AuthController(AuthenticationManager authenticationManager, CloudinaryManager cloudinaryManager, UserRepository userRepository, UserDetailsRepository userDetailsRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
+        this.cloudinaryManager = cloudinaryManager;
         this.userRepository = userRepository;
         this.userDetailsRepository = userDetailsRepository;
         this.roleRepository = roleRepository;
@@ -80,26 +85,31 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@RequestParam Optional<String> email, @RequestParam Optional<String> password, @RequestParam Optional<String> name, @RequestParam Optional<String> surname, @RequestParam Optional<String> phone, @RequestParam Optional<MultipartFile> file) {
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (email.isEmpty() || password.isEmpty() || name.isEmpty() || surname.isEmpty() || phone.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Necessary parameters missing"));
+        }
+
+        if (userRepository.existsByEmail(email.get())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
         User user = new User(
-                signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()),
-                signUpRequest.getName(),
-                signUpRequest.getSurname(),
-                signUpRequest.getPhone(),
-                (signUpRequest.getPhoto().equals("")) ? "https://ui-avatars.com/api/name=" + signUpRequest.getName() +
-                        "%20" + signUpRequest.getSurname() + "&background=random" : signUpRequest.getPhoto());
+                email.get(),
+                encoder.encode(password.get()),
+                name.get(),
+                surname.get(),
+                phone.get(),
+                (file.isEmpty()) ? "https://ui-avatars.com/api/name=" + name.get() +
+                        "%20" + surname.get() + "&background=random" : cloudinaryManager.uploadAvatarAndGetId(file.get()));
 
-        Set<String> strRoles = signUpRequest.getRole();
-        Set<Role> roles = new HashSet<>();
+        Set<Role> roles = Collections.singleton(roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found.")));
 
+       /* Set<String> strRoles =new HashSet<>();
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -124,7 +134,7 @@ public class AuthController {
                         roles.add(userRole);
                 }
             });
-        }
+        }*/
         user.setRoles(roles);
         userRepository.save(user);
 

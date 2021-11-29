@@ -10,7 +10,8 @@ public class CommentDto implements Comparable<CommentDto> {
     private String text;
     private Timestamp date;
     private Long creator_id;
-    private String creator_fullname;
+    private String creator_name;
+    private String creator_surname;
     private String creator_avatar_url;
     private Long squad_id;
 
@@ -37,7 +38,8 @@ public class CommentDto implements Comparable<CommentDto> {
         this.creator_id = comment.getCreator().getUserId();
         this.squad_id = comment.getSquad().getSquad_id();
         this.creator_avatar_url = comment.getCreator().getPhoto();
-        this.creator_fullname = comment.getCreator().getName() + " " + comment.getCreator().getSurname();
+        this.creator_name = comment.getCreator().getName();
+        this.creator_surname = comment.getCreator().getSurname();
     }
 
     public Long getComment_id() {
@@ -80,12 +82,20 @@ public class CommentDto implements Comparable<CommentDto> {
         this.squad_id = squad_id;
     }
 
-    public String getCreator_fullname() {
-        return creator_fullname;
+    public String getCreator_name() {
+        return creator_name;
     }
 
-    public void setCreator_fullname(String creator_fullname) {
-        this.creator_fullname = creator_fullname;
+    public void setCreator_name(String creator_name) {
+        this.creator_name = creator_name;
+    }
+
+    public String getCreator_surname() {
+        return creator_surname;
+    }
+
+    public void setCreator_surname(String creator_surname) {
+        this.creator_surname = creator_surname;
     }
 
     public String getCreator_avatar_url() {

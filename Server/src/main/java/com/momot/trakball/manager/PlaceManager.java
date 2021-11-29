@@ -8,6 +8,7 @@ import com.momot.trakball.dto.PlaceDto;
 import com.momot.trakball.dto.PlaceRequestDto;
 import com.momot.trakball.dto.request.ApprovePlaceRequest;
 import com.momot.trakball.dto.request.DeletePlaceRequest;
+import com.momot.trakball.dto.request.DeletePlaceRequestRequest;
 import com.momot.trakball.dto.request.NewPlaceRequest;
 import com.momot.trakball.dto.response.MessageResponse;
 import com.momot.trakball.repository.PlaceRepository;
@@ -16,6 +17,7 @@ import com.momot.trakball.repository.SearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 import java.util.Set;
@@ -31,13 +33,15 @@ public class PlaceManager {
     private final SearchRepository searchRepository;
 
     private final UserManager userManager;
+    private final CloudinaryManager cloudinaryManager;
 
     @Autowired
-    public PlaceManager(PlaceRepository placeRepository, SearchRepository searchRepository, PlaceRequestRepository placeRequestRepository, UserManager userManager) {
+    public PlaceManager(PlaceRepository placeRepository, SearchRepository searchRepository, PlaceRequestRepository placeRequestRepository, UserManager userManager, CloudinaryManager cloudinaryManager) {
         this.placeRepository = placeRepository;
         this.placeRequestRepository = placeRequestRepository;
         this.searchRepository = searchRepository;
         this.userManager = userManager;
+        this.cloudinaryManager = cloudinaryManager;
     }
 
     public PlaceDto findById(Long id) {
@@ -200,11 +204,47 @@ public class PlaceManager {
         return ResponseEntity.ok(new MessageResponse("Place approved! 🙂"));
     }
 
-    public ResponseEntity<?> deletePlaceRequests(DeletePlaceRequest deletedPlaceRequestId) {
+    public ResponseEntity<?> deletePlace(DeletePlaceRequest deletedPlaceId) {
+        if (placeRepository.existsById(deletedPlaceId.getPlaceId())) {
+            placeRepository.deleteById(deletedPlaceId.getPlaceId());
+            return ResponseEntity.ok("Place deleted");
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Place not found. Something went wrong."));
+    }
+
+    public ResponseEntity<?> deletePlaceRequests(DeletePlaceRequestRequest deletedPlaceRequestId) {
         if (placeRequestRepository.existsById(deletedPlaceRequestId.getPlaceRequestId())) {
             placeRequestRepository.deleteById(deletedPlaceRequestId.getPlaceRequestId());
             return ResponseEntity.ok("New place request deleted");
         }
         return ResponseEntity.badRequest().body(new MessageResponse("Request not found. Something went wrong."));
+    }
+
+    public ResponseEntity<?> updatePlacePhoto(Optional<Long> placeId, Optional<MultipartFile> file) {
+        if (placeId.isEmpty() || file.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Invalid photo update request"));
+        }
+        Optional<Place> optionalPlace = placeRepository.findById(placeId.get());
+
+        if (optionalPlace.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Place you try to update doesn't exist"));
+        }
+
+        Place place = optionalPlace.get();
+        String newPhotoUrl;
+        if (place.getPhoto() != null) {
+            MultipartFile multipartFile = file.get();
+            String[] photoUrlSplit = place.getPhoto().split("/");
+            String publicIdWithExtension = photoUrlSplit[photoUrlSplit.length - 1];
+            String publicId = publicIdWithExtension.substring(0, publicIdWithExtension.indexOf('.'));
+
+            newPhotoUrl = cloudinaryManager.updatePlacePhotoAndGetPublicId(multipartFile, publicId);
+        } else {
+            newPhotoUrl = cloudinaryManager.uploadPlacePhotoAndGetPublicId(file.get());
+        }
+
+        place.setPhoto(newPhotoUrl);
+        save(place);
+        return ResponseEntity.ok(new MessageResponse(newPhotoUrl));
     }
 }

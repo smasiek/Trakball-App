@@ -17,20 +17,27 @@
 .members .member {
     display: flex;
     justify-content: flex-start;
+    margin-bottom: 0.5em;
 }
 
 .comment {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comment-content {
+    display: flex;
     flex-direction: column;
 }
 
-.comment .comment-info {
+.comment-content .comment-info {
 
     display: flex;
     justify-content: space-between;
 }
 
-.comment .comment-info > div {
+.comment-content .comment-info > div {
     display: flex;
 }
 
@@ -92,7 +99,7 @@
 
 .squad-info .controls > div {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
 }
 
 .squad-info .controls {
@@ -108,8 +115,8 @@
 }
 
 .squad-info .creator .user-photo {
-    width: 2em;
-    height: 2em;
+    width: 3em;
+    height: 3em;
     object-fit: cover;
 }
 
@@ -209,4 +216,10 @@
     font-size: 15px;
     margin-top: 15px;
     margin-bottom: 20px;
+}
+
+.remove-comment {
+    width: 2em;
+    height: 2em;
+    padding: 0;
 }

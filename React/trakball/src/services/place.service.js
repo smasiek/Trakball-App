@@ -12,13 +12,20 @@ const getPlaceRequests = () => {
     return axios.get(API_URL + "requests", {headers: authHeader()});
 };
 
-const removeRequest = (place_id) => {
-    console.log(place_id)
-    return axios.delete(API_URL + "requests", {headers: authHeader(), data: {placeRequestId: place_id}});
+const removeRequest = (placeId) => {
+    return axios.delete(API_URL + "requests", {headers: authHeader(), data: {placeRequestId: placeId}});
+}
+
+const removePlace = (placeId) => {
+    return axios.delete(API_URL, {headers: authHeader(), data: {placeId: placeId}});
 }
 
 const approveRequest = (placeId) => {
     return axios.post(API_URL + "requests", {}, {headers: authHeader(), params: {placeRequestId: placeId}});
+}
+
+const updatePhoto = (formData) => {
+    return axios.put(API_URL, formData, {headers: authHeader()});
 }
 
 const getPlace = (id) => {
@@ -94,7 +101,9 @@ export default {
     getPlaces,
     getPlaceRequests,
     removeRequest,
+    removePlace,
     approveRequest,
+    updatePhoto,
     getPlace,
     getPlacesFromCity,
     newPlace,

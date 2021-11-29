@@ -5,13 +5,13 @@ import javax.validation.constraints.NotBlank;
 public class DeletePlaceRequest {
 
     @NotBlank
-    private Long placeRequestId;
+    private Long placeId;
 
-    public Long getPlaceRequestId() {
-        return placeRequestId;
+    public Long getPlaceId() {
+        return placeId;
     }
 
-    public void setPlaceRequestId(Long placeRequestId) {
-        this.placeRequestId = placeRequestId;
+    public void setPlaceId(Long placeRequestId) {
+        this.placeId = placeRequestId;
     }
 }

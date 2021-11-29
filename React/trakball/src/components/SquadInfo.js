@@ -10,12 +10,12 @@ import {useHistory} from "react-router-dom";
 import AuthService from "../services/auth.service";
 import {useAlert} from "react-alert";
 import {Button} from "react-bootstrap";
+import {generateAvatarUrl} from "../utils/PhotoUtils";
 
 const SquadInfo = (props) => {
 
     const history = useHistory();
     const alert = useAlert();
-
     const squadId = useRef(props.squadId).current;
 
     const [place, setPlace] = useState({});
@@ -30,9 +30,17 @@ const SquadInfo = (props) => {
     const [members, setMembers] = useState([]);
 
     const currentUser = AuthService.getCurrentUser();
-    const userId = (currentUser) ? currentUser.id : 0;
-    const name = (currentUser) ? currentUser.name + ' ' + currentUser.surname : "";
-    const avatarUrl = (currentUser) ? currentUser.photo : "";
+    const [userId, setUserId] = useState(0);
+    const [name, setName] = useState("");
+    const [avatarUrl, setAvatarUrl] = useState("");
+
+    useEffect(() => {
+        if (!!currentUser) {
+            setUserId(currentUser.id);
+            setName(currentUser.name + ' ' + currentUser.surname)
+            setAvatarUrl(currentUser.photo || generateAvatarUrl(currentUser.name, currentUser.surname))
+        }
+    }, [currentUser])
 
     const [userInSquad, setUserInSquad] = useState(false);
 
@@ -213,8 +221,7 @@ const SquadInfo = (props) => {
                 {...props}
                 size="md"
                 aria-labelledby="contained-modal-title-vcenter"
-                centered
-            >
+                centered>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
                         Organiser contact
@@ -227,7 +234,6 @@ const SquadInfo = (props) => {
                         <li><h6>Telefon:</h6><p>{creator.phone}</p></li>
                         <li><h6>E-mail:</h6><p>{creator.email}</p></li>
                     </ul>
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={props.onHide}>Close</Button>
@@ -251,12 +257,11 @@ const SquadInfo = (props) => {
                             </div>
                         </div>
                     </div>
-
                     <div className="container-fluid col-6" style={{maxHeight: "75vh"}}>
                         <div className="item squad">
                             <div className="box align-items-center" key={''}>
                                 <div className="creator align-items-center" key={''} style={{display: "flex"}}>
-                                    <img className="rounded-circle user-photo m-3" src={creator.photo}
+                                    <img className="rounded-circle user-photo ml-3 mr-3" src={creator.photo}
                                          alt="creatorPhoto"/>
                                     <h4>{creator.name} {creator.surname}</h4>
                                 </div>
@@ -274,7 +279,7 @@ const SquadInfo = (props) => {
                                         <li key={member.comId}>
                                             <div className="member">
                                                 <img className="rounded-circle user-photo"
-                                                     src={member.photo}
+                                                     src={member.photo || generateAvatarUrl(member.name, member.surname)}
                                                      alt="memberPhoto"/>
                                                 <span className="ml-2">{member.name} {member.surname}</span>
                                             </div>
@@ -290,7 +295,6 @@ const SquadInfo = (props) => {
                     </div>
                 </div>
             </div>
-
             <div className="container-fluid col-5">
                 <div className="row">
                     <div className="controls">
@@ -325,10 +329,8 @@ const SquadInfo = (props) => {
                             )}
                         </div>
                     </div>
-
                     <div className="container-fluid comment-section">
                         <h5 className="m-1">Comments: {count} </h5>
-
                         <div className="comment-form-row">
                             {(currentUser) ? (userInSquad) ?
                                 <form className="comment-form" onSubmit={handlePostComment}>
@@ -362,33 +364,33 @@ const SquadInfo = (props) => {
                                 </div>
 
                             }
-
                         </div>
                         {currentUser && userInSquad && comments.length > 0 &&
                         <ul className="comments mt-2">
                             {comments && comments.map((comment, index) =>
-                                <li key={comment.comId}>
-                                    <div className="comment">
+                                <li key={comment.comId} className="comment">
+                                    <div className="comment-content">
                                                 <span>
                                                     {comment.text}
                                                 </span>
                                         <div className="comment-info">
                                             <div>
                                                 <img className="rounded-circle user-photo"
-                                                     src={comment.creator_avatar_url} alt="creatorPhoto"/>
-                                                <p className="ml-2">{comment.creator_fullname}</p>
+                                                     src={(comment.creator_avatar_url) ? comment.creator_avatar_url : generateAvatarUrl(comment.creator_name, comment.creator_surname)}
+                                                     alt="creatorPhoto"/>
+                                                <p className="ml-2">{comment.creator_name + ' ' + comment.creator_surname}</p>
                                             </div>
                                             <p className="ml-2">{moment(comment.date).format('DD-MM-YYYY HH:mm')}</p>
                                         </div>
-
                                     </div>
+                                    {(userId === comment.creator_id) &&
+                                    <button className="btn btn-danger remove-comment"><TiTimes/></button>}
                                 </li>
                             )}
                         </ul>
                         }
                     </div>
                 </div>
-
             </div>
         </div>
     )
