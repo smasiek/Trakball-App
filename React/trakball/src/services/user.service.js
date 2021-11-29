@@ -42,5 +42,4 @@ export default {
     getYourSquadsBoard,
     getYourPlacesBoard,
     editData,
-    trySomething,
 };
