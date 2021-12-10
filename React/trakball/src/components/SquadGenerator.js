@@ -6,7 +6,8 @@ import CheckButton from "react-validation/build/button";
 import React, {useEffect, useRef, useState} from "react";
 import PlaceService from "../services/place.service";
 import "../assets/css/squad_generator.css";
-import {floatRegExp} from "../utils/InputUtils";
+import {floatRegExp, intRegExp} from "../utils/InputUtils";
+import {getErrorResponseMessage} from "../utils/ErrorHandlingUtils";
 
 const required = (value, props) => {
     if (!value && !props.commited) {
@@ -19,7 +20,6 @@ const required = (value, props) => {
 };
 
 const dateToValidation = (value, props, components) => {
-
     if (value < components['dateFrom'][0].value) {
         return (
             <div className="alert alert-danger mb-0" role="alert">
@@ -66,7 +66,6 @@ const SquadGenerator = () => {
     const [message, setMessage] = useState("");
 
     const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() + 1);
     const minDate = currentDate.toISOString().split('T')[0] + 'T' +
         currentDate.toTimeString().split(' ')[0].substr(0, 5);
 
@@ -76,17 +75,10 @@ const SquadGenerator = () => {
                 setCitiesList(response.data);
             },
             (error) => {
-                const _content =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-
-                setCitiesList(_content);
+                alert.error(getErrorResponseMessage(error));
             }
         );
-    }, []);
+    }, [alert]);
 
     const changeFormData = (e) => {
         setFormData({
@@ -96,27 +88,27 @@ const SquadGenerator = () => {
         if (commited.current) {
             commited.current = false;
         }
-    }
+    };
 
     const changeCityInput = (e) => {
         const city = e.target.value
         setCity(city)
         document.getElementById("cityErr").style.display = "none";
         handleCitiesInputChange()
-    }
+    };
 
     const handleCitiesInputChange = () => {
         if (city && city.length >= 1) {
             setCitiesSuggestionsList(citiesList.filter(cityElem => cityElem.toLowerCase().includes(city.toLowerCase())));
         }
-    }
+    };
 
     const CitySuggestions = (e) => {
         const options = e.results.map((r, index) => (
             <option value={r} key={index}/>
         ))
         return <datalist id="cities">{options}</datalist>
-    }
+    };
 
     const handleGenerateSquads = (e) => {
         e.preventDefault();
@@ -126,7 +118,7 @@ const SquadGenerator = () => {
             setLoading(true);
             processDataAndGenerateSquads(city, formData.sport.split(";"));
         }
-    }
+    };
 
     const isValid = () => {
         let isValid = true;
@@ -136,21 +128,15 @@ const SquadGenerator = () => {
             document.getElementById("cityErr").style.display = "block";
         }
         return isValid;
-    }
+    };
 
     const processDataAndGenerateSquads = ((city, sports) => {
         PlaceService.getPlacesFromCity(city).then(
             (response) => {
-                generateSquads(response.data, sports)
+                generateSquads(response.data, sports);
             },
             (error) => {
-                const _content =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                setMessage(_content);
+                setMessage(getErrorResponseMessage(error));
                 setLoading(false);
             }
         );
@@ -184,36 +170,29 @@ const SquadGenerator = () => {
                         setLoading(false);
                     },
                     (error) => {
-                        const _content =
-                            (error.response &&
-                                error.response.data &&
-                                error.response.data.message) ||
-                            error.message ||
-                            error.toString();
-                        console.log(error.response.data.message)
-                        alert.error(_content);
+                        alert.error(getErrorResponseMessage(error));
                         setLoading(false);
                     }
                 );
             }
         }
-    }
+    };
 
     const getRandomTimestampWithoutSeconds = (dateFrom, dateTo) => {
         return Math.round(getRandomInteger(dateFrom, dateTo) / 10000) * 10000;
-    }
+    };
 
     const getRandomInteger = (min, max) => {
         min = parseInt(min + '');
         max = parseInt(max + '');
         return Math.floor(Math.random() * (max - min) + min);
-    }
+    };
 
     const getRandomMoneyValue = (min, max) => {
         let floatMin = parseFloat(min);
         let floatMax = parseFloat(max);
         return ((Math.random() * (floatMax - floatMin) + floatMin).toFixed(2));
-    }
+    };
 
     const handleValidationOnFromChange = (e) => {
         let value = e.target.value;
@@ -223,7 +202,7 @@ const SquadGenerator = () => {
             e.target.value = (!!formData.feeFrom) ? formData.feeFrom : 0;
             changeFormData(e);
         }
-    }
+    };
 
     const handleValidationOnToChange = (e) => {
         let value = e.target.value;
@@ -233,7 +212,37 @@ const SquadGenerator = () => {
             e.target.value = (!!formData.feeTo) ? formData.feeTo : 0;
             changeFormData(e);
         }
-    }
+    };
+
+    const handleMembersFromOnChange = (e) => {
+        let value = e.target.value;
+        if (value === '' || intRegExp.test(value)) {
+            changeFormData(e)
+        } else {
+            e.target.value = (!!formData.maxMembersFrom) ? formData.maxMembersFrom : 1;
+            changeFormData(e);
+        }
+    };
+
+    const handleMembersToOnChange = (e) => {
+        let value = e.target.value;
+        if (value === '' || intRegExp.test(value)) {
+            changeFormData(e)
+        } else {
+            e.target.value = (!!formData.maxMembersTo) ? formData.maxMembersTo : 1;
+            changeFormData(e);
+        }
+    };
+
+    const handleSquadsToGenerateChange = (e) => {
+        let value = e.target.value;
+        if (value === '' || intRegExp.test(value)) {
+            changeFormData(e)
+        } else {
+            e.target.value = (!!formData.noSquads) ? formData.noSquads : 1;
+            changeFormData(e);
+        }
+    };
 
     return (
         <div className="squad-generator">
@@ -341,11 +350,11 @@ const SquadGenerator = () => {
                     <div className="form-group mr-3">
                         <label htmlFor="maxMembersFrom">Max members range min</label>
                         <Input
-                            type="number"
+                            type="text"
                             className="form-control"
                             name="maxMembersFrom"
                             value={formData.maxMembersFrom}
-                            onChange={changeFormData}
+                            onChange={handleMembersFromOnChange}
                             validations={[required]}
                             commited={commited.current}
                         />
@@ -354,11 +363,11 @@ const SquadGenerator = () => {
                     <div className="form-group">
                         <label htmlFor="maxMembersTo">Max members range max</label>
                         <Input
-                            type="number"
+                            type="text"
                             className="form-control"
                             name="maxMembersTo"
                             value={formData.maxMembersTo}
-                            onChange={changeFormData}
+                            onChange={handleMembersToOnChange}
                             validations={[required, maxMembersValidation]}
                             commited={commited.current}
                         />
@@ -367,11 +376,11 @@ const SquadGenerator = () => {
                 <div className="form-group">
                     <label htmlFor="noSquads">Squads to generate</label>
                     <Input
-                        type="number"
+                        type="text"
                         className="form-control"
                         name="noSquads"
                         value={formData.noSquads}
-                        onChange={changeFormData}
+                        onChange={handleSquadsToGenerateChange}
                         validations={[required]}
                         commited={commited.current}
                     />
@@ -398,4 +407,4 @@ const SquadGenerator = () => {
     );
 };
 
-export default SquadGenerator
+export default SquadGenerator;

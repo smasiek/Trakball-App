@@ -2,6 +2,8 @@ import PlaceService from "../services/place.service";
 import {useAlert} from "react-alert";
 import {useHistory} from 'react-router-dom';
 import {FaMapMarkedAlt, GiCancel, IoPeople} from "react-icons/all";
+import {getErrorResponseMessage} from "../utils/ErrorHandlingUtils";
+import def from '../assets/img/defPlace.jpg';
 
 const Place = (props) => {
     const history = useHistory();
@@ -18,12 +20,7 @@ const Place = (props) => {
                 window.location.reload();
             },
             (error) => {
-                const message =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
+                const message = getErrorResponseMessage(error);
                 alertReact.show(message);
             }
         );
@@ -51,8 +48,8 @@ const Place = (props) => {
     };
 
     return (
-        <div className="item" key={props.info.place_id}>
-            <img className="place-photo" src={props.info.photo} alt="placePhoto"/>
+        <div className="item w-100" key={props.info.place_id}>
+            <img className="place-photo" src={(!!props.info.photo) ? props.info.photo : def} alt="placePhoto"/>
             <Footer/>
         </div>
     );

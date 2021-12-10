@@ -14,19 +14,19 @@ const getPlaceRequests = () => {
 
 const removeRequest = (placeId) => {
     return axios.delete(API_URL + "requests", {headers: authHeader(), data: {placeRequestId: placeId}});
-}
+};
 
 const removePlace = (placeId) => {
     return axios.delete(API_URL, {headers: authHeader(), data: {placeId: placeId}});
-}
+};
 
 const approveRequest = (placeId) => {
     return axios.post(API_URL + "requests", {}, {headers: authHeader(), params: {placeRequestId: placeId}});
-}
+};
 
 const updatePhoto = (formData) => {
     return axios.put(API_URL, formData, {headers: authHeader()});
-}
+};
 
 const getPlace = (id) => {
     return axios.get(API_URL, {headers: authHeader(), params: {id: id}});
@@ -53,11 +53,11 @@ const newPlace = (name, street, city, latitude, longitude, postal_code) => {
 
 const followPlace = (placeId) => {
     return axios.post(API_URL + "follow", {}, {headers: authHeader(), params: {place_id: placeId}});
-}
+};
 
 const unfollowPlace = (placeId) => {
     return axios.post(API_URL + "unfollow", {}, {headers: authHeader(), params: {place_id: placeId}});
-}
+};
 
 const getCitiesList = (city, street, place) => {
     return axios.get(API_URL + "cities",
@@ -70,7 +70,6 @@ const getCitiesList = (city, street, place) => {
             }
         });
 };
-
 
 const getStreetsList = (city, street, place) => {
     return axios.get(API_URL + "streets",

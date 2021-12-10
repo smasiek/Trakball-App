@@ -1,4 +1,4 @@
-import defBuilding from "../assets/img/place1.jpg";
+import defBuilding from "../assets/img/defPlace.jpg";
 import Modal from 'react-bootstrap/Modal'
 import {FaMapMarkedAlt} from "react-icons/all";
 import {TiTimes, TiUserAdd, TiUserDelete} from "react-icons/ti";
@@ -11,12 +11,18 @@ import AuthService from "../services/auth.service";
 import {useAlert} from "react-alert";
 import {Button} from "react-bootstrap";
 import {generateAvatarUrl} from "../utils/PhotoUtils";
+import {getErrorResponseMessage} from "../utils/ErrorHandlingUtils";
+import LoadingIndicator from "./LoadingIndicator";
 
 const SquadInfo = (props) => {
 
     const history = useHistory();
     const alert = useAlert();
     const squadId = useRef(props.squadId).current;
+
+    const [loadingJoin, setLoadingJoin] = useState(false);
+    const [loadingLeave, setLoadingLeave] = useState(false);
+    const [loadingDelete, setLoadingDelete] = useState(false);
 
     const [place, setPlace] = useState({});
     const [creator, setCreator] = useState({});
@@ -40,14 +46,14 @@ const SquadInfo = (props) => {
             setName(currentUser.name + ' ' + currentUser.surname)
             setAvatarUrl(currentUser.photo || generateAvatarUrl(currentUser.name, currentUser.surname))
         }
-    }, [currentUser])
+    }, [currentUser]);
 
     const [userInSquad, setUserInSquad] = useState(false);
 
     const [count, setCount] = useState(0);
 
     const [comment, setComment] = useState("");
-    const [cancelDisplay, setCancelDisplay] = useState("none")
+    const [cancelDisplay, setCancelDisplay] = useState("none");
 
     useEffect(() => {
         if (props.secured) {
@@ -61,19 +67,12 @@ const SquadInfo = (props) => {
 
                 const dateString = new Date(response.data.date).toLocaleString();
                 setDate(dateString.substr(0, dateString.length - 3));
-                console.log(response.data);
             },
             (error) => {
-                const message =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                alert.error(message);
+                alert.error(getErrorResponseMessage(error));
             }
         );
-    }, [squadId, props.secured]);
+    }, [squadId, props.secured, alert]);
 
     useEffect(() => {
         if (props.secured) {
@@ -84,16 +83,10 @@ const SquadInfo = (props) => {
                 setMembers(response.data);
             },
             (error) => {
-                const message =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                alert.error(message);
+                alert.error(getErrorResponseMessage(error));
             }
         );
-    }, [squadId, props.secured]);
+    }, [squadId, props.secured, alert]);
 
     useEffect(() => {
         members.forEach(member => {
@@ -132,8 +125,11 @@ const SquadInfo = (props) => {
                     "squad_id": squadId
                 })
                 setComments(tempComments);
+                setComment("");
+                alert.success(response.data.message);
             },
             (error) => {
+                alert.error(getErrorResponseMessage(error));
             }
         );
     };
@@ -163,8 +159,10 @@ const SquadInfo = (props) => {
 
     const handleJoinSquad = (e) => {
         e.preventDefault();
+        setLoadingJoin(true);
+
         SquadService.joinSquad(squadId).then(
-            () => {
+            (response) => {
                 members.push({
                     user_id: userId,
                     name: currentUser.name,
@@ -172,46 +170,54 @@ const SquadInfo = (props) => {
                     photo: currentUser.photo,
                     phone: currentUser.phone
                 });
-                console.log(members);
                 setUserInSquad(true);
-                alert.success("You've joined squad successfully! 🙂");
+                alert.success(response.data.message);
+                setLoadingJoin(false);
             },
             (error) => {
-                const message =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                alert.show(message);
+                alert.error(getErrorResponseMessage(error));
+                setLoadingJoin(false);
             }
         );
     };
 
     const handleLeaveSquad = (e) => {
         e.preventDefault();
+        setLoadingLeave(true);
+
         SquadService.leaveSquad(squadId).then(
-            () => {
+            (response) => {
                 setMembers(members.filter(member => member.user_id !== userId));
                 setUserInSquad(false);
-                alert.show("You've left squad.");
+                alert.show(response.data.message);
+                setLoadingLeave(false);
             },
             (error) => {
-                const message =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                alert.error(message);
+                alert.error(getErrorResponseMessage(error));
+                setLoadingLeave(false);
+            }
+        );
+    };
+
+    const handleDeleteSquad = (e) => {
+        e.preventDefault();
+        setLoadingDelete(true);
+
+        SquadService.deleteSquad(props.info.squad_id).then(
+            () => {
+                history.push("/squads");
+                setLoadingDelete(false);
+            },
+            (error) => {
+                alert.error(getErrorResponseMessage(error));
+                setLoadingDelete(false);
             }
         );
     };
 
     const handleShowOnMap = () => {
         history.push("/home/" + place.latitude + "/" + place.longitude);
-        window.location.reload();
-    }
+    };
 
     const handleContactOrganiser = () => setModalShow(true);
 
@@ -228,7 +234,7 @@ const SquadInfo = (props) => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4><img className="rounded-circle user-photo m-3" src={creator.photo}
+                    <h4><img className="rounded-circle user-photo w-25 m-3" src={creator.photo}
                              alt="creatorPhoto"/>{creator.name} {creator.surname}</h4>
                     <ul className="creator-contact">
                         <li><h6>Telefon:</h6><p>{creator.phone}</p></li>
@@ -249,7 +255,7 @@ const SquadInfo = (props) => {
                     <div className="container-fluid col-6">
                         <div className="place item" key={''}>
                             <div className="box">
-                                <img className="place-photo" src={defBuilding} alt="creatorPhoto"/>
+                                <img className="place-photo" src={place.photo || defBuilding} alt="creatorPhoto"/>
                                 <div className="place-footer">
                                     <h3 className="name">{place.name}</h3>
                                     <p>{place.street}, {place.city}</p>
@@ -311,21 +317,29 @@ const SquadInfo = (props) => {
                             </button>
                             {currentUser &&
                             ((userInSquad) ?
-                                    <button className="" onClick={handleLeaveSquad}
-                                            style={{color: 'lightcoral'}}><TiUserDelete
-                                        style={{margin: '5px'}}/>Leave squad</button>
+                                    <button className="" onClick={handleLeaveSquad} style={{color: 'lightcoral'}}
+                                            disabled={loadingLeave}>
+                                        {loadingLeave && (<LoadingIndicator/>)}
+                                        <TiUserDelete style={{margin: '5px'}}/>
+                                        Leave squad
+                                    </button>
                                     :
                                     (!userInSquad && members.length < squad.maxMembers) &&
-                                    <button style={{color: 'forestgreen'}} onClick={handleJoinSquad}><TiUserAdd
-                                        style={{margin: '5px'}}/>Join squad
+                                    <button style={{color: 'forestgreen'}} onClick={handleJoinSquad}
+                                            disabled={loadingJoin}>
+                                        {loadingJoin && (<LoadingIndicator/>)}
+                                        <TiUserAdd style={{margin: '5px'}}/>
+                                        Join squad
                                     </button>
                             )
                             }
                             {currentUser && (currentUser.roles.includes("ROLE_ADMIN") || creator.user_id === userId) && (
-                                <button onClick={() => {
-                                }} style={{color: 'lightcoral'}}>
-                                    <RiDeleteBin5Fill
-                                        style={{margin: '5px'}}/>Delete</button>
+                                <button onClick={handleDeleteSquad} style={{color: 'lightcoral'}}
+                                        disabled={loadingDelete}>
+                                    {loadingDelete && (<LoadingIndicator/>)}
+                                    <RiDeleteBin5Fill style={{margin: '5px'}}/>
+                                    Delete
+                                </button>
                             )}
                         </div>
                     </div>
@@ -362,7 +376,6 @@ const SquadInfo = (props) => {
                                         </button>
                                     </div>
                                 </div>
-
                             }
                         </div>
                         {currentUser && userInSquad && comments.length > 0 &&
@@ -376,7 +389,9 @@ const SquadInfo = (props) => {
                                         <div className="comment-info">
                                             <div>
                                                 <img className="rounded-circle user-photo"
-                                                     src={(comment.creator_avatar_url) ? comment.creator_avatar_url : generateAvatarUrl(comment.creator_name, comment.creator_surname)}
+                                                     src={(comment.creator_avatar_url) ?
+                                                         comment.creator_avatar_url :
+                                                         generateAvatarUrl(comment.creator_name, comment.creator_surname)}
                                                      alt="creatorPhoto"/>
                                                 <p className="ml-2">{comment.creator_name + ' ' + comment.creator_surname}</p>
                                             </div>
@@ -393,7 +408,7 @@ const SquadInfo = (props) => {
                 </div>
             </div>
         </div>
-    )
+    );
 };
 
 export default SquadInfo;

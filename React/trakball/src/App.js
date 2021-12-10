@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Route, Switch} from "react-router-dom";
+import React, {useCallback, useEffect, useState} from "react";
+import {Link, Route, Switch, useHistory} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Nav, Navbar} from "react-bootstrap";
 import "./assets/css/App.css";
@@ -17,25 +17,52 @@ import BoardYourPlaces from "./components/BoardYourPlaces";
 import EditProfile from "./components/EditProfile";
 import BoardAddNewPlace from "./components/BoardAddNewPlace";
 import BoardAdmin from "./components/BoardAdmin";
+import EventBus from "./common/EventBuss";
 
 const App = () => {
     const [showUserBoards, setShowYourSquadsBoard] = useState(false);
     const [showAdminBoard, setShowAdminBoard] = useState(false);
     const [currentUser, setCurrentUser] = useState(undefined);
+    const history = useHistory();
+
+    const logIn = useCallback(() => {
+        setCurrentUser(AuthService.getCurrentUser());
+    }, []);
+
+    const logOut = useCallback(() => {
+        AuthService.logout();
+        setCurrentUser(undefined);
+        setShowYourSquadsBoard(false);
+        setShowAdminBoard(false);
+        history.push("/login", {message: "You need to be logged in to access this resource"});
+    }, [history]);
+
+    useEffect(() => {
+        if (currentUser) {
+            setShowYourSquadsBoard(currentUser.roles.includes("ROLE_USER"));
+            setShowAdminBoard(currentUser.roles.includes("ROLE_ADMIN"));
+        } else {
+            setShowYourSquadsBoard(false);
+            setShowAdminBoard(false);
+        }
+        EventBus.on("login", () => {
+            logIn();
+        });
+
+        EventBus.on("logout", () => {
+            logOut();
+        });
+
+        return () => {
+            EventBus.remove("login");
+            EventBus.remove("logout");
+        };
+    }, [currentUser, logIn, logOut])
 
     useEffect(() => {
         const user = AuthService.getCurrentUser();
-
-        if (user) {
-            setCurrentUser(user);
-            setShowYourSquadsBoard(user.roles.includes("ROLE_USER"));
-            setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
-        }
-    }, []);
-
-    const logOut = () => {
-        AuthService.logout();
-    };
+        setCurrentUser(user);
+    }, [])
 
     return (
         <div style={{display: "flex"}}>
@@ -50,27 +77,30 @@ const App = () => {
 
                     <Nav className="mr-auto">
 
-                        <Nav.Link href={"/home"}>Home</Nav.Link>
-                        <Nav.Link href={"/squads"}>Squads</Nav.Link>
+                        <Nav.Link as={Link} to={"/home"}>Home</Nav.Link>
+                        <Nav.Link as={Link} to={"/squads"}>Squads</Nav.Link>
                         {showUserBoards && (
-                            [<Nav.Link href={"/your_squads"}>Your squads</Nav.Link>,
-                                <Nav.Link href={"/your_places"}>Your places</Nav.Link>])
+                            [<Nav.Link as={Link} to={"/your_squads"}>Your squads</Nav.Link>,
+                                <Nav.Link as={Link} to={"/your_places"}>Your places</Nav.Link>])
                         }
                         {currentUser && (
-                            <Nav.Link href={"/new_squad"}>New squad</Nav.Link>
+                            <Nav.Link as={Link} to={"/new_squad"}>New squad</Nav.Link>
                         )}
 
                         {currentUser ? ([
-                                <Nav.Link href={"/profile"}>Your profile</Nav.Link>,
-                                <Nav.Link href={"/login"} onClick={logOut}>Log out</Nav.Link>
+                                <Nav.Link as={Link} to={"/profile"}>Your profile</Nav.Link>,
+                                <Nav.Link as={Link} to={"/login"} onClick={() => {
+                                    AuthService.logout()
+                                    setCurrentUser(undefined);
+                                }}>Log out</Nav.Link>
                             ]
                         ) : (
-                            [<Nav.Link href={"/login"}>Login</Nav.Link>,
-                                <Nav.Link href={"/register"}>Sign up</Nav.Link>]
+                            [<Nav.Link as={Link} to={"/login"}>Login</Nav.Link>,
+                                <Nav.Link as={Link} to={"/register"}>Sign up</Nav.Link>]
                         )}
 
                         {showAdminBoard && (
-                            <Nav.Link href={"/admin_board"}>Admin board</Nav.Link>
+                            <Nav.Link as={Link} to={"/admin_board"}>Admin board</Nav.Link>
                         )}
                     </Nav>
                 </Navbar.Collapse>

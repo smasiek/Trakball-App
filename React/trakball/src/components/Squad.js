@@ -5,18 +5,20 @@ import {TiContacts, TiUserAdd, TiUserDelete} from "react-icons/ti";
 import {RiDeleteBin5Fill} from "react-icons/ri";
 import {useEffect, useState} from "react";
 import {generateAvatarUrl} from "../utils/PhotoUtils";
+import {getErrorResponseMessage, unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 
 const Squad = (props) => {
 
-    const alertReact = useAlert();
+    const alert = useAlert();
     const history = useHistory();
+
     const [date, setDate] = useState("");
     const [creatorPhoto, setCreatorPhoto] = useState("");
     const [vacancies, setVacancies] = useState(0);
 
     useEffect(() => {
         setVacancies(props.info.maxMembers - props.info.currentMembers);
-    }, [props.info.maxMembers, props.info.currentMembers])
+    }, [props.info.maxMembers, props.info.currentMembers]);
 
     useEffect(() => {
         const dateString = new Date(props.info.date).toLocaleString();
@@ -25,27 +27,20 @@ const Squad = (props) => {
 
     useEffect(() => {
         setCreatorPhoto(props.info.creator.photo || generateAvatarUrl(props.info.creator.name, props.info.creator.surname))
-    }, [props.info.creator.name, props.info.creator.surname, props.info.creator.photo])
+    }, [props.info.creator.name, props.info.creator.surname, props.info.creator.photo]);
 
     const handleShowDetailedInfo = () => {
         history.push("/squad/" + props.info.squad_id);
-        window.location.reload();
     };
 
     const handleJoinSquad = () => {
         SquadService.joinSquad(props.info.squad_id).then(
             () => {
                 history.push("/your_squads");
-                window.location.reload();
             },
             (error) => {
-                const message =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                alertReact.error(message);
+                alert.error(getErrorResponseMessage(error));
+                unauthorizedErrorCheckAndHandle(error);
             }
         );
     };
@@ -56,13 +51,7 @@ const Squad = (props) => {
                 window.location.reload();
             },
             (error) => {
-                const message =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                alertReact.error(message);
+                alert.error(getErrorResponseMessage(error));
             }
         );
     };
@@ -73,13 +62,7 @@ const Squad = (props) => {
                 window.location.reload();
             },
             (error) => {
-                const message =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                alertReact.error(message);
+                alert.error(getErrorResponseMessage(error));
             }
         );
     };
@@ -113,7 +96,7 @@ const Squad = (props) => {
         <div className="col-sm-12 col-md-6 col-lg-4 item" key={props.info.squad_id}>
             <div className="box">
                 <div className="info">
-                    <img className="rounded-circle user-photo" src={props.info.creator.photo} alt="creatorPhoto"/>
+                    <img className="rounded-circle user-photo" src={creatorPhoto} alt="creatorPhoto"/>
                     <h3 className="name">{props.info.creator.name} {props.info.creator.surname}</h3>
                     <p className="sport">{props.info.sport}</p>
                     <div className="description">

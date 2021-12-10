@@ -6,6 +6,8 @@ import Place from "./Place"
 import UserService from "../services/user.service";
 import "../assets/css/place.css";
 import {Carousel} from '3d-react-carousal';
+import {getErrorResponseMessage, unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
+import MessageView from "./MessageView";
 
 const BoardYourPlaces = () => {
 
@@ -18,7 +20,7 @@ const BoardYourPlaces = () => {
         position: positions.BOTTOM_CENTER
     };
 
-    const NO_PLACE_MESSAGE = "You haven't followed any place 😓\nTry finding and following any place on map!";
+    const NO_PLACE_MESSAGE = "You haven't followed any place 😓\nTry to find and follow any place on map!";
 
     useEffect(() => {
         UserService.getYourPlacesBoard().then(
@@ -30,15 +32,10 @@ const BoardYourPlaces = () => {
                 }
             },
             (error) => {
-                const _content =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-
                 setShowError(true);
-                setErrorMessage(_content);
+                setErrorMessage(getErrorResponseMessage(error));
+
+                unauthorizedErrorCheckAndHandle(error);
             }
         );
     }, []);
@@ -49,14 +46,13 @@ const BoardYourPlaces = () => {
                 <div className="intro">
                     <h2 className="text-center">Your Places</h2>
                 </div>
+                {showError && (
+                    <div className="card card-container">
+                        <MessageView alert_type="alert-danger" message={errorMessage}/>
+                    </div>
+                )}
                 <div className="row squads">
-                    {showError && (
-                        <div className="form-group">
-                            <div className="alert alert-danger error" role="alert">
-                                {errorMessage}
-                            </div>
-                        </div>
-                    )}
+
 
                     <Carousel slides={content.map((place, index) =>
                         <Provider template={AlertTemplate} {...options}

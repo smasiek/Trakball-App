@@ -10,6 +10,7 @@ import {divIcon} from "leaflet/dist/leaflet-src.esm";
 import {FaMapMarkerAlt} from "react-icons/all";
 import AlertTemplate from "./AlertTemplate";
 import {positions, Provider} from "react-alert";
+import {unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 
 const Home = () => {
     const [places, setPlaces] = useState([]);
@@ -45,20 +46,25 @@ const Home = () => {
                     error.message ||
                     error.toString();
                 setMessage(_content);
+
+                unauthorizedErrorCheckAndHandle(error);
             }
         );
     }, []);
 
     useEffect(() => {
-        if (lat && lng)
+        if (lat && lng) {
             setLatLngPassed(true);
-    }, [lat, lng])
+        } else {
+            setLatLngPassed(false);
+        }
+    }, [lat, lng]);
 
     useEffect(() => {
         if (newPlaceLatLng && newPlaceLatLng.length === 2) {
             setNewPlaceMarkers([{'lat': newPlaceLatLng[1], 'lng': newPlaceLatLng[0]}])
         }
-    }, [newPlaceLatLng])
+    }, [newPlaceLatLng]);
 
     const setSearchResultLatLng = (latLng) => {
         setLocateLocateOnInit(false);
@@ -66,7 +72,7 @@ const Home = () => {
             setNewPlaceLatLng(latLng)
             setLatLngPassed(false);
         }
-    }
+    };
 
     const YourLocationMarker = (props) => {
         const [position, setPosition] = useState(null);
@@ -82,22 +88,24 @@ const Home = () => {
 
         useEffect(() => {
             map.invalidateSize(true);
-            if (props.shouldLocateOnInit) {
+
+            let latLng = CENTER_OF_POLAND;
+            let zoom = 7;
+            if (props.shouldLocateOnInit && !props.latLngPassed) {
                 map.locate().on("locationfound", function (e) {
                     setPosition(e.latlng);
-                    let latLng;
-                    if (props.latLngPassed) {
-                        latLng = [props.lat, props.lng];
-                    } else {
-                        latLng = e.latlng;
-                    }
-                    map.flyTo(latLng, 12);
+                    latLng = e.latlng;
+                    zoom = 12;
                 });
-                map.locate().on('locationerror', function () {
-                    map.flyTo(CENTER_OF_POLAND, 12);
-                });
+            } else {
+                if (!!props.latLng['lat'] && !!props.latLng['lng']) {
+                    latLng = [props.latLng['lat'], props.latLng['lng']];
+                    zoom = 12;
+                }
             }
-        }, [map, props.lat, props.latLngPassed, props.lng, props.shouldLocateOnInit]);
+
+            latLng.length !== 0 && map.flyTo(latLng, zoom);
+        }, [map, props.latLng, props.latLngPassed, props.shouldLocateOnInit]);
 
         return position === null ? null : (
             <Marker position={position} icon={customMarkerIcon}>
@@ -106,10 +114,10 @@ const Home = () => {
                 </Popup>
             </Marker>
         );
-    }
+    };
 
     const SearchResultMarker = (props) => {
-        const [position, setPosition] = useState(props.position);
+        const position = props.position;
         const map = useMap();
 
         const iconMarkup = renderToStaticMarkup(<FaMapMarkerAlt
@@ -123,7 +131,6 @@ const Home = () => {
 
         useEffect(() => {
             map.flyTo(position, 12);
-
         }, [map, position]);
 
         return position === null ? null : (
@@ -133,7 +140,7 @@ const Home = () => {
                 </Popup>
             </Marker>
         );
-    }
+    };
 
     const getOnClick = () => {
         if (addNewPlaceDisplay === 'none') {
@@ -141,55 +148,58 @@ const Home = () => {
         } else {
             setAddNewPlaceDisplay('none')
         }
-    }
+    };
 
-    return (
-        <div className={'home-container'}>
-            <header style={{display: 'flex', justifyContent: 'center'}}>
-                <h3>Map of places</h3>
-            </header>
+    return (<Provider template={AlertTemplate} {...options}>
+            <div className={'home-container'}>
+                <header style={{display: 'flex', justifyContent: 'center'}}>
+                    <h3>Map of places</h3>
+                </header>
 
-            <div className="map-container">
-                <div className={"add-new-place"} style={{display: addNewPlaceDisplay}}>
-                    <Provider template={AlertTemplate} {...options}>
+                <div className="map-container">
+                    <div className={"add-new-place"} style={{display: addNewPlaceDisplay}}>
+
                         <BoardAddNewPlace setNewPlaceLatLng={setSearchResultLatLng}
                                           setNewPlaceMarker={setNewPlaceMarkers}/>
-                    </Provider>
-                </div>
-                <div className="map">
 
-                    {message && (
-                        <div className="form-group">
-                            <div className="alert alert-danger" role="alert">
-                                {message}
+                    </div>
+                    <div className="map">
+
+                        {message && (
+                            <div className="form-group">
+                                <div className="alert alert-danger" role="alert">
+                                    {message}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    <MapContainer center={CENTER_OF_POLAND} zoom={12} scrollWheelZoom={true}>
-                        <TileLayer
-                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        <YourLocationMarker shouldLocateOnInit={shouldLocateOnInit} latLngPassed={isLatLngPassed}
-                                            lat={lat} lng={lng}/>
-                        <Markers places={places}/>
+                        <MapContainer center={CENTER_OF_POLAND} zoom={12} scrollWheelZoom={true}>
+                            <TileLayer
+                                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            <YourLocationMarker shouldLocateOnInit={shouldLocateOnInit} latLngPassed={isLatLngPassed}
+                                                latLng={{'lat': lat, 'lng': lng}}/>
+                            <Markers places={places}/>
 
-                        {newPlaceMarkers.length !== 0 && newPlaceMarkers.map(m => (
-                            <SearchResultMarker //ref={newPlaceMarker}
-                                position={[m['lat'], m['lng']]}>
-                                <Popup>
-                                    Search result.<br/>
-                                </Popup>
-                            </SearchResultMarker>
-                        ))}
-                    </MapContainer>
+                            {newPlaceMarkers.length !== 0 && newPlaceMarkers.map(m => (
+                                <SearchResultMarker
+                                    position={[m['lat'], m['lng']]}>
+                                    <Popup>
+                                        Search result.<br/>
+                                    </Popup>
+                                </SearchResultMarker>
+                            ))}
+                        </MapContainer>
 
+                    </div>
                 </div>
+                <h4>
+                    Didn't find your place? Try to <button className={'btn btn-warning'} onClick={getOnClick}>
+                    Add new sport center</button>
+                </h4>
             </div>
-            <h4>Didn't find your place? Try to <button className={'btn btn-warning'} onClick={getOnClick}>Add new sport
-                center</button></h4>
-        </div>
+        </Provider>
     );
 };
 

@@ -3,6 +3,8 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import React, {useRef, useState} from "react";
 import SquadService from "../services/squad.service";
+import {getErrorResponseMessage} from "../utils/ErrorHandlingUtils";
+import LoadingIndicator from "./LoadingIndicator";
 
 const required = (value) => {
     if (!value) {
@@ -28,12 +30,17 @@ const BoardSquadInfo = (props) => {
         setPassword(e.target.value);
     }
 
-
     const handlePassword = (e) => {
         e.preventDefault();
+        setLoading(true);
         SquadService.verifyPassword(props.squadId, password).then(
             (response) => {
                 props.setSecured(response.data.message !== 'true');
+                setLoading(false);
+            },
+            (error) => {
+                setMessage(getErrorResponseMessage(error));
+                setLoading(false);
             }
         )
     };
@@ -58,9 +65,9 @@ const BoardSquadInfo = (props) => {
                 <div className="form-group">
                     <button className="btn btn-danger btn-block" disabled={loading}>
                         {loading && (
-                            <span className="spinner-border spinner-border-sm"></span>
+                            <LoadingIndicator/>
                         )}
-                        <span>Login</span>
+                        <span>Enter</span>
                     </button>
                 </div>
 
@@ -73,7 +80,8 @@ const BoardSquadInfo = (props) => {
                 )}
                 <CheckButton style={{display: "none"}} ref={checkBtn}/>
             </Form>
-        </div>)
+        </div>
+    );
 };
 
 export default BoardSquadInfo;

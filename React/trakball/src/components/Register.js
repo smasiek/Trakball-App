@@ -6,7 +6,9 @@ import def from '../assets/img/default.png';
 import {isEmail} from "validator";
 
 import AuthService from "../services/auth.service";
-import {useHistory} from "react-router-dom";
+import {getErrorResponseMessage} from "../utils/ErrorHandlingUtils";
+import MessageView from "./MessageView";
+import isMobilePhone from "validator/es/lib/isMobilePhone";
 
 const required = (value) => {
     if (!value) {
@@ -28,6 +30,16 @@ const validEmail = (value) => {
     }
 };
 
+const validPhone = (value) => {
+    if (value && !isMobilePhone(value)) {
+        return (
+            <div className="alert alert-danger" role="alert">
+                This is not a valid phone number.
+            </div>
+        );
+    }
+};
+
 const vpassword = (value) => {
     if (value.length < 6 || value.length > 40) {
         return (
@@ -38,11 +50,20 @@ const vpassword = (value) => {
     }
 };
 
-const Register = (props) => {
+const samePasswords = (value, props, components) => {
+
+    if (value !== components['password'][0].value) {
+        return (
+            <div className="alert alert-danger mb-0" role="alert">
+                Password doesn't match!
+            </div>
+        )
+    }
+};
+
+const Register = () => {
     const form = useRef();
     const checkBtn = useRef();
-
-    const history = useHistory();
 
     const [formData, setFormData] = useState({});
     const [successful, setSuccessful] = useState(false);
@@ -53,29 +74,18 @@ const Register = (props) => {
 
     const changeConfPassword = (e) => {
         changeFormData(e);
-        document.getElementById("confPassErr").style.display = "none";
-    }
+    };
+
     const changeFormData = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         })
-    }
-
-    const isValid = () => {
-        let isValid = true;
-
-        if (formData.confPassword !== formData.password) {
-            isValid = false;
-            document.getElementById("confPassErr").style.display = "block";
-        }
-
-        return isValid;
-    }
+    };
 
     const handleImageChange = (e) => {
         setImageSelected(e.target.files[0]);
-    }
+    };
 
     useEffect(() => {
         if (!!imageSelected) {
@@ -86,7 +96,7 @@ const Register = (props) => {
                 setImagePreview(reader.result)
             };
         }
-    }, [imageSelected])
+    }, [imageSelected]);
 
 
     const handleRegister = (e) => {
@@ -97,7 +107,7 @@ const Register = (props) => {
 
         form.current.validateAll();
 
-        if (checkBtn.current.context._errors.length === 0 && isValid()) {
+        if (checkBtn.current.context._errors.length === 0) {
             const formDataWithFile = new FormData();
             formDataWithFile.append("file", imageSelected);
             (!!formData.email) && formDataWithFile.append("email", formData.email);
@@ -113,13 +123,7 @@ const Register = (props) => {
                     setSuccessful(true);
                 },
                 (error) => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-
+                    const resMessage = getErrorResponseMessage(error);
                     setMessage(resMessage);
                     setSuccessful(false);
                 }
@@ -185,12 +189,8 @@ const Register = (props) => {
                                     name="confPassword"
                                     value={formData.confPassword}
                                     onChange={changeConfPassword}
-                                    validations={[required]}
+                                    validations={[required, samePasswords]}
                                 />
-                            </div>
-
-                            <div id="confPassErr" className="alert alert-danger" role="alert" style={{display: "none"}}>
-                                Password doesn't match!
                             </div>
 
                             <div className="form-group">
@@ -225,7 +225,7 @@ const Register = (props) => {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={changeFormData}
-                                    validations={[]}
+                                    validations={[validPhone]}
                                 />
                             </div>
 
@@ -238,14 +238,7 @@ const Register = (props) => {
                     {message && (
                         <div>
                             {successful ?
-                                (<div className="alert alert-success mb-0"
-                                      style={{display: "flex", flexDirection: "column", alignItems: "center"}}
-                                      role="alert">
-                                    {message}
-                                    <button className="btn btn-danger mt-3" onClick={() =>
-                                        history.push("/login")}>Try to login!
-                                    </button>
-                                </div>)
+                                (<MessageView alert_type="alert-success" message={message}/>)
                                 :
                                 (<div className={"alert alert-danger"} role="alert">
                                     {message}

@@ -202,7 +202,7 @@ public class SquadManager {
                 if (newSquads.contains(squad.get())) {
                     squad.ifPresent(newSquads::remove);
                     updateUserSquads(user, newSquads);
-                    return ResponseEntity.ok(new MessageResponse("You've left squad!"));
+                    return ResponseEntity.ok(new MessageResponse("You've left squad."));
                 }
                 return ResponseEntity.badRequest().body(new MessageResponse("You can't leave this squad! You are not a member"));
             }
@@ -215,7 +215,7 @@ public class SquadManager {
 
                     squad.ifPresent(newSquads::add);
                     updateUserSquads(user, newSquads);
-                    return ResponseEntity.ok(new MessageResponse("You've joined squad!"));
+                    return ResponseEntity.ok(new MessageResponse("You've joined squad successfully! 🙂"));
                 }
             }
         }
@@ -260,6 +260,6 @@ public class SquadManager {
                 return ResponseEntity.ok(new MessageResponse(String.valueOf(true)));
             }
         }
-        return ResponseEntity.badRequest().body(new MessageResponse(String.valueOf(false)));
+        return ResponseEntity.badRequest().body(new MessageResponse("Wrong password!"));
     }
 }

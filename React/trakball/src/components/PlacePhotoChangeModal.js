@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import def from '../assets/img/place1.jpg';
+import def from '../assets/img/defPlace.jpg';
 import PlaceService from "../services/place.service";
 
 const PlacePhotoChangeModal = ({updatePlaces, ...props}) => {
@@ -19,20 +19,20 @@ const PlacePhotoChangeModal = ({updatePlaces, ...props}) => {
 
     useEffect(() => {
         setPlaceId(props.place_id);
-    }, [props.place_id])
+    }, [props.place_id]);
 
     useEffect(() => {
         const tempPlace = props.places.filter(item => item.place_id === placeId)[0];
         !!tempPlace && setPlace(tempPlace);
-    }, [placeId, props.places])
+    }, [placeId, props.places]);
 
     useEffect(() => {
         setImagePreview(place.photo_url || def);
         setImageSelected("")
-    }, [place, props.show])
+    }, [place, props.show]);
 
     useEffect(() => {
-    }, [imagePreview])
+    }, [imagePreview]);
 
     useEffect(() => {
         if (!!imageSelected) {
@@ -43,7 +43,7 @@ const PlacePhotoChangeModal = ({updatePlaces, ...props}) => {
                 setImagePreview(reader.result)
             };
         }
-    }, [imageSelected])
+    }, [imageSelected]);
 
     const handleImageChange = (e) => {
         setImageSelected(e.target.files[0]);
@@ -96,7 +96,6 @@ const PlacePhotoChangeModal = ({updatePlaces, ...props}) => {
                             accept="image/*"
                             onChange={handleImageChange}
                         />
-
                     </Modal.Body>
                     <Modal.Footer>
                         <button className="btn btn-outline-success" type="submit">Confirm</button>

@@ -7,6 +7,7 @@ import SquadSecurity from "./SquadSecurity";
 import SquadInfo from "./SquadInfo";
 import AlertTemplate from "./AlertTemplate";
 import {positions, Provider} from "react-alert";
+import {unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 
 const BoardSquadInfo = () => {
 
@@ -20,6 +21,9 @@ const BoardSquadInfo = () => {
                 if (response.data.message === 'true') {
                     document.getElementById("squad-password-form").style.display = "block";
                 }
+            },
+            (error) => {
+                unauthorizedErrorCheckAndHandle(error);
             }
         )
     }, [id]);

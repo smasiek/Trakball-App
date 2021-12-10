@@ -34,7 +34,6 @@ public class SquadsController {
     }
 
     @GetMapping("/place/all")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public Iterable<SquadDto> getPlaceSquads(@RequestParam Long place_id) {
         return squadManager.findByPlace(place_id);
     }

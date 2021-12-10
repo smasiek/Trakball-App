@@ -9,16 +9,7 @@ import "../assets/css/squad.css";
 import EditAuthentionModal from "./EditAuthentionModal";
 import AuthService from "../services/auth.service";
 import {generateAvatarUrl} from "../utils/PhotoUtils";
-
-const required = (value) => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
+import {getErrorResponseMessage, unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 
 const validEmail = (value) => {
     if (value) {
@@ -44,6 +35,16 @@ const vpassword = (value) => {
     }
 };
 
+const samePasswords = (value, props, components) => {
+    if (value !== components['password'][0].value) {
+        return (
+            <div className="alert alert-danger mb-0" role="alert">
+                Password doesn't match!
+            </div>
+        )
+    }
+};
+
 const EditProfile = (props) => {
     const form = useRef();
     const checkBtn = useRef();
@@ -61,11 +62,6 @@ const EditProfile = (props) => {
         setImagePreview(currentUser.photo || generateAvatarUrl(currentUser.name, currentUser.surname))
     }, [currentUser.name, currentUser.photo, currentUser.surname])
 
-    const changeConfPassword = (e) => {
-        changeFormData(e);
-        document.getElementById("confPassErr").style.display = "none";
-    }
-
     const changeFormData = (e) => {
         setFormData({
             ...formData,
@@ -73,24 +69,12 @@ const EditProfile = (props) => {
         })
     }
 
-    const isValid = () => {
-        let isValid = true;
-
-        if (formData.confPassword !== formData.password) {
-            isValid = false;
-            document.getElementById("confPassErr").style.display = "block";
-        }
-
-        return isValid;
-    }
-
-
     const handleEdit = (formData) => {
         setMessage("");
 
         form.current.validateAll();
 
-        if (checkBtn.current.context._errors.length === 0 && isValid()) {
+        if (checkBtn.current.context._errors.length === 0) {
             const formDataWithFile = new FormData();
             formDataWithFile.append("file", imageSelected);
             (!!formData.email) && formDataWithFile.append("email", formData.email);
@@ -100,22 +84,15 @@ const EditProfile = (props) => {
             (!!formData.phone) && formDataWithFile.append("phone", formData.phone);
             (!!formData.oldEmail) && formDataWithFile.append("oldEmail", formData.oldEmail);
             (!!formData.oldPassword) && formDataWithFile.append("oldPassword", formData.oldPassword);
-            console.log(formData.email);
-            console.log(formDataWithFile);
-            // UserService.trySomething(formDataWithFile);
             UserService.editData(formDataWithFile).then(
                 () => {
                     props.history.push("/profile");
                 },
                 (error) => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
+                    const resMessage = getErrorResponseMessage(error);
 
                     setMessage(resMessage);
+                    unauthorizedErrorCheckAndHandle(error);
                 }
             );
         }
@@ -123,7 +100,12 @@ const EditProfile = (props) => {
 
     const handleEditRequest = (e) => {
         e.preventDefault();
-        setModalShow(true)
+
+        form.current.validateAll();
+
+        if (checkBtn.current.context._errors.length === 0) {
+            setModalShow(true)
+        }
     };
 
     const handleImageChange = (e) => {
@@ -199,12 +181,9 @@ const EditProfile = (props) => {
                             className="form-control"
                             name="confPassword"
                             value={formData.confPassword}
-                            onChange={changeConfPassword}
+                            onChange={changeFormData}
+                            validations={[samePasswords]}
                         />
-                    </div>
-
-                    <div id="confPassErr" className="alert alert-danger" role="alert" style={{display: "none"}}>
-                        Password doesn't match!
                     </div>
 
                     <div className="form-group">
@@ -241,7 +220,10 @@ const EditProfile = (props) => {
                     </div>
 
                     <div className="form-group" style={{marginBottom: 0}}>
-                        <button className="btn btn-danger btn-block">Save</button>
+
+                        <button className="btn btn-danger btn-block">
+                            Save
+                        </button>
                     </div>
 
                     {message && (

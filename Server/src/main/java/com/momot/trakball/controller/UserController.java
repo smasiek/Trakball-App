@@ -25,6 +25,7 @@ public class UserController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> editProfile(@RequestHeader("Authorization") String header, @RequestParam Optional<String> email, @RequestParam Optional<String> password, @RequestParam Optional<String> name, @RequestParam Optional<String> surname, @RequestParam Optional<String> phone, @RequestParam Optional<String> oldEmail, @RequestParam Optional<String> oldPassword, @RequestParam("file") Optional<MultipartFile> file) {
         String jwt = "";
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {

@@ -13,6 +13,7 @@ import ListItemText from "@mui/material/ListItemText";
 
 import "../assets/css/place.css";
 import {useAlert} from "react-alert";
+import {getErrorResponseMessage, unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 
 const required = (value) => {
     if (!value) {
@@ -30,7 +31,6 @@ const BoardAddNewPlace = (props) => {
     const alertReact = useAlert();
 
     const [city, setCity] = useState("");
-
 
     const [street, setStreet] = useState("");
 
@@ -52,17 +52,17 @@ const BoardAddNewPlace = (props) => {
     const changeCityInput = (e) => {
         const city = e.target.value
         setCity(city)
-    }
+    };
 
     const changeStreetInput = (e) => {
         const street = e.target.value
         setStreet(street)
-    }
+    };
 
     const changePlaceInput = (e) => {
         const place = e.target.value
         setPlace(place)
-    }
+    };
 
     const handleSearchForPlaces = (e) => {
         e.preventDefault();
@@ -100,34 +100,26 @@ const BoardAddNewPlace = (props) => {
                 setLoading(false);
             },
             (error) => {
-                const resMessage =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
+                const resMessage = getErrorResponseMessage(error)
 
                 setLoading(false);
                 setMessage(resMessage);
+                unauthorizedErrorCheckAndHandle(error);
             }
         );
-
     };
 
 
     const handleSendNewPlaceRequest = () => {
+        setLoading(true);
         PlaceService.newPlace(newPlace["name"], newPlace["street"], newPlace["city"], newPlace["latitude"], newPlace["longitude"], newPlace["postal_code"]).then(
             () => {
                 alertReact.show("Place request sent!");
+                setLoading(false);
             },
             (error) => {
-                const message =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                alertReact.show(message);
+                alertReact.error(getErrorResponseMessage(error));
+                setLoading(false);
             }
         );
     };
@@ -161,6 +153,7 @@ const BoardAddNewPlace = (props) => {
                             className="form-control"
                             placeholder="type city"
                             name="city"
+                            autocomplete="password"
                             value={city}
                             onChange={changeCityInput}
                             validations={[required]}
@@ -174,6 +167,7 @@ const BoardAddNewPlace = (props) => {
                             className="form-control"
                             placeholder="type street"
                             name="street"
+                            autocomplete="password"
                             value={street}
                             onChange={changeStreetInput}
                         />
@@ -191,6 +185,7 @@ const BoardAddNewPlace = (props) => {
                             className="form-control"
                             placeholder="type place name"
                             name="placeName"
+                            autocomplete="password"
                             value={place}
                             onChange={changePlaceInput}
                         />

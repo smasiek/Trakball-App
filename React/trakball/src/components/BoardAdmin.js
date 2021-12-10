@@ -10,8 +10,9 @@ import {TiTick, TiTimes} from "react-icons/all";
 import SquadGenerator from "./SquadGenerator";
 import AlertTemplate from "./AlertTemplate";
 import {positions, Provider} from "react-alert";
-import def from '../assets/img/place1.jpg';
+import def from '../assets/img/defPlace.jpg';
 import PlacePhotoChangeModal from "./PlacePhotoChangeModal";
+import {unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 
 const BoardAdmin = () => {
 
@@ -71,43 +72,36 @@ const BoardAdmin = () => {
         setPlaceRequests(placeRequests.filter(item => item.index !== index))
 
         PlaceService.removeRequest(id).then(
-            (response) => {
+            () => {
             },
-            (error) => {
+            () => {
             }
         )
-    }
+    };
 
     const handleRemovePlace = (index, id) => {
         setPlaces(places.filter(item => item.index !== index))
 
         PlaceService.removePlace(id).then(
-            (response) => {
+            () => {
             },
-            (error) => {
+            () => {
             }
         )
-    }
+    };
 
     const handleApproveRequest = (index, id) => {
         setPlaceRequests(placeRequests.filter(item => item.index !== index))
 
         PlaceService.approveRequest(id).then(
-            (response) => {
-                // alertReact.show(response);
+            () => {
             },
             (error) => {
-                const _content =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
 
-                //alertReact.show(_content);
+                unauthorizedErrorCheckAndHandle(error);
             }
         )
-    }
+    };
 
     const handleEditRequest = (selectedPlace) => {
         setClickedPlaceId(selectedPlace);
@@ -182,9 +176,6 @@ const BoardAdmin = () => {
                                 <List dense sx={{width: '100%', bgcolor: 'background.paper'}}>
                                     {places.map(row => {
                                         const labelId = `checkbox-list-secondary-label-${row.index}`;
-                                        const updatePhoto = (newUrl) => {
-                                            row.photo_url = newUrl;
-                                        }
 
                                         return (
                                             <ListItem
@@ -231,4 +222,5 @@ const BoardAdmin = () => {
         </div>
     );
 };
+
 export default BoardAdmin;

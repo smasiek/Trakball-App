@@ -10,6 +10,7 @@ import {useParams} from "react-router-dom";
 import SquadService from "../services/squad.service";
 import AuthService from "../services/auth.service";
 import "../assets/css/squad.css";
+import {getErrorResponseMessage} from "../utils/ErrorHandlingUtils";
 
 const BoardSquads = () => {
     const {id} = useParams();
@@ -56,15 +57,8 @@ const BoardSquads = () => {
                 }
             },
             (error) => {
-                const _content =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-
                 setShowError(true);
-                setErrorMessage(_content);
+                setErrorMessage(getErrorResponseMessage(error));
             }
         );
     }, [id]);

@@ -8,6 +8,7 @@ import Squad from "./Squad"
 
 import UserService from "../services/user.service";
 import "../assets/css/squad.css";
+import {getErrorResponseMessage, unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 
 const BoardYourSquads = () => {
     const form = useRef();
@@ -21,7 +22,6 @@ const BoardYourSquads = () => {
     const [showError, setShowError] = useState(false);
 
     const NO_SQUADS_MESSAGE = "There was no squad matching 😓";
-    const NO_PLACE_MESSAGE = "No such place in database 😓";
 
     const options = {
         timeout: 5000,
@@ -40,15 +40,10 @@ const BoardYourSquads = () => {
 
             },
             (error) => {
-                const _content =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-
-                setErrorMessage(_content);
+                setErrorMessage(getErrorResponseMessage(error));
                 setShowError(true);
+
+                unauthorizedErrorCheckAndHandle(error);
             }
         );
     }, []);
@@ -56,7 +51,7 @@ const BoardYourSquads = () => {
     const changeSearchInput = (e) => {
         const search = e.target.value
         setSearch(search)
-    }
+    };
 
     const filterSquads = (squad) => {
         let match;
@@ -70,7 +65,7 @@ const BoardYourSquads = () => {
         )
         console.log(search);
         return match
-    }
+    };
 
     const handleFilterSquads = (squad) => {
         if (filterSquads(squad)) {
@@ -78,7 +73,7 @@ const BoardYourSquads = () => {
             return true;
         }
         return false;
-    }
+    };
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -91,9 +86,8 @@ const BoardYourSquads = () => {
                 return handleFilterSquads(squad);
             })
         )
-
         setLoading(false);
-    }
+    };
 
     return (
         <div className="squads-boxed">
@@ -101,9 +95,7 @@ const BoardYourSquads = () => {
                 <div className="intro">
                     <h2 className="text-center">Your Squads</h2>
                 </div>
-
                 <Form onSubmit={handleSearch} ref={form}>
-
                     <div className="form-group search">
                         <Input
                             placeholder="search for squads in your city..."

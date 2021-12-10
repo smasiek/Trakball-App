@@ -1,10 +1,12 @@
-import React, {useState, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import {isEmail} from "validator";
 
 import AuthService from "../services/auth.service";
+import {getErrorResponseMessage} from "../utils/ErrorHandlingUtils";
+import EventBus from "../common/EventBuss";
 
 const required = (value) => {
     if (!value) {
@@ -41,6 +43,10 @@ const Login = (props) => {
         })
     };
 
+    useEffect(() => {
+        if (props.location.state) setMessage(props.location.state.message || "")
+    }, [props.location.state]);
+
     const handleLogin = (e) => {
         e.preventDefault();
 
@@ -52,16 +58,11 @@ const Login = (props) => {
         if (checkBtn.current.context._errors.length === 0) {
             AuthService.login(formData.email, formData.password).then(
                 () => {
+                    EventBus.dispatch("login");
                     props.history.push("/squads");
-                    window.location.reload();
                 },
                 (error) => {
-                    const resMessage =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                        error.message ||
-                        error.toString();
+                    const resMessage = getErrorResponseMessage(error);
 
                     setLoading(false);
                     setMessage(resMessage);

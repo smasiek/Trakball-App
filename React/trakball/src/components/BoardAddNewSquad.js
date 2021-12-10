@@ -6,6 +6,7 @@ import SquadService from "../services/squad.service";
 import PlaceService from "../services/place.service";
 import {floatRegExp} from "../utils/InputUtils";
 import {Checkbox} from "@mui/material";
+import {getErrorResponseMessage, unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 
 const required = (value) => {
     if (!value) {
@@ -45,7 +46,7 @@ const BoardAddNewSquad = (props) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
-        })
+        });
     };
 
     const changeCityInput = (e) => {
@@ -78,14 +79,8 @@ const BoardAddNewSquad = (props) => {
                 setCitiesList(response.data);
             },
             (error) => {
-                const _content =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-
-                setCitiesList(_content);
+                setMessage(getErrorResponseMessage(error));
+                unauthorizedErrorCheckAndHandle(error);
             }
         );
     };
@@ -175,7 +170,7 @@ const BoardAddNewSquad = (props) => {
     const PlaceSuggestions = (e) => {
         const options = e.results.map((r, index) => (
             <option value={r} key={index}/>
-        ))
+        ));
         return <datalist id="places">{options}</datalist>
     };
 
@@ -228,6 +223,7 @@ const BoardAddNewSquad = (props) => {
 
                     setLoading(false);
                     setMessage(resMessage);
+                    unauthorizedErrorCheckAndHandle(error);
                 }
             );
         } else {
