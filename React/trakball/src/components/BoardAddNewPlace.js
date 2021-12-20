@@ -140,11 +140,11 @@ const BoardAddNewPlace = (props) => {
 
     return (
         <div className={'card m-0 w-100'}>
-            <div className="intro">
-                <h4 className="text-center">Add new place</h4>
-            </div>
-            <Form onSubmit={handleSearchForPlaces} ref={form}>
 
+            <Form onSubmit={handleSearchForPlaces} ref={form}>
+                <div className="intro">
+                    <h4 className="text-center">Add new place</h4>
+                </div>
                 <div className="form-groups">
                     <div className="form-group">
                         <label htmlFor="city">City</label>
@@ -211,7 +211,7 @@ const BoardAddNewPlace = (props) => {
             </Form>
 
             {isResultFound && (
-                <>
+                <div>
                     <div className={"result-list"}>
                         <List dense sx={{width: '100%', bgcolor: 'background.paper'}}>
                             {searchResult.map((row) => {
@@ -239,7 +239,6 @@ const BoardAddNewPlace = (props) => {
                                 );
                             })}
                         </List>
-
                     </div>
                     <button className="btn btn-danger btn-block" disabled={loading || (selectedValue === null)}
                             onClick={handleSendNewPlaceRequest}>
@@ -248,7 +247,7 @@ const BoardAddNewPlace = (props) => {
                         )}
                         <span>Send request</span>
                     </button>
-                </>
+                </div>
             )}
         </div>
     );

@@ -8,7 +8,6 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 public class TrakballApplication {
-
     @PostConstruct
     void started() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -18,5 +17,4 @@ public class TrakballApplication {
 
         SpringApplication.run(TrakballApplication.class, args);
     }
-
 }

@@ -19,6 +19,6 @@ public interface SquadRepository extends JpaRepository<Squad, Long> {
     Optional<Iterable<Squad>> findByPlace(@Param("place") Place place);
 
     @Query("select s from Squad s " +
-            "where s.date >= CURRENT_TIMESTAMP")
+            "where s.date >= CURRENT_TIMESTAMP order by s.date")
     Optional<List<Squad>> findWithDateAfterToday();
 }

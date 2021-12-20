@@ -3,6 +3,7 @@ package com.momot.trakball.controller;
 import com.momot.trakball.dto.CommentDto;
 import com.momot.trakball.dto.SquadDto;
 import com.momot.trakball.dto.UserDto;
+import com.momot.trakball.dto.request.DeleteCommentRequest;
 import com.momot.trakball.dto.request.DeleteSquadRequest;
 import com.momot.trakball.dto.request.GenerateSquadsRequest;
 import com.momot.trakball.dto.request.NewSquadRequest;
@@ -102,5 +103,11 @@ public class SquadsController {
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> postComment(@RequestParam Long squad_id, @RequestBody CommentDto commentDto) {
         return squadManager.addComment(squad_id, commentDto);
+    }
+
+    @DeleteMapping("/comments")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> deleteComment(@RequestBody DeleteCommentRequest deleteCommentRequest) {
+        return squadManager.deleteComment(deleteCommentRequest);
     }
 }

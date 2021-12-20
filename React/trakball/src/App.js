@@ -106,7 +106,7 @@ const App = () => {
                 </Navbar.Collapse>
 
             </Navbar>
-            <div className="container-xl" style={{marginTop: '6em'}}>
+            <div className="container-xl content">
                 <Switch>
                     <Route exact path={["/", "/home"]} component={Home}/>
                     <Route path="/home/:lat/:lng" component={Home}/>

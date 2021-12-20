@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {positions, Provider} from "react-alert";
 import AlertTemplate from "./AlertTemplate";
 import Place from "./Place"
-
 import UserService from "../services/user.service";
 import "../assets/css/place.css";
 import {Carousel} from '3d-react-carousal';
@@ -51,9 +50,7 @@ const BoardYourPlaces = () => {
                         <MessageView alert_type="alert-danger" message={errorMessage}/>
                     </div>
                 )}
-                <div className="row squads">
-
-
+                <div className="row">
                     <Carousel slides={content.map((place, index) =>
                         <Provider template={AlertTemplate} {...options}
                                   key={index}> <Place info={place}

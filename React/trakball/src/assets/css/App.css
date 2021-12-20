@@ -1,7 +1,11 @@
 .navbar {
     position: fixed;
     width: 100%;
-    z-index: 1000;
+    z-index: 10000;
+}
+
+.content {
+    margin-top: 6em;
 }
 
 label {
@@ -69,4 +73,10 @@ label {
 
 input[type="file"] {
     padding: 3px;
+}
+
+@media (max-width: 767px) {
+    .content {
+        margin-top: 4em;
+    }
 }

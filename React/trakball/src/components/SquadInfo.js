@@ -1,7 +1,7 @@
 import defBuilding from "../assets/img/defPlace.jpg";
 import Modal from 'react-bootstrap/Modal'
 import {FaMapMarkedAlt} from "react-icons/all";
-import {TiTimes, TiUserAdd, TiUserDelete} from "react-icons/ti";
+import {TiContacts, TiTimes, TiUserAdd, TiUserDelete} from "react-icons/ti";
 import {RiDeleteBin5Fill} from "react-icons/ri";
 import moment from "moment";
 import React, {useEffect, useRef, useState} from "react";
@@ -37,13 +37,11 @@ const SquadInfo = (props) => {
 
     const currentUser = AuthService.getCurrentUser();
     const [userId, setUserId] = useState(0);
-    const [name, setName] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
 
     useEffect(() => {
         if (!!currentUser) {
             setUserId(currentUser.id);
-            setName(currentUser.name + ' ' + currentUser.surname)
             setAvatarUrl(currentUser.photo || generateAvatarUrl(currentUser.name, currentUser.surname))
         }
     }, [currentUser]);
@@ -116,16 +114,34 @@ const SquadInfo = (props) => {
             (response) => {
                 let tempComments = comments;
                 tempComments.push({
-                    "comment_id": count + 1,
+                    "comment_id": response.data.comment_id,
                     "text": comment,
                     "date": currentTimeStamp,
                     "creator_id": userId,
-                    "creator_fullname": name,
+                    "creator_name": currentUser.name,
+                    "creator_surname": currentUser.surname,
                     "creator_avatar_url": avatarUrl,
                     "squad_id": squadId
                 })
                 setComments(tempComments);
                 setComment("");
+                setCount(tempComments.length);
+                alert.success("You've posted a comment! 🙂");
+            },
+            (error) => {
+                alert.error(getErrorResponseMessage(error));
+            }
+        );
+    };
+
+    const handleDeleteComment = (commentId) => {
+
+        SquadService.deleteComment(commentId).then(
+            (response) => {
+                let tempComments = comments.filter(comment => comment.comment_id !== commentId);
+                setComments(tempComments);
+                setComment("");
+                setCount(tempComments.length);
                 alert.success(response.data.message);
             },
             (error) => {
@@ -250,7 +266,7 @@ const SquadInfo = (props) => {
 
     return (
         <div id="squad-info-content" className="row">
-            <div className="container-fluid col-7">
+            <div className="container-fluid col-md-7 col-sm-12">
                 <div className="row">
                     <div className="container-fluid col-6">
                         <div className="place item" key={''}>
@@ -273,7 +289,7 @@ const SquadInfo = (props) => {
                                 </div>
                                 <p>Sport: {squad.sport}</p>
                                 <p>Liczebność skladu: {members.length}/{squad.maxMembers}</p>
-                                <p>Opłata: {squad.fee}</p>
+                                <p>Opłata: {parseFloat(squad.fee).toFixed(2)} zł</p>
                                 <p>Data: {date}</p>
                             </div>
                         </div>
@@ -301,11 +317,11 @@ const SquadInfo = (props) => {
                     </div>
                 </div>
             </div>
-            <div className="container-fluid col-5">
+            <div className="container-fluid col-md-5 col-sm-12">
                 <div className="row">
                     <div className="controls">
                         <div className="flex-wrap">
-                            <button onClick={() => handleContactOrganiser()}><FaMapMarkedAlt
+                            <button onClick={() => handleContactOrganiser()}><TiContacts
                                 style={{margin: '5px'}}/>Contact organiser
                             </button>
                             <VerticallyCenteredModal
@@ -381,7 +397,7 @@ const SquadInfo = (props) => {
                         {currentUser && userInSquad && comments.length > 0 &&
                         <ul className="comments mt-2">
                             {comments && comments.map((comment, index) =>
-                                <li key={comment.comId} className="comment">
+                                <li key={comment.comment_id} className="comment">
                                     <div className="comment-content">
                                                 <span>
                                                     {comment.text}
@@ -399,7 +415,8 @@ const SquadInfo = (props) => {
                                         </div>
                                     </div>
                                     {(userId === comment.creator_id) &&
-                                    <button className="btn btn-danger remove-comment"><TiTimes/></button>}
+                                    <button className="btn btn-danger remove-comment"
+                                            onClick={() => handleDeleteComment(comment.comment_id)}><TiTimes/></button>}
                                 </li>
                             )}
                         </ul>

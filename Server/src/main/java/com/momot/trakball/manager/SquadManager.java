@@ -4,6 +4,7 @@ import com.momot.trakball.dao.*;
 import com.momot.trakball.dto.CommentDto;
 import com.momot.trakball.dto.SquadDto;
 import com.momot.trakball.dto.UserDto;
+import com.momot.trakball.dto.request.DeleteCommentRequest;
 import com.momot.trakball.dto.request.DeleteSquadRequest;
 import com.momot.trakball.dto.request.NewSquadRequest;
 import com.momot.trakball.dto.response.MessageResponse;
@@ -242,10 +243,31 @@ public class SquadManager {
         Optional<User> user = userManager.getUserFromContext();
 
         if (squad.isPresent() && user.isPresent()) {
-            commentRepository.save(new Comment(commentDto.getText(), commentDto.getDate(), user.get(), squad.get()));
-            return ResponseEntity.ok(new MessageResponse("You've posted a comment! 🙂"));
+            Comment newComment = new Comment(commentDto.getText(), commentDto.getDate(), user.get(), squad.get());
+            commentRepository.save(newComment);
+            return ResponseEntity.ok(new CommentDto(newComment));
         }
         return ResponseEntity.badRequest().body(new MessageResponse("Comment wasn't posted. Something went wrong."));
+    }
+
+    public ResponseEntity<?> deleteComment(DeleteCommentRequest deleteCommentRequest) {
+        Optional<Comment> comment = commentRepository.findById(deleteCommentRequest.getComment_id());
+        Optional<User> user = userManager.getUserFromContext();
+
+        if (comment.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Comment not found 🤐"));
+        }
+
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("User session problem"));
+        }
+
+        if (comment.get().getCreator().getUserId().equals(user.get().getUserId())) {
+            commentRepository.deleteById(deleteCommentRequest.getComment_id());
+            return ResponseEntity.ok(new MessageResponse("You've deleted a comment."));
+        }
+
+        return ResponseEntity.badRequest().body(new MessageResponse("Comment wasn't deleted. Something went wrong."));
     }
 
     public ResponseEntity<?> getSecuredInfo(Long squad_id) {

@@ -2,7 +2,6 @@ import {useParams} from 'react-router-dom';
 import React, {useEffect, useState} from "react";
 import "../assets/css/squad-info.css";
 import SquadService from "../services/squad.service";
-import 'react-comments-section/dist/index.css'
 import SquadSecurity from "./SquadSecurity";
 import SquadInfo from "./SquadInfo";
 import AlertTemplate from "./AlertTemplate";

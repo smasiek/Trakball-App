@@ -63,18 +63,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/test/**").permitAll()
                 .antMatchers("/api/squads/all").permitAll();
 
-                //.antMatchers("/api/squads/user/all").permitAll()
-                //.anyRequest().authenticated();
+        //.antMatchers("/api/squads/user/all").permitAll()
+        //.anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
-        web.ignoring().mvcMatchers("/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs","/webjars/**");
+        web.ignoring().mvcMatchers("/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs", "/webjars/**");
     }
-    //TODO 1 obczaic https://www.youtube.com/watch?v=yoTohM2jYhs zeby wykorzystac silnik thymeleaf, jak to sie robi i wgle
-    //TODO 2 zabezpieczyc przed kradzieza ciasteczek
 }

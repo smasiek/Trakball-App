@@ -74,43 +74,43 @@ public class PlaceManager {
     }
 
     public Iterable<String> findCitiesByInput(String city, String street, String place) {
-        if (!city.equals("") && !street.equals("") && !place.equals("")) {
+        if (!city.isBlank() && !street.isBlank() && !place.isBlank()) {
             return searchRepository.findCitiesWithStreetAndPlace(city,
                     street, place);
         }
-        if (!city.equals("") && !place.equals("")) {
+        if (!city.isBlank() && !place.isBlank()) {
             return searchRepository.findCitiesWithPlace(city, place);
         }
-        if (!city.equals("") && !street.equals("")) {
+        if (!city.isBlank() && !street.isBlank()) {
             return searchRepository.findCitiesWithStreet(city, street);
         }
         return searchRepository.findCities(city);
     }
 
     public Iterable<String> findStreetsByInput(String city, String street, String place) {
-        if (!city.equals("") && !street.equals("") && !place.equals("")) {
+        if (!city.isBlank() && !street.isBlank() && !place.isBlank()) {
             return searchRepository.findStreetsWithCityAndPlace(street, city, place);
         }
-        if (!street.equals("") && !place.equals("")) {
+        if (!street.isBlank() && !place.isBlank()) {
             return searchRepository.findStreetsWithPlace(street, place);
         }
-        if (!street.equals("") && !city.equals("")) {
+        if (!street.isBlank() && !city.isBlank()) {
             return searchRepository.findStreetsWithCity(street, city);
         }
         return searchRepository.findStreets(street);
     }
 
     public Iterable<String> findNamesByInput(String city, String street, String place) {
-        if (!city.equals("") && !street.equals("") && !place.equals("")) {
+        if (!city.isBlank() && !street.isBlank() && !place.isBlank()) {
             return searchRepository.findPlacesWithCityAndStreet(place, city, street);
         }
-        if (!place.equals("") && !city.equals("")) {
+        if (!place.isBlank() && !city.isBlank()) {
             return searchRepository.findPlacesWithCity(place, city);
         }
-        if (!place.equals("") && !street.equals("")) {
+        if (!place.isBlank() && !street.isBlank()) {
             return searchRepository.findPlacesWithStreet(place, street);
         }
-        if (!street.equals("") && !city.equals("")) {
+        if (!street.isBlank() && !city.isBlank()) {
             return searchRepository.findPlacesWithCityAndStreetWithoutPlace(city, street);
         }
 
