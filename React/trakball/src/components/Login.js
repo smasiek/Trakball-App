@@ -6,7 +6,7 @@ import {isEmail} from "validator";
 
 import AuthService from "../services/auth.service";
 import {getErrorResponseMessage} from "../utils/ErrorHandlingUtils";
-import EventBus from "../common/EventBuss";
+import EventBus from "../common/EventBus";
 
 const required = (value) => {
     if (!value) {

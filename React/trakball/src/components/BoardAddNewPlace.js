@@ -238,7 +238,13 @@ const BoardAddNewPlace = (props) => {
                                     </ListItem>
                                 );
                             })}
+
                         </List>
+                        <div className="attribution">
+                            <span className="bg-white">©<a
+                                href="https://openrouteservice.org/terms-of-service/">openrouteservice.org</a> by HeiGIT</span>
+                            <span className="bg-white">Map data ©<a href="http://osm.org/copyright">OpenStreetMap</a> contributors</span>
+                        </div>
                     </div>
                     <button className="btn btn-danger btn-block" disabled={loading || (selectedValue === null)}
                             onClick={handleSendNewPlaceRequest}>

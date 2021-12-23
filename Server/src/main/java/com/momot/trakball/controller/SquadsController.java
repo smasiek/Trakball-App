@@ -93,21 +93,4 @@ public class SquadsController {
     public ResponseEntity<?> deleteSquad(@RequestBody DeleteSquadRequest deleteSquadRequest) {
         return squadManager.deleteById(deleteSquadRequest);
     }
-
-    @GetMapping("/comments")
-    public Iterable<CommentDto> getComments(@RequestParam Long squad_id) {
-        return squadManager.findCommentsById(squad_id);
-    }
-
-    @PostMapping("/comments")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> postComment(@RequestParam Long squad_id, @RequestBody CommentDto commentDto) {
-        return squadManager.addComment(squad_id, commentDto);
-    }
-
-    @DeleteMapping("/comments")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteComment(@RequestBody DeleteCommentRequest deleteCommentRequest) {
-        return squadManager.deleteComment(deleteCommentRequest);
-    }
 }

@@ -47,7 +47,7 @@ public class PlaceManager {
     public PlaceDto findById(Long id) {
         PlaceDto placeDto = new PlaceDto();
         placeRepository.findById(id).ifPresent(place -> {
-            placeDto.setPlace_id(place.getId());
+            placeDto.setPlace_id(place.getPlace_id());
             placeDto.setName(place.getName());
             placeDto.setCity(place.getCity());
             placeDto.setPostal_code(place.getPostal_code());
@@ -64,12 +64,12 @@ public class PlaceManager {
     }
 
     public Iterable<PlaceDto> findByCity(String city) {
-        return placeRepository.findPlacesByCity(city).stream().map(place -> new PlaceDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
+        return placeRepository.findPlacesByCity(city).stream().map(place -> new PlaceDto(place.getPlace_id(), place.getName(), place.getCity(), place.getPostal_code(),
                 place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto())).collect(Collectors.toList());
     }
 
     public Iterable<PlaceDto> findAll() {
-        return placeRepository.findAll().stream().map(place -> new PlaceDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
+        return placeRepository.findAll().stream().map(place -> new PlaceDto(place.getPlace_id(), place.getName(), place.getCity(), place.getPostal_code(),
                 place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto())).collect(Collectors.toList());
     }
 
@@ -190,7 +190,7 @@ public class PlaceManager {
     }
 
     public Iterable<PlaceRequestDto> getPlaceRequests() {
-        return placeRequestRepository.findAll().stream().map(place -> new PlaceRequestDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
+        return placeRequestRepository.findAll().stream().map(place -> new PlaceRequestDto(place.getPlace_request_id(), place.getName(), place.getCity(), place.getPostal_code(),
                 place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto(), place.getRequester().getUserId(), place.getRequester().getName() + ' ' + place.getRequester().getSurname())).collect(Collectors.toList());
     }
 
@@ -198,7 +198,7 @@ public class PlaceManager {
         Optional<PlaceRequest> placeRequest = placeRequestRepository.findById(approvedPlaceId.getPlaceRequestId());
         placeRequest.ifPresent(request -> {
             save(new Place(request));
-            placeRequestRepository.deleteById(request.getId());
+            placeRequestRepository.deleteById(request.getPlace_request_id());
         });
 
         return ResponseEntity.ok(new MessageResponse("Place approved! 🙂"));

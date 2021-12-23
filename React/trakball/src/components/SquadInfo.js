@@ -6,6 +6,7 @@ import {RiDeleteBin5Fill} from "react-icons/ri";
 import moment from "moment";
 import React, {useEffect, useRef, useState} from "react";
 import SquadService from "../services/squad.service";
+import CommentService from "../services/comment.service";
 import {useHistory} from "react-router-dom";
 import AuthService from "../services/auth.service";
 import {useAlert} from "react-alert";
@@ -98,7 +99,7 @@ const SquadInfo = (props) => {
         if (props.secured) {
             return;
         }
-        SquadService.getComments(squadId).then(
+        CommentService.getComments(squadId).then(
             (response) => {
                 setComments(response.data)
                 setCount(response.data.length);
@@ -110,7 +111,7 @@ const SquadInfo = (props) => {
         e.preventDefault();
 
         let currentTimeStamp = Date.now();
-        SquadService.postComment(squadId, comment, currentTimeStamp).then(
+        CommentService.postComment(squadId, comment, currentTimeStamp).then(
             (response) => {
                 let tempComments = comments;
                 tempComments.push({
@@ -136,7 +137,7 @@ const SquadInfo = (props) => {
 
     const handleDeleteComment = (commentId) => {
 
-        SquadService.deleteComment(commentId).then(
+        CommentService.deleteComment(commentId).then(
             (response) => {
                 let tempComments = comments.filter(comment => comment.comment_id !== commentId);
                 setComments(tempComments);

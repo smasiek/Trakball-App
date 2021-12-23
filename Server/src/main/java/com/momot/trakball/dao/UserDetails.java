@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long user_details_id;
     private String phone;
     private String name;
     private String surname;
@@ -23,12 +23,12 @@ public class UserDetails {
     public UserDetails() {
     }
 
-    public Long getId() {
-        return id;
+    public Long getUser_details_id() {
+        return user_details_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUser_details_id(Long id) {
+        this.user_details_id = id;
     }
 
     public String getPhone() {

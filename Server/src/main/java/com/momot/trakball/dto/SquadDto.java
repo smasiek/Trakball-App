@@ -26,7 +26,7 @@ public class SquadDto {
         this.fee = fee;
         this.date = date;
         this.creator = new UserDto(creator.getUserId(), creator.getName(), creator.getSurname(), creator.getEmail(), creator.getPhone(), creator.getPhoto());
-        this.place = new PlaceDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
+        this.place = new PlaceDto(place.getPlace_id(), place.getName(), place.getCity(), place.getPostal_code(),
                 place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto());
     }
 
@@ -91,7 +91,7 @@ public class SquadDto {
     }
 
     public void setPlace(Place place) {
-        this.place = new PlaceDto(place.getId(), place.getName(), place.getCity(), place.getPostal_code(),
+        this.place = new PlaceDto(place.getPlace_id(), place.getName(), place.getCity(), place.getPostal_code(),
                 place.getStreet(), place.getLatitude(), place.getLongitude(), place.getPhoto());
     }
 

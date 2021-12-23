@@ -1,4 +1,4 @@
-import EventBus from "../common/EventBuss";
+import EventBus from "../common/EventBus";
 
 export function getErrorResponseMessage(error) {
     console.log(error.response)
@@ -9,8 +9,8 @@ export function getErrorResponseMessage(error) {
         error.toString()
 }
 
-export function unauthorizedErrorCheckAndHandle(error){
+export function unauthorizedErrorCheckAndHandle(error) {
     if (error.response && error.response.status === 401) {
         EventBus.dispatch("logout");
     }
- }
+}

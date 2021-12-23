@@ -11,7 +11,7 @@ public class PlaceRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long place_request_id;
     private String name;
     private String city;
     private String postal_code;
@@ -27,7 +27,7 @@ public class PlaceRequest {
     }
 
     public PlaceRequest(PlaceDto placeDto) {
-        this.id = placeDto.getPlace_id();
+        this.place_request_id = placeDto.getPlace_id();
         this.name = placeDto.getName();
         this.city = placeDto.getCity();
         this.postal_code = placeDto.getPostal_code();
@@ -47,12 +47,12 @@ public class PlaceRequest {
         this.requester = requester;
     }
 
-    public Long getId() {
-        return id;
+    public Long getPlace_request_id() {
+        return place_request_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPlace_request_id(Long id) {
+        this.place_request_id = id;
     }
 
     public String getName() {

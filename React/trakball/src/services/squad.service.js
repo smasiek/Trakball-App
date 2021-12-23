@@ -16,18 +16,6 @@ const getSquadMembers = (squadId) => {
     return axios.get(API_URL + "members", {headers: authHeader(), params: {squad_id: squadId}})
 };
 
-const getComments = (squadId) => {
-    return axios.get(API_URL + "comments", {headers: authHeader(), params: {squad_id: squadId}})
-};
-
-const postComment = (squadId, text, date) => {
-    return axios.post(API_URL + "comments", {text, date}, {headers: authHeader(), params: {squad_id: squadId}});
-};
-
-const deleteComment = (commentId) => {
-    return axios.delete(API_URL + "comments", {headers: authHeader(), data: {comment_id: commentId}});
-};
-
 const getSecuredInfo = (squadId) => {
     return axios.get(API_URL + "secured", {headers: authHeader(), params: {squad_id: squadId}})
 };
@@ -90,9 +78,6 @@ export default {
     publish,
     getSquadInfo,
     getSquadMembers,
-    getComments,
-    postComment,
-    deleteComment,
     getSecuredInfo,
     verifyPassword,
     generateSquads,

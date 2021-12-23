@@ -17,7 +17,7 @@ import BoardYourPlaces from "./components/BoardYourPlaces";
 import EditProfile from "./components/EditProfile";
 import BoardAddNewPlace from "./components/BoardAddNewPlace";
 import BoardAdmin from "./components/BoardAdmin";
-import EventBus from "./common/EventBuss";
+import EventBus from "./common/EventBus";
 
 const App = () => {
     const [showUserBoards, setShowYourSquadsBoard] = useState(false);

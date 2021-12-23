@@ -71,6 +71,17 @@ label {
     height: 75vh;
 }
 
+.attribution {
+    color: darkgray;
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.attribution > span {
+    font-size: 10px;
+}
+
 input[type="file"] {
     padding: 3px;
 }

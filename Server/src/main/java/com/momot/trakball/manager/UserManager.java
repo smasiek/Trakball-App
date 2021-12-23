@@ -135,7 +135,7 @@ public class UserManager {
     public Iterable<PlaceDto> findYourPlaces() {
         return getUserFromContext().isPresent() ?
                 new ArrayList<>(getUserFromContext().get().getYourPlaces().stream().map(place ->
-                        new PlaceDto(place.getId(),
+                        new PlaceDto(place.getPlace_id(),
                                 place.getName(),
                                 place.getCity(),
                                 place.getPostal_code(),

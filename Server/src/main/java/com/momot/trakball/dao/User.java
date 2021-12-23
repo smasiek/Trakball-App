@@ -35,19 +35,19 @@ public class User {
     private UserDetails userDetails;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_squads",
+    @JoinTable(name = "users_squads",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "squad_id"))
     private Set<Squad> squads = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_places",
+    @JoinTable(name = "users_places",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "place_id"))
     private Set<Place> yourPlaces = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
+    @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
