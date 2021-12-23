@@ -1,4 +1,4 @@
-package com.momot.trakball.manager;
+package com.momot.trakball.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @Service
-public class CloudinaryManager {
+public class CloudinaryService {
 
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 

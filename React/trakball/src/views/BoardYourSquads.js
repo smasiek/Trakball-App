@@ -3,8 +3,8 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import {positions, Provider} from "react-alert";
-import AlertTemplate from "./AlertTemplate";
-import Squad from "./Squad"
+import AlertTemplate from "../components/AlertTemplate";
+import Squad from "../components/Squad"
 
 import UserService from "../services/user.service";
 import "../assets/css/squad.css";

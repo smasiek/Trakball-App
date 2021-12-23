@@ -7,11 +7,11 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import PlaceService from "../services/place.service";
 import {TiTick, TiTimes} from "react-icons/all";
-import SquadGenerator from "./SquadGenerator";
-import AlertTemplate from "./AlertTemplate";
+import SquadGenerator from "../components/SquadGenerator";
+import AlertTemplate from "../components/AlertTemplate";
 import {positions, Provider} from "react-alert";
 import def from '../assets/img/defPlace.jpg';
-import PlacePhotoChangeModal from "./PlacePhotoChangeModal";
+import PlacePhotoChangeModal from "../components/PlacePhotoChangeModal";
 import {unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 
 const BoardAdmin = () => {

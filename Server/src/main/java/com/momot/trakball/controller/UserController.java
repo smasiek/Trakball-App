@@ -2,7 +2,7 @@ package com.momot.trakball.controller;
 
 import com.momot.trakball.dto.PlaceDto;
 import com.momot.trakball.dto.SquadDto;
-import com.momot.trakball.manager.UserManager;
+import com.momot.trakball.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,11 +17,11 @@ import java.util.Optional;
 @RequestMapping("/api/user")
 public class UserController {
 
-    private final UserManager userManager;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserManager userManager) {
-        this.userManager = userManager;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PutMapping
@@ -31,18 +31,18 @@ public class UserController {
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             jwt = header.substring(7);
         }
-        return userManager.editProfile(email, password, name, surname, phone, oldEmail, oldPassword, file, jwt);
+        return userService.editProfile(email, password, name, surname, phone, oldEmail, oldPassword, file, jwt);
     }
 
     @GetMapping("/squads")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public Iterable<SquadDto> getYourSquads() {
-        return userManager.findYourSquads();
+        return userService.findYourSquads();
     }
 
     @GetMapping("/places")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public Iterable<PlaceDto> getYourPlaces() {
-        return userManager.findYourPlaces();
+        return userService.findYourPlaces();
     }
 }

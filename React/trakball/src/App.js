@@ -7,16 +7,16 @@ import logo from './assets/img/Logo big.png';
 import AuthService from "./services/auth.service";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Home from "./components/Home";
+import Home from "./views/Home";
 import Profile from "./components/Profile";
-import BoardSquads from "./components/BoardSquads";
-import BoardSquadInfo from "./components/BoardSquadInfo";
-import BoardYourSquads from "./components/BoardYourSquads";
-import BoardAddNewSquad from "./components/BoardAddNewSquad";
-import BoardYourPlaces from "./components/BoardYourPlaces";
+import BoardSquads from "./views/BoardSquads";
+import BoardSquadInfo from "./views/BoardSquadInfo";
+import BoardYourSquads from "./views/BoardYourSquads";
+import BoardAddNewSquad from "./views/BoardAddNewSquad";
+import BoardYourPlaces from "./views/BoardYourPlaces";
 import EditProfile from "./components/EditProfile";
-import BoardAddNewPlace from "./components/BoardAddNewPlace";
-import BoardAdmin from "./components/BoardAdmin";
+import BoardAddNewPlace from "./views/BoardAddNewPlace";
+import BoardAdmin from "./views/BoardAdmin";
 import EventBus from "./common/EventBus";
 
 const App = () => {

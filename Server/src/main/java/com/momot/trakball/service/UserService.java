@@ -1,4 +1,4 @@
-package com.momot.trakball.manager;
+package com.momot.trakball.service;
 
 import com.momot.trakball.dao.User;
 import com.momot.trakball.dto.PlaceDto;
@@ -24,20 +24,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserManager {
+public class UserService {
 
     private final UserRepository userRepository;
 
     final AuthenticationManager authenticationManager;
-    private final CloudinaryManager cloudinaryManager;
+    private final CloudinaryService cloudinaryService;
 
     private final PasswordEncoder encoder;
 
     @Autowired
-    public UserManager(UserRepository userRepository, AuthenticationManager authenticationManager, CloudinaryManager cloudinaryManager, PasswordEncoder encoder) {
+    public UserService(UserRepository userRepository, AuthenticationManager authenticationManager, CloudinaryService cloudinaryService, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
-        this.cloudinaryManager = cloudinaryManager;
+        this.cloudinaryService = cloudinaryService;
         this.encoder = encoder;
     }
 
@@ -90,9 +90,9 @@ public class UserManager {
                 String publicIdWithExtension = photoUrlSplit[photoUrlSplit.length - 1];
                 String publicId = publicIdWithExtension.substring(0, publicIdWithExtension.indexOf('.'));
 
-                user.getUserDetails().setPhoto(cloudinaryManager.updateAvatarAndGetPublicId(multipartFile, publicId));
+                user.getUserDetails().setPhoto(cloudinaryService.updateAvatarAndGetPublicId(multipartFile, publicId));
             } else {
-                user.getUserDetails().setPhoto(cloudinaryManager.uploadAvatarAndGetId(file.get()));
+                user.getUserDetails().setPhoto(cloudinaryService.uploadAvatarAndGetId(file.get()));
             }
         }
 

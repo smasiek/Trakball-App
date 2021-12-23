@@ -1,4 +1,4 @@
-package com.momot.trakball.manager;
+package com.momot.trakball.service;
 
 import com.momot.trakball.dao.ERole;
 import com.momot.trakball.dao.Role;
@@ -28,10 +28,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthManager {
+public class AuthService {
 
     final AuthenticationManager authenticationManager;
-    final CloudinaryManager cloudinaryManager;
+    final CloudinaryService cloudinaryService;
 
     final UserRepository userRepository;
     final UserDetailsRepository userDetailsRepository;
@@ -41,9 +41,9 @@ public class AuthManager {
     final JwtUtils jwtUtils;
 
     @Autowired
-    public AuthManager(AuthenticationManager authenticationManager, CloudinaryManager cloudinaryManager, UserRepository userRepository, UserDetailsRepository userDetailsRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public AuthService(AuthenticationManager authenticationManager, CloudinaryService cloudinaryService, UserRepository userRepository, UserDetailsRepository userDetailsRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
-        this.cloudinaryManager = cloudinaryManager;
+        this.cloudinaryService = cloudinaryService;
         this.userRepository = userRepository;
         this.userDetailsRepository = userDetailsRepository;
         this.roleRepository = roleRepository;
@@ -96,7 +96,7 @@ public class AuthManager {
                 surname.get(),
                 phone.get(),
                 (file.isEmpty()) ? "https://ui-avatars.com/api/name=" + name.get() +
-                        "%20" + surname.get() + "&background=random" : cloudinaryManager.uploadAvatarAndGetId(file.get()));
+                        "%20" + surname.get() + "&background=random" : cloudinaryService.uploadAvatarAndGetId(file.get()));
 
         Set<Role> roles = Collections.singleton(roleRepository.findByName(ERole.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found.")));

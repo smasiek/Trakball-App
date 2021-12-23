@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {positions, Provider} from "react-alert";
-import AlertTemplate from "./AlertTemplate";
-import Place from "./Place"
+import AlertTemplate from "../components/AlertTemplate";
+import Place from "../components/Place"
 import UserService from "../services/user.service";
 import "../assets/css/place.css";
 import {Carousel} from '3d-react-carousal';
 import {getErrorResponseMessage, unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
-import MessageView from "./MessageView";
+import MessageView from "../components/MessageView";
 
 const BoardYourPlaces = () => {
 

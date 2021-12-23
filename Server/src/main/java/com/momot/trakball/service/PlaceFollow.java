@@ -1,4 +1,4 @@
-package com.momot.trakball.manager;
+package com.momot.trakball.service;
 
 public enum PlaceFollow {
     UNFOLLOW,FOLLOW

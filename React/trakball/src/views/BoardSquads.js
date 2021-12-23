@@ -2,9 +2,9 @@ import React, {useEffect, useRef, useState} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import Squad from "./Squad"
+import Squad from "../components/Squad"
 import {positions, Provider} from "react-alert";
-import AlertTemplate from "./AlertTemplate";
+import AlertTemplate from "../components/AlertTemplate";
 import {useParams} from "react-router-dom";
 
 import SquadService from "../services/squad.service";

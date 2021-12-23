@@ -1,4 +1,4 @@
-package com.momot.trakball.manager;
+package com.momot.trakball.service;
 
 import com.momot.trakball.dao.Place;
 import com.momot.trakball.dao.Role;
@@ -28,24 +28,24 @@ import java.util.stream.Collectors;
 import static com.momot.trakball.dao.ERole.ROLE_ADMIN;
 
 @Service
-public class SquadManager {
+public class SquadService {
 
     private final SquadRepository squadRepository;
     private final CommentRepository commentRepository;
 
-    private final UserManager userManager;
-    private final PlaceManager placeManager;
+    private final UserService userService;
+    private final PlaceService placeService;
 
     final JwtUtils jwtUtils;
 
     private final PasswordEncoder encoder;
 
     @Autowired
-    public SquadManager(SquadRepository squadRepository, CommentRepository commentRepository, UserManager userManager, PlaceManager placeManager, JwtUtils jwtUtils, PasswordEncoder encoder) {
+    public SquadService(SquadRepository squadRepository, CommentRepository commentRepository, UserService userService, PlaceService placeService, JwtUtils jwtUtils, PasswordEncoder encoder) {
         this.squadRepository = squadRepository;
         this.commentRepository = commentRepository;
-        this.userManager = userManager;
-        this.placeManager = placeManager;
+        this.userService = userService;
+        this.placeService = placeService;
         this.jwtUtils = jwtUtils;
         this.encoder = encoder;
     }
@@ -93,7 +93,7 @@ public class SquadManager {
     }
 
     public Iterable<SquadDto> findByPlace(Long id) {
-        Place place = new Place(placeManager.findById(id));
+        Place place = new Place(placeService.findById(id));
         Optional<Iterable<Squad>> foundSquads = squadRepository.findByPlace(place);
         List<Squad> result = new ArrayList<>();
         foundSquads.ifPresent(squads -> squads.forEach(result::add));
@@ -110,9 +110,9 @@ public class SquadManager {
     }
 
     public ResponseEntity<?> addSquad(NewSquadRequest newSquadRequestSquad) {
-        Optional<User> creator = userManager.getUserFromContext();
+        Optional<User> creator = userService.getUserFromContext();
 
-        Optional<Place> place = placeManager.findByNameAndStreetAndCity(newSquadRequestSquad.getPlace(),
+        Optional<Place> place = placeService.findByNameAndStreetAndCity(newSquadRequestSquad.getPlace(),
                 newSquadRequestSquad.getStreet(), newSquadRequestSquad.getCity());
         if (place.isPresent() && creator.isPresent()) {
             /*Squad squad = new Squad(null, newSquadRequestSquad.getSport(), newSquadRequestSquad.getMaxMembers(),
@@ -136,7 +136,7 @@ public class SquadManager {
     }
 
     public ResponseEntity<?> addSquads(List<NewSquadRequest> squadRequests) {
-        Optional<User> creator = userManager.getUserFromContext();
+        Optional<User> creator = userService.getUserFromContext();
         if (creator.isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("User session error!"));
         }
@@ -145,7 +145,7 @@ public class SquadManager {
         int successCounter = 0;
         StringBuilder failMessages = new StringBuilder();
         for (NewSquadRequest squadRequest : squadRequests) {
-            Optional<Place> place = placeManager.findByNameAndStreetAndCity(squadRequest.getPlace(),
+            Optional<Place> place = placeService.findByNameAndStreetAndCity(squadRequest.getPlace(),
                     squadRequest.getStreet(), squadRequest.getCity());
             try {
                 if (place.isPresent()) {
@@ -179,7 +179,7 @@ public class SquadManager {
     }
 
     public ResponseEntity<?> deleteById(DeleteSquadRequest deleteSquadRequest) {
-        Optional<User> user = userManager.getUserFromContext();
+        Optional<User> user = userService.getUserFromContext();
         Optional<Squad> squad = squadRepository.findById(deleteSquadRequest.getSquad_id());
 
         if (squad.isEmpty()) {
@@ -199,7 +199,7 @@ public class SquadManager {
     }
 
     public ResponseEntity<?> updateSquad(Long squadId, SquadsUpdate updateType) {
-        Optional<User> user = userManager.getUserFromContext();
+        Optional<User> user = userService.getUserFromContext();
         Optional<Squad> squad = squadRepository.findById(squadId);
 
         if (user.isEmpty() || squad.isEmpty()) {
@@ -235,7 +235,7 @@ public class SquadManager {
 
     private void updateUserSquads(Optional<User> user, Set<Squad> newSquads) {
         user.ifPresent(u -> u.setSquads(newSquads));
-        user.ifPresent(userManager::save);
+        user.ifPresent(userService::save);
     }
 
     public ResponseEntity<?> getSecuredInfo(Long squad_id) {

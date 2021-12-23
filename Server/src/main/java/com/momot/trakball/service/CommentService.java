@@ -1,4 +1,4 @@
-package com.momot.trakball.manager;
+package com.momot.trakball.service;
 
 import com.momot.trakball.dao.Comment;
 import com.momot.trakball.dao.Squad;
@@ -19,18 +19,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CommentManager {
+public class CommentService {
 
     private final SquadRepository squadRepository;
     private final CommentRepository commentRepository;
 
-    private final UserManager userManager;
+    private final UserService userService;
 
     @Autowired
-    public CommentManager(SquadRepository squadRepository, CommentRepository commentRepository, UserManager userManager) {
+    public CommentService(SquadRepository squadRepository, CommentRepository commentRepository, UserService userService) {
         this.squadRepository = squadRepository;
         this.commentRepository = commentRepository;
-        this.userManager = userManager;
+        this.userService = userService;
     }
 
     public List<CommentDto> findCommentsById(Long squad_id) {
@@ -45,7 +45,7 @@ public class CommentManager {
 
     public ResponseEntity<?> addComment(Long squad_id, CommentDto commentDto) {
         Optional<Squad> squad = squadRepository.findById(squad_id);
-        Optional<User> user = userManager.getUserFromContext();
+        Optional<User> user = userService.getUserFromContext();
 
         if (squad.isPresent() && user.isPresent()) {
             Comment newComment = new Comment(commentDto.getText(), commentDto.getDate(), user.get(), squad.get());
@@ -57,7 +57,7 @@ public class CommentManager {
 
     public ResponseEntity<?> deleteComment(DeleteCommentRequest deleteCommentRequest) {
         Optional<Comment> comment = commentRepository.findById(deleteCommentRequest.getComment_id());
-        Optional<User> user = userManager.getUserFromContext();
+        Optional<User> user = userService.getUserFromContext();
 
         if (comment.isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Comment not found 🤐"));

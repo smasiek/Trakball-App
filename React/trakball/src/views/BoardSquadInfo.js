@@ -2,9 +2,9 @@ import {useParams} from 'react-router-dom';
 import React, {useEffect, useState} from "react";
 import "../assets/css/squad-info.css";
 import SquadService from "../services/squad.service";
-import SquadSecurity from "./SquadSecurity";
-import SquadInfo from "./SquadInfo";
-import AlertTemplate from "./AlertTemplate";
+import SquadSecurity from "../components/SquadSecurity";
+import SquadInfo from "../components/SquadInfo";
+import AlertTemplate from "../components/AlertTemplate";
 import {positions, Provider} from "react-alert";
 import {unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 

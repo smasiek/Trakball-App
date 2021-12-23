@@ -2,13 +2,13 @@ import React, {useEffect, useState} from "react";
 import {renderToStaticMarkup} from 'react-dom/server';
 import PlaceService from "../services/place.service";
 import {MapContainer, Marker, Popup, TileLayer, useMap} from 'react-leaflet';
-import Markers from "./Markers";
+import Markers from "../components/Markers";
 import "../assets/css/map.css";
 import {useParams} from "react-router-dom";
 import BoardAddNewPlace from "./BoardAddNewPlace";
 import {divIcon} from "leaflet/dist/leaflet-src.esm";
 import {FaMapMarkerAlt} from "react-icons/all";
-import AlertTemplate from "./AlertTemplate";
+import AlertTemplate from "../components/AlertTemplate";
 import {positions, Provider} from "react-alert";
 import {unauthorizedErrorCheckAndHandle} from "../utils/ErrorHandlingUtils";
 

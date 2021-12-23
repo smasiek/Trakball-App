@@ -1,4 +1,4 @@
-package com.momot.trakball.manager;
+package com.momot.trakball.service;
 
 import com.momot.trakball.dao.Place;
 import com.momot.trakball.dao.PlaceRequest;
@@ -27,21 +27,21 @@ import static com.momot.trakball.dao.ERole.ROLE_ADMIN;
 import static com.momot.trakball.dao.ERole.ROLE_MODERATOR;
 
 @Service
-public class PlaceManager {
+public class PlaceService {
     private final PlaceRepository placeRepository;
     private final PlaceRequestRepository placeRequestRepository;
     private final SearchRepository searchRepository;
 
-    private final UserManager userManager;
-    private final CloudinaryManager cloudinaryManager;
+    private final UserService userService;
+    private final CloudinaryService cloudinaryService;
 
     @Autowired
-    public PlaceManager(PlaceRepository placeRepository, SearchRepository searchRepository, PlaceRequestRepository placeRequestRepository, UserManager userManager, CloudinaryManager cloudinaryManager) {
+    public PlaceService(PlaceRepository placeRepository, SearchRepository searchRepository, PlaceRequestRepository placeRequestRepository, UserService userService, CloudinaryService cloudinaryService) {
         this.placeRepository = placeRepository;
         this.placeRequestRepository = placeRequestRepository;
         this.searchRepository = searchRepository;
-        this.userManager = userManager;
-        this.cloudinaryManager = cloudinaryManager;
+        this.userService = userService;
+        this.cloudinaryService = cloudinaryService;
     }
 
     public PlaceDto findById(Long id) {
@@ -130,7 +130,7 @@ public class PlaceManager {
     }
 
     public ResponseEntity<?> followPlace(Long place_id, PlaceFollow action) {
-        Optional<User> user = userManager.getUserFromContext();
+        Optional<User> user = userService.getUserFromContext();
         Optional<Place> place = placeRepository.findById(place_id);
 
         if (user.isEmpty() || place.isEmpty()) {
@@ -163,7 +163,7 @@ public class PlaceManager {
 
     private void updateUsersPlaces(Optional<User> user, Set<Place> place) {
         user.ifPresent(u -> u.setYourPlaces(place));
-        user.ifPresent(userManager::save);
+        user.ifPresent(userService::save);
     }
 
     public ResponseEntity<?> addPlace(NewPlaceRequest newPlaceRequest) {
@@ -174,7 +174,7 @@ public class PlaceManager {
             return ResponseEntity.badRequest().body(new MessageResponse("Place already exists!"));
         }
 
-        Optional<User> requester = userManager.getUserFromContext();
+        Optional<User> requester = userService.getUserFromContext();
 
         if (requester.isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Your session expired! Log in once again"));
@@ -238,9 +238,9 @@ public class PlaceManager {
             String publicIdWithExtension = photoUrlSplit[photoUrlSplit.length - 1];
             String publicId = publicIdWithExtension.substring(0, publicIdWithExtension.indexOf('.'));
 
-            newPhotoUrl = cloudinaryManager.updatePlacePhotoAndGetPublicId(multipartFile, publicId);
+            newPhotoUrl = cloudinaryService.updatePlacePhotoAndGetPublicId(multipartFile, publicId);
         } else {
-            newPhotoUrl = cloudinaryManager.uploadPlacePhotoAndGetPublicId(file.get());
+            newPhotoUrl = cloudinaryService.uploadPlacePhotoAndGetPublicId(file.get());
         }
 
         place.setPhoto(newPhotoUrl);
